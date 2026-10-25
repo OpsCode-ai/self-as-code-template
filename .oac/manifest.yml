@@ -1,0 +1,29 @@
+# OaC manifest for your self plane.
+#
+# Says which version of the OaC File Format this repo speaks and what shape it
+# claims. The standard is specs/oac-file-format.md (canonical copy at
+# https://opscode.ai/spec). Check the repo any time with:
+#   python3 scripts/oac-validate.py .
+
+oac_version: "1.13"
+
+# This is a SELF plane: one private repo, yours alone, above the businesses
+# you run. No business repo is ever a folder in here, and nobody else is a
+# collaborator by default (ADR-118, ADR-122). `operations` lists your business
+# planes by name once they exist; a name here is a pointer, not access.
+plane: self
+operations: []
+
+# self-plane:  self-as-code.md is the spine; five folders spelling SPADE
+# self-core:   the spine carries the seven beats and `## the split`
+profiles: [self-plane, self-core]
+
+types: {}
+topics: []
+exempt:
+  - path: .claude/
+    reason: The command install, not authored content.
+  - path: scripts/
+    reason: Tooling, not authored content.
+  - path: specs/
+    reason: The published standard, carried as reference.

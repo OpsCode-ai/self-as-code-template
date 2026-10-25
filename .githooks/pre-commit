@@ -1,0 +1,48 @@
+#!/bin/bash
+# Pre-commit hook for an Operations as Code business plane.
+# Tracked in .githooks/. Enable once: git config core.hooksPath .githooks
+#
+# Checks, in order:
+#   1. SECRETS     gitleaks, when installed. Blocks on a finding. Warns, and
+#                  lets the commit through, when gitleaks is absent: a room on
+#                  day one does not have it yet, and a red wall on the first
+#                  commit teaches people to type --no-verify. Install it soon.
+#   2. NUL BYTES   a literal 0x00 in a text file hides it from grep. Blocks.
+#   3. OWNER       audience: owner never enters a shared repo. Blocks.
+#   4. FRONTMATTER new or newly broken markdown must carry title, type and
+#                  audience (OaC level 1). Blocks on regressions only.
+
+set -e
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+# 1. Secrets
+if command -v gitleaks >/dev/null 2>&1; then
+    if ! gitleaks git --pre-commit --staged 2>/dev/null; then
+        echo -e "${RED}BLOCKED: a secret is in the staged files. Move it to your password manager or a .env file (which is gitignored) and try again.${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}no secrets detected${NC}"
+else
+    echo -e "${YELLOW}gitleaks is not installed, so the secret scan did not run. Install it: macOS 'brew install gitleaks', Windows 'winget install gitleaks'.${NC}"
+fi
+
+# 2. NUL bytes
+if command -v python3 >/dev/null 2>&1 && [ -f scripts/check-nul-bytes.py ]; then
+    python3 scripts/check-nul-bytes.py || exit 1
+fi
+
+
+# 4. Frontmatter
+if command -v python3 >/dev/null 2>&1 && [ -f scripts/oac-validate.py ]; then
+    if python3 -c "import yaml" 2>/dev/null; then
+        python3 scripts/oac-validate.py --staged || exit 1
+    else
+        echo -e "${YELLOW}PyYAML missing, frontmatter check skipped (pip3 install pyyaml)${NC}"
+    fi
+fi
+
+exit 0

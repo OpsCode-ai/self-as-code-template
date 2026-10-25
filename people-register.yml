@@ -1,0 +1,45 @@
+# people-register.yml - how to refer to a named person in anything you produce.
+#
+# Empty on purpose. You fill it as you write about people.
+#
+# WHY THIS EXISTS. Anyone can point a model at a folder of markdown and get a
+# confident document out. The only thing that separates yours is that someone
+# can pull on a sentence and find the record underneath it. The expensive
+# mistakes are always the same handful: who somebody is, what you call them,
+# what is actually signed, and what a number really was. Those fit in a file.
+#
+# Checked by `python3 scripts/check-grounding.py --outward`.
+# The rule is `standards/grounding-standard.md`.
+#
+# THE DEFAULT IS SAFE. A person with `pronouns: unknown` is not an invitation
+# to guess from their name. It means use they/them, or use the name again. The
+# checker flags a gendered pronoun written near anyone whose pronouns are not
+# recorded, and that flag is correct even when the guess happens to land.
+#
+# Only record what a file in this repo actually evidences, and put its path in
+# `record`. If you cannot point at the evidence, leave the field out.
+#
+# Fields
+#   name      canonical spelling. The one that goes in a document
+#   aliases   other spellings you will actually encounter, including first
+#             names. Leave out anything so common it matches other people
+#   pronouns  he/him | she/her | they/them | unknown
+#   is        the true description, for outward use
+#   never     phrases that must not appear near this person outwardly
+#   record    the file in this repo that backs the above
+
+people: []
+
+# Worked example. Delete it once you have your own.
+#
+#  - name: Jane Example
+#    aliases: [Jane]
+#    pronouns: unknown
+#    is: "a supplier. We buy from them, they do not work for us"
+#    never:
+#      - "our partner"
+#      - "on the team"
+#    note: >
+#      The partnership was discussed in March and never signed. Saying partner
+#      outwardly states something that is not true yet.
+#    record: suppliers/jane-example.md

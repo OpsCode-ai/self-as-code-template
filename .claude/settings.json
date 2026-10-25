@@ -1,0 +1,53 @@
+{
+  "companyAnnouncements": [
+    " \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\n\u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\n\u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551     \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2557  \n\u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u255d  \n\u255a\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u255a\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u255a\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\n \u255a\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u255d     \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n\u25c6 Self as Code \u00b7 SAC\n\nThis is your private space. Only you can see it.\n\nOne command: /sac\n  Asks you seven questions about who you are becoming, writes your plan to\n  self-as-code.md, and sends what you choose to share to each business you\n  run. About an hour, one sitting.\n\nEvery session: /start at the beginning, /done at the end.\n\nSAC on the bottom line means you are in the right place."
+  ],
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Bash",
+      "Glob",
+      "Grep",
+      "WebSearch"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "[ -n \"$AIDLC\" ] && exec bun \"$CLAUDE_PROJECT_DIR/.claude/hooks/aidlc-statusline.ts\"; for s in \"$CLAUDE_PROJECT_DIR/scripts/oac-statusline.sh\" \"$CLAUDE_PROJECT_DIR/code/scripts/oac-statusline.sh\" \"$HOME/.claude/statusline-command.sh\"; do [ -f \"$s\" ] && exec bash \"$s\"; done; exit 0"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f \"$HOME/.claude/oac-session-brief.py\" ] && exit 0; b=\"$CLAUDE_PROJECT_DIR/scripts/oac-session-brief.py\"; [ -f \"$b\" ] || exit 0; python3 \"$b\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "b=\"$CLAUDE_PROJECT_DIR/scripts/oac-session-brief.py\"; [ -f \"$b\" ] || b=\"$CLAUDE_PROJECT_DIR/code/scripts/oac-session-brief.py\"; [ -f \"$b\" ] && python3 \"$b\" --announce --write >/dev/null 2>&1; exit 0"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "b=\"$CLAUDE_PROJECT_DIR/scripts/oac-session-brief.py\"; [ -f \"$b\" ] || b=\"$CLAUDE_PROJECT_DIR/code/scripts/oac-session-brief.py\"; [ -f \"$b\" ] && python3 \"$b\" --announce --write >/dev/null 2>&1; exit 0"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "sac-brain"
+  ]
+}

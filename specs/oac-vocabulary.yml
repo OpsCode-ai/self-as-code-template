@@ -1,0 +1,846 @@
+# OaC File Format v1: the machine-readable vocabulary.
+#
+# The human standard is specs/oac-file-format.md. The decision is ADR-098.
+# This file is what `code/scripts/oac-validate.py` reads. One file, so there is
+# exactly one place a value can be legal.
+#
+# THE RULE THAT KEEPS THIS SHORT:
+#   `type` says what KIND of document this is, never what it is ABOUT.
+#   Subject goes in `topics`. Provenance goes in `tags`.
+# Without that rule this list grows back. It reached 198 values before v1.
+
+version: "1.13"  # quoted: unquoted, YAML reads 1.10 as the number 1.1
+
+# ── How values are written ───────────────────────────────────────────────────
+# Lists MUST use flow style: `topics: [positioning, pricing]`.
+# NOT block style:
+#   topics:
+#     - positioning
+#
+# This is not taste. The shipped reference client parses frontmatter with a
+# scalar-only splitter (products/oac-client/src/lib/parseSelfAsCode.ts):
+#   "arrays/nested blocks are ignored"  /  "skip list items / nested / blank"
+# Under block style it sees `topics` as an empty string and the values vanish.
+# Under flow style it sees the raw string `[positioning, pricing]`, which it can
+# store, round-trip and later parse. A format its own reference implementation
+# cannot read is fiction, so the format bends here rather than the client.
+array_style: flow
+
+# ── Required on every OaC document ───────────────────────────────────────────
+required:
+  - title
+  - type
+  - audience
+
+recommended:
+  - summary        # one plain sentence; feeds generated index.md
+  - status
+  - lifecycle
+  - owner
+  - updated
+  - topics
+  - tags
+
+# Field names that mean the same thing as a canonical one. Read by consumers
+# and by the backfill; the left side is not legal to write in new documents.
+# `last_updated` is the big one: ADR-094 mandated it and 172 pack files carry
+# it. `related_adrs` came from STRUCTURING-GUIDE and is just a typed edge.
+field_aliases:
+  last_updated: updated
+  # READ as `references`, but do not mechanically rename it: its values are
+  # bare ADR numbers, and `references` values must be paths that resolve.
+  # Converting them is ambiguous, because SC-era and OpsCode ADR numbers
+  # overlap. 43 files, awaiting a human.
+  related_adrs: references
+
+# ── type: what KIND of document ──────────────────────────────────────────────
+# 26 values. Each has a real home in the tree. If a document does not fit,
+# it goes to the manual bucket and a human decides. There is deliberately no
+# `document` fallback: a catch-all is how 198 values happened.
+types:
+  adr:            Architecture decision record
+  spec:           Technical specification or design
+  standard:       An org-wide rule we hold ourselves to
+  template:       A thing to copy and fill in
+  index:          Directory listing or map, for progressive disclosure
+  lesson:         Curriculum material
+  guide:          How to do a thing, for a human
+  strategy:       Direction, positioning, plans, identity
+  market-intel:   What the market and competitors are doing
+  audience-def: "Who we sell to: personas, ICPs, buyer language"
+  messaging:      What we say to them
+  offer:          What we sell and for how much
+  brand:          Voice, visual identity, brand assets
+  engagement:     A customer or partner relationship document
+  session:        Notes or summary from a live session
+  coach-feedback: Coach-facing assessment of a session
+  transcript:     A verbatim record of what was said
+  correspondence: Email and messages sent or received
+  contract:       Commercial agreements and money documents
+  campaign:       A marketing or outreach campaign
+  build-log:      A documented build journey (Rule 8)
+  report:         Point-in-time analysis, audit or status
+  reference:      External system documentation we did not write
+  case-study:     A story we tell about work we did
+  agent:          An agent definition or prompt
+  profile:        A person
+
+# ── The 198-to-26 mapping, used by the backfill and kept for provenance ──────
+# Left: every value found in the repo on 2026-08-08. Right: canonical type.
+# Keep this table. It is the audit trail for the collapse, and the backfill
+# reads it rather than guessing.
+type_aliases:
+  decision: adr
+
+  design-spec: spec
+  signature-spec: spec
+  design: spec
+
+  process-standard: standard
+  style-guide: standard
+  sop: standard
+  methodology: standard
+
+  deployment-template: template
+  email-template: template
+  course-template: template
+  scaffold: template
+
+  overview: index
+  map_overview: index
+  navigation: index
+  maps_index: index
+  readme: index
+  context_core_readme: index
+  context-core-overview: index
+  context-core: index
+  team-hub: index
+  sales-playbook-index: index
+  campaign-index: index
+  power_capsules_index: index
+  shared_index: index
+
+  curriculum: lesson
+  curriculum-module: lesson
+  facilitator-script: lesson
+
+  internal-guide: guide
+  installation-guide: guide
+  installation: guide
+  handover: guide
+  working-doc: guide
+  prompt: guide
+  prompt_reference: guide
+  deployment: guide
+
+  strategic_identity: strategy
+  strategic-identity: strategy
+  go_to_market: strategy
+  gtm: strategy
+  gtm-advisory: strategy
+  marketing-strategy: strategy
+  cohort-design: strategy
+  launch-plan: strategy
+  living_plan: strategy
+  living-plan: strategy
+  shared_strategy: strategy
+  shared_system: strategy
+  shared_framework: strategy
+  shared_founder: strategy
+  self_as_code: strategy
+  organisation: strategy
+  project: strategy
+  milestone: strategy
+
+  market_intelligence: market-intel
+  market-intelligence: market-intel
+  market: market-intel
+  competitive_intelligence: market-intel
+  competitive_intel: market-intel
+  competitive-intelligence: market-intel
+  competitor-analysis: market-intel
+  battle-card: market-intel
+  targeting-matrix: market-intel
+  company_lists: market-intel
+  companies-partners: market-intel
+  companies_partners: market-intel
+
+  persona: audience-def
+  icp: audience-def
+  audience-definition: audience-def
+  audience_definition: audience-def
+  customer_intelligence: audience-def
+  customer-intelligence: audience-def
+  echo-persona-profile: audience-def
+  buyer-pains: audience-def
+  buying-triggers: audience-def
+  objection-library: audience-def
+  customer-vocabulary: audience-def
+
+  messaging_framework: messaging
+  messaging_frameworks: messaging
+  email-sequences: messaging
+  linkedin-sequences: messaging
+  campaign-messaging: messaging
+  booking-page-copy: messaging
+  sales-playbook: messaging
+  # A customer's revenue playbook is sales enablement content, same as a
+  # sales playbook. 94 files across two engagements carried this folder name
+  # and no type, which is what left them below level 1 after the first pass.
+  revenue-playbook: messaging
+  # Hybrid: it is a messaging document; the persona is the subject, so it
+  # belongs in `topics`, not in `type`. Exactly the rule this list rests on.
+  persona_messaging_strategy: messaging
+
+  value_stack: offer
+  value-stack: offer
+  value-offers: offer
+  value_offers: offer
+  lead-magnet: offer
+  cohort proposal: offer
+  pre-engagement proposal: offer
+
+  branding: brand
+  brand_manifest: brand
+  brand-asset: brand
+  brand_asset: brand
+  personal_brand: brand
+  voice: brand
+  voice_stream: brand
+  voice-stream: brand
+  voice-source: brand
+  shared_voice: brand
+  asset: brand
+  assets: brand
+  # The SPEAK family collapses to brand plus a speak_component facet.
+  speak_framework: brand
+  speak_framework_core: brand
+  speak_framework_implementation: brand
+  speak_implementation: brand
+  speak_story: brand
+  speak-story: brand
+  speak_purpose: brand
+  speak-purpose: brand
+  speak_educate: brand
+  speak-educate: brand
+  speak_authority: brand
+  speak_keep_consistent: brand
+  speak-keep-consistent: brand
+  speak-framework: brand
+
+  client: engagement
+  engagement_analysis: engagement
+  customers: audience-def
+  engagement-artefact: engagement
+
+  session-summary: session
+  session-ai-summary: session
+  coach-rollup: session
+  coaching-note: session
+  meeting-prep: session
+
+  session_transcript: transcript
+  session-transcript: transcript
+
+  engagement_correspondence: correspondence
+  engagement_email: correspondence
+  engagement-email: correspondence
+  client-email: correspondence
+  email-sent: correspondence
+  email-samples: correspondence
+  comms: correspondence
+  comms-artefact: correspondence
+  comms-draft: correspondence
+  discovery-followup: correspondence
+  attachment: correspondence
+
+  commercial-agreement: contract
+  agreement_draft: contract
+  purchase-request: contract
+  invoice-line-item: contract
+  cost-estimate: contract
+
+  campaign-strategy: campaign
+  campaign-plan: campaign
+  campaign-overview: campaign
+  campaign-offer-brief: campaign
+
+  audit: report
+  review: report
+  analysis: report
+  reports: report
+  pipeline-status: report
+  growth_modeling: report
+  growth-modeling: report
+  lead-gen-cost-forecast: report
+  key-result-areas: report
+  key_result_areas: report
+  daily-log: report
+  task-bridge: report
+  team-task-bridge: report
+  changelog: report
+  enrichment: report
+  extraction-manifest: report
+  planning-artifact: report
+  research-note: report
+  pre-engagement it compliance review: report
+
+  api_documentation: reference
+  crm-configuration: reference
+  sample-account: reference
+  sample-brief: reference
+  opscode_resource: reference
+
+  article: case-study
+  content-idea: case-study
+
+  agent-lab-pointer: agent
+
+  team-profile: profile
+  role: guide
+
+  # ── The self-plane collapse (added for ADR-118) ────────────────────────────
+  # A self plane holds a life, not just a business, so it carries document
+  # kinds an operations repo never sees: fitness programs, reading lists,
+  # cleaning rotas, family planning. The SAME rule still settles every one of
+  # them, and that is the point worth teaching: `type` is what a document IS.
+  #
+  #   A fitness program, a cleaning rota and a revenue target are all
+  #   'an ongoing rule you hold yourself to'          -> standard
+  #   A fitness log, an expense tracker and a retro are all
+  #   'where things stood when I looked'              -> report
+  #   A vision, an OKR, a weekly plan and a venture roadmap are all
+  #   'where I am trying to get to'                   -> strategy
+  #
+  # 26 types held. Nothing here needed a 27th, which is the strongest evidence
+  # yet that the collapse from 198 was real rather than lucky.
+  # `strategic-identity` and `project` already map to strategy above; the
+  # self plane simply proved them right a second time.
+  vision: strategy
+  annual-goals: strategy
+  quarterly-okr: strategy
+  monthly-targets: strategy
+  weekly-plan: strategy
+  venture-goals: strategy
+  venture-milestones: strategy
+  product-roadmap: strategy
+  curriculum-plan: strategy
+  notable-plan: strategy
+  offer-framework: offer
+  engagement-playbook: guide
+  ip-positioning-brief: strategy
+  ip-ownership-brief: contract
+  wind-down-runbook: guide
+  shared-planning: strategy
+  travel-plan: strategy
+
+  fitness-program: standard
+  cleaning-schedule: standard
+  home-maintenance: standard
+  recurring-tasks: standard
+  monthly-budget: standard
+  revenue-targets: standard
+  hiring-plan: strategy
+  role-definitions: standard
+
+  fitness-log: report
+  quarterly-retro: report
+  expense-tracker: report
+  purchase-tracker: report
+  skills-tracker: report
+  investment-notes: report
+  risk-register: report
+  ops-snapshot: report
+
+  reading-list: reference
+  learning-path: reference
+  setup-guide: guide
+
+  role-pointer: profile
+  performance-notes: profile
+  venture-advisors: profile
+  venture-decisions: index
+  voice-stream-overview: index
+
+  # A rolling task list is 'where things stood when I looked', the same kind of
+  # document as a status report. The precedent is this repo's own
+  # team/task-bridge.md, which has carried `type: report` since January.
+  inbox: report
+  email-actions: report
+  action-items: report
+  dashboard: report
+  meeting-transcript: transcript
+  process: guide
+
+  # An owner's private read on a partner. Not `engagement`: that is the
+  # relationship document itself, which lives in the shared repo. This is the
+  # analysis of it at a moment in time, and it never leaves the self plane
+  # (ADR-111).
+  private_strategic_read: report
+
+# Values with no safe mapping. The backfill must NOT guess these; it lists
+# them for a human. `internal` is a visibility statement wearing a type's
+# clothes, which is exactly the confusion `audience:` exists to end.
+type_manual_review:
+  - internal
+  # Added 1.5. These three describe a SUBJECT AREA, not a kind of document, so a
+  # single target is always wrong for some of the files carrying them. In one
+  # cohort pack `business_knowledge` covered a price list, a fabrication rule, a
+  # materials reference and a positioning statement: `offer`, `guide`, `reference`
+  # and `strategy` respectively. Until 1.5 all three aliased to `engagement`,
+  # which means a customer or partner relationship document and was wrong for
+  # every one of them.
+  - business
+  - business_knowledge
+  - operations
+
+# ── Where a document lives implies what KIND it is ───────────────────────────
+# The other half of the backfill, and the half that was missing from the
+# standard until 2026-09-12. It lived as a hardcoded table inside
+# code/scripts/backfill-frontmatter.py, which meant the rule we ask every
+# operator to follow was one we could not hand them. Now it ships.
+#
+# ORDERED: first match wins, so the specific precedes the general.
+# NO FALLBACK: a path that matches nothing is left for a human. A fallback is
+# how a vocabulary re-inflates, and this one reached 198 values before v1.
+#
+# Keyed by plane (ADR-118), because the two planes have different furniture.
+# A business plane has engagements, campaigns and curriculum. A self plane has
+# a spine, five folders filed by actionability (SPADE, ADR-126), and a life in
+# them.
+path_types:
+
+  business:
+    - ['(^|/)(README|index|overview)\.md$', index]
+    - ['(^|/)CLAUDE\.md$', guide]
+    - ['^SECURITY\.md$', standard]
+    - ['facilitator-script', lesson]
+    - ['^decisions/\d+-', adr]
+    - ['^specs/', spec]
+    - ['^brand/standards/', standard]
+    - ['^build-logs/', build-log]
+    - ['^reference/', reference]
+    - ['^templates/', template]
+    - ['^team/', profile]
+    - ['-standard\.md$', standard]
+    - ['^curriculum/', lesson]
+    - ['-coach-feedback\.md$', coach-feedback]
+    - ['coach-rollup\.md$', coach-feedback]
+    - ['(^|/)transcripts?/', transcript]
+    - ['-transcript\.md$', transcript]
+    - ['-session-notes\.md$', session]
+    - ['(^|/)sessions?/', session]
+    - ['(^|/)campaigns/.*(email|linkedin)-', messaging]
+    - ['(^|/)(email|comms)-[^/]*\.md$', correspondence]
+    - ['proposal', offer]
+    - ['prospect-brief\.md$', engagement]
+    - ['engagement-(memo|shape|plan)\.md$', engagement]
+    - ['cohort-plan\.md$', engagement]
+    - ['task-bridge\.md$', report]
+    - ['^campaigns/|(^|/)campaigns/', campaign]
+    - ['^(icp|marketing|sales|gtm|services|content)/', strategy]
+    - ['(^|/)reports?/', report]
+    - ['(^|/)getting-started/', guide]
+    - ['(^|/)research/', market-intel]
+    - ['(^|/)(drive-ingest|documents)/', reference]
+    - ['(^|/)100-day-plan/', strategy]
+    - ['raise-the-floor', template]
+    - ['(battlecard|battle-card|-comparison)\.md$', market-intel]
+    - ['(architecture|-brief|-schema|-mockup|-design)\.md$', spec]
+    - ['(curriculum-|per-role-prework)', lesson]
+    - ['week-\d+-tasks\.md$', engagement]
+    - ['(pricing|cohort-sizing)', offer]
+    - ['(-configuration|config|tracking-links)\.md$', reference]
+    - ['(welcome-message|^invite-|/invite-)', correspondence]
+    - ['meeting-summary', session]
+    - ['(marketing-plan|mutual-goals)', strategy]
+    - ['-strategy\.md$', strategy]
+    - ['(^|/)plans?/', strategy]
+    - ['(^|/)drafts/', correspondence]
+    - ['(^|/)[^/]*[Ee]vent[^/]*/', engagement]
+    - ['^STRUCTURING-GUIDE\.md$', standard]
+    - ['speak-framework', brand]
+    - ['handover', guide]
+    - ['(rollup|actions)\.md$', report]
+    - ['^products/', spec]
+    - ['^infrastructure/', spec]
+    - ['^brand/personal-branding/', brand]
+    - ['^agents/', agent]
+    - ['^\.github/', template]
+    - ['^brand/', brand]
+
+  # ── The self plane ─────────────────────────────────────────────────────────
+  # Derived from the first real migration (lopez-delon-ops, 2026-09-12). Every
+  # rule here generalises: the next operator's `standards/` also holds bars
+  # they hold, and their `archive/` is also done or dropped.
+  # From 1.11 the folders are SPADE (ADR-126): `archive/` was `history/` and
+  # `evidence/` was `library/`. The old names stay below as legacy rules,
+  # because a repo made before 1.11 keeps its folders until its owner renames
+  # them.
+  self:
+    - ['(^|/)(README|index|overview)\.md$', index]
+    - ['(^|/)CLAUDE\.md$', guide]
+    # The spine. Its own profile (`self-core`) describes the body grammar;
+    # this says what kind of document it is.
+    - ['^self-as-code\.md$', strategy]
+    - ['^decisions/\d+-', adr]
+    # The thing you copy to make the next ADR is a template, not an ADR.
+    # Must follow the numbered rule and precede nothing in particular.
+    - ['(^|/)template\.md$', template]
+    # A guide is a guide wherever it sits. Must precede the templates rule,
+    # which would otherwise call a setup walkthrough a template.
+    - ['-(guide|setup|reference)\.md$', guide]
+    - ['^evidence/templates/', template]
+    - ['^evidence/', reference]
+    - ['^library/templates/', template]     # legacy name for evidence/
+    - ['^library/', reference]              # legacy name for evidence/
+    # The SPADE folders. `standards/` is the bar you hold, so a document in it
+    # is usually the statement of that bar.
+    - ['^standards/self/(goals|weeks)/', strategy]
+    - ['^standards/self/vision\.md$', strategy]
+    - ['^standards/ventures/[^/]+/(goals|milestones)', strategy]
+    - ['^standards/ventures/.*/partnerships/', report]
+    - ['^standards/(household|finance)/', standard]
+    - ['^projects/', strategy]
+    # `archive/` says the document is finished, never what kind it is, so it
+    # is classified by what it was.
+    - ['^archive/plans/', strategy]
+    - ['^archive/team/', profile]
+    - ['^archive/ventures/', strategy]
+    - ['^history/plans/', strategy]          # legacy name for archive/
+    - ['^history/team/', profile]            # legacy name for archive/
+    - ['^history/ventures/', strategy]       # legacy name for archive/
+    # Shared surfaces the post-session chain and the sweep produce.
+    - ['(^|/)sessions?/', session]
+    - ['-transcript\.md$', transcript]
+    - ['-private-watch\.md$', report]
+    - ['(^|/)correspondence/', correspondence]
+    - ['(^|/)meetings/', session]
+    - ['^inbox\.md$', report]
+
+# The audience a backfill stamps on a document that carries none. Keyed by
+# plane, and FAIL CLOSED in both: never stamp a value more shared than the
+# plane's own floor. A self plane is owner-only by definition (ADR-111), so
+# `owner` is both its floor and its constant. A business plane's floor is
+# `internal`, never `team` or `public`, because over-sharing is the one
+# mistake a backfill cannot undo.
+audience_default:
+  business: internal
+  self: owner
+
+# ── audience: who may read it ────────────────────────────────────────────────
+# Load-bearing. code/scripts/audit-sensitive-content.py greps this field, and
+# the gate is blind to any file that omits it.
+audience:
+  owner:    The owner only. In a shared repo, move it to the owner's own repo.
+  internal: The organisation, including Tier 1 delivery partners.
+  team:     Named collaborators on a specific engagement.
+  public:   Safe to publish.
+
+# `audience_note` is an OPTIONAL free-text companion, for when the real
+# readership is richer than four values can hold: 'internal + share-ready with
+# Luke', 'Operators and founders with zero dev background'. `audience` stays
+# the enum a tool routes on; the note is for people. It exists because 22
+# documents had written that sentence into `audience` itself, and collapsing
+# them to the enum would have thrown the sentence away.
+
+# `audience` is a ROUTING signal, not a security boundary. It says where a
+# document may be shown. It enforces nothing; the git host does that. Tools
+# that gate on it MUST fail closed: no `audience` means most restricted.
+
+# `adam` was the drafting spelling of `owner`, renamed for two reasons.
+# A published open standard cannot carry one person's name as an enum value:
+# no other operation has an 'adam'. And the value collided with real people
+# called Adam, which is why audit-sensitive-content.py had to stop prefix-
+# matching after it flagged a client-facing proposal for a client named Adam.
+# The gate reads both spellings until the backfill collapses them.
+audience_value_aliases:
+  adam: owner
+
+# Legacy field spellings the gate reads until the backfill collapses them.
+# 171 files across three field names before v1.
+audience_aliases:
+  internal_only: audience   # boolean; true -> internal
+  visibility: audience      # same value set
+
+# ── lifecycle: how the document behaves over time ────────────────────────────
+# The consequence that matters: only `record` may be quoted verbatim by an
+# agent. Quoting a `living` document as speech is how a coach's summary ends up
+# attributed to a partner.
+lifecycle:
+  static:  A reference the operation reads and does not change.
+  living:  Updated as the operation runs.
+  record:  Written once, never edited. The only class safe to quote verbatim.
+
+lifecycle_by_type:
+  static: [standard, spec, template, reference, brand]
+  living: [strategy, messaging, lesson, engagement, index, campaign, offer,
+           market-intel, audience-def, guide, agent, profile]
+  record: [transcript, session, coach-feedback, correspondence, build-log,
+           contract, report, case-study, adr]
+
+# ── status ───────────────────────────────────────────────────────────────────
+# Ours, not OKF's. Their spec defaults to `stable`; we have richer states in
+# use across 834 files and the ADR series depends on them.
+status:
+  common: [draft, active, complete, superseded]
+  adr: [proposed, accepted, rejected, superseded]
+  pack: [seeded, draft, confirmed]     # ADR-094 lifecycle, kept deliberately
+
+# ── Fields some types add ────────────────────────────────────────────────────
+# The three required fields apply everywhere. These are the EXTRA fields that
+# carry weight for particular kinds of document. All optional: a missing one
+# never costs a conformance level.
+#
+# This absorbs the five per-context schemas that used to live in
+# STRUCTURING-GUIDE.md, which was one of the four rival definitions ADR-098
+# set out to end. Those schemas invented `type` values that do not exist here
+# (memo, plan, proposal, brief, summary, timeline). The kind of document is
+# now the `type`; what it is about is `topics`; and the fields below are the
+# handful of genuinely per-type extras.
+type_fields:
+  adr:            [adr, date, decision_date, supersedes, superseded_by, formerly]
+  spec:           [version]
+  standard:       [version]
+  lesson:         [module]
+  engagement:     [engagement, date]
+  correspondence: [engagement, date]
+  contract:       [engagement, date]
+  offer:          [engagement, date]
+  session:        [engagement, session_date, source]
+  coach-feedback: [engagement, session_date]
+  transcript:     [engagement, session_date, speaker_attribution, speakers, source]
+  build-log:      [date]
+
+# ── Edges: flat keys, never a nested block ───────────────────────────────────
+# Flat because `grep -rn '^depends_on:'` must work. Nested YAML does not grep
+# as one token, and grep is the whole retrieval mechanism under Rule 9.
+# Every value is a path. The validator resolves all of them; an edge that does
+# not resolve is an error. That is how the graph stops rotting.
+edges:
+  supersedes:    This replaces that.
+  superseded_by: The inverse. Pair them.
+  depends_on:    This breaks if that changes.
+  serves_goal:   This contributes to that outcome.
+  references:    Read-only pointer to a static document.
+  derived_from:  This content came from that source.
+  about:         Subject pointer to the canonical document on a topic.
+  related:       Untyped. Deprecated, kept so 90 existing files do not break.
+
+# Edges are REPO-LOCAL. Every value is a path inside the declaring repo, and at
+# level 2 it must resolve. A path into another repository cannot be checked, so
+# it is not an edge. Cross-repo relationships live in the manifest instead, as
+# `plane` / `parent_operation` / `operations` (spec 4.1 and 6.3). Those are
+# pointers, not paths: a consumer MUST NOT try to resolve them and MUST NOT fail
+# a repo it cannot reach the other end of.
+manifest_cross_repo:
+  plane:            "self | business. Which kind of operation this repo is."
+  parent_operation: "On a business plane, the self plane it was deployed from."
+  operations:       "On a self plane, the business planes deployed from it."
+
+# ── Transcript and session fields ────────────────────────────────────────────
+# `speakers` maps a raw body label to a real person WITHOUT touching the body.
+# That is deliberate: a 2026-08-04 incident was a bulk rewrite of
+# a customer's files. The fix that adds a mapping beats the fix that rewrites
+# the text.
+speaker_attribution:
+  labelled:  Names are already in the body (Zoom VTT). Derivable automatically.
+  mapped:    Body has anonymous labels; `speakers` carries the mapping.
+  anonymous: Nobody knows who is who. An agent MUST refuse to attribute.
+
+transcript_required: [engagement, session_date, speaker_attribution]
+
+# ── topics: the subject layer ────────────────────────────────────────────────
+# Closed, unlike `tags`. Tags record where a file came from; topics record what
+# is in it. Every hq-upload transcript currently carries the identical four
+# provenance tags, which is why nothing is findable by subject.
+# Seeded from tags used more than twice. Extend via .oac/manifest.yml.
+topics:
+  - positioning
+  - pricing
+  - partnership
+  - equity
+  - go-to-market
+  - marketing
+  - content
+  - social
+  - sales
+  - onboarding
+  - delivery
+  - curriculum
+  - cohort
+  - product
+  - platform
+  - infrastructure
+  - security
+  - automation
+  - agents
+  - claude-code
+  - github
+  - repo-structure
+  - frontmatter
+  - context-core
+  - self-as-code
+  - brand
+  - website
+  - events
+  - aws
+  - hiring
+  - finance
+  - legal
+  - operations
+  - tooling
+  - data
+
+# ── Conformance: graded, so a messy repo is still usable ─────────────────────
+# A repo is not conformant or non-conformant. It sits at a level, and the level
+# says what a consumer can offer. That makes conformance a ladder a customer
+# climbs, not a gate that locks them out on day one with 200 legacy files.
+# The paid engine sits at level 3, so the ladder matches the commercial model
+# (ADR-090: the format is open, the engine is paid).
+conformance_levels:
+  0:
+    name: readable
+    requires: "Markdown in git. Frontmatter, where present, parses as YAML."
+    unlocks: "Open, render, full-text search."
+  1:
+    name: typed
+    requires: "Every document carries title, type and audience, with legal values."
+    unlocks: "Filter by kind, route by audience, honour the privacy gate."
+  2:
+    name: linked
+    requires: "Declared edges resolve to real paths. Directories over 10 documents carry index.md."
+    unlocks: "Relation graph, impact analysis, progressive disclosure."
+  3:
+    name: live
+    requires: "Execution and presence conventions (see profiles.live)."
+    unlocks: "Board, runs, collaboration. This is the paid engine surface."
+
+# ── Robustness: the rule that stops every revision breaking every customer ───
+# Borrowed from OKF SPEC.md §11, and non-negotiable. A published standard whose
+# consumers reject unfamiliar input cannot be revised without a flag day.
+robustness:
+  consumers_must_not_reject_on:
+    - unknown type values
+    - unknown additional frontmatter keys
+    - broken cross-links
+    - missing index.md
+    - an unrecognised oac_version (attempt best-effort, never refuse)
+  rationale: >
+    A consumer degrades to the highest level it can satisfy and says so.
+    It never refuses the repo.
+
+# ── Profiles: optional conventions, each unlocking specific behaviour ────────
+# These are documented because they are ALREADY load-bearing in the shipped
+# client and were previously written down nowhere. Undocumented grammar that a
+# product depends on is the definition of a standard that cannot be kept.
+profiles:
+
+  self-core:
+    file: self-as-code.md
+    description: "The operator's strategic identity. The one file the client parses today."
+    frontmatter: [last_raised, next_raise]
+    body_grammar:
+      beats: >
+        Level-two headings mapping to beat keys, case-insensitive, optional
+        leading 'the': baseline, readme (also 'read me'), main, rewrite, floor,
+        cut, commits (also 'commit'), refactor (also 'review', the heading new
+        documents write from 1.10).
+      invariants: "A heading 'Invariants' or 'the Invariants'."
+      coasting: "An invariant line ending in [coasting]. The one machine-readable health signal."
+      split: >
+        A heading 'the split' holding one GFM table: Slice | Beat | Routing |
+        Destination, found by header name, case-insensitively. Routing is CLOSED
+        and bare: stays-personal, routes-to, promotable-unrouted. Destination is
+        required when Routing is routes-to, as <unit> or <unit>/<venture>. A
+        slice is a statement, never a file. Absent section means nothing has
+        been routed, and everything stays personal (ADR-118 4, ADR-122 1).
+    columns:
+      routing: [stays-personal, routes-to, promotable-unrouted]
+    source: products/oac-client/src/lib/parseSelfAsCode.ts
+    reader: code/scripts/self-as-code-split.py
+
+  live:
+    description: "Execution conventions. Level 3, the paid engine surface."
+    frontmatter: [sprint]
+    body_grammar:
+      items: >
+        GFM task-list items, '- [ ]' / '- [x]' / '- [X]', also '*' bullets, at
+        any indent. Lines inside fenced code blocks are never items.
+      grouping: "headingPath is the nearest ancestor heading chain."
+      deviation: >
+        An indented blockquote directly under an item whose first line matches
+        '> deviation (<authorId>, <YYYY-MM-DD>):'.
+    source: products/oac-client/src/lib/live/checklist.ts
+
+  pack:
+    description: "The Context Core deep pack (ADR-094). A profile of the format, not a rival to it."
+    files: [CLAUDE.md, README.md, CHANGELOG.md]
+    dirs: [context-core/, decisions/, .claude/commands/]
+    frontmatter: [version, last_updated, status]
+    status_values: [seeded, draft, confirmed]
+    note: >
+      ADR-094 previously defined its own frontmatter schema. It now defers here.
+      seeded/draft/confirmed survives as a legal pack subset because /install
+      reads it and 172 files carry it.
+
+  self-plane:
+    description: "One person's own operation, private, above the businesses they run. ADR-118."
+    manifest: [plane, operations]
+    files: [self-as-code.md]
+    dirs: [standards/, projects/, archive/, decisions/, evidence/]
+    legacy_dirs: {history/: archive/, library/: evidence/}
+    fields:
+      venture: "The venture's slug. The join key: the baseline's ### block, standards/ventures/<slug>/, the split's Destination and the business repo in operations. ADR-126, the Self as Code standard 4."
+      goal: "A goal that crosses to a business repo: <venture>/<slug>. Both repos carry the same id, because an edge cannot cross repos."
+    contact_card:
+      file: "README.md of a folder for one person, in standards/ (from 1.13, ADR-133 Rule 4)"
+      fields: [name, emails, phone, company, kind, crm_person, next_step]
+      emails: "flow-style list"
+      phone: "E.164, quoted: \"+61400000000\""
+      kind: [partner, customer, working-contact, friend, family]
+      note: "Every field optional. A tool never overwrites a field a person filled in. Last contact is worked out from the folder, never a field."
+    goal_cascade: "Goals link upward with the serves_goal edge (a path inside this repo), never a parent: key."
+    body_grammar:
+      spine: "self-as-code.md carries the self-core profile above."
+      buckets: >
+        SPADE (ADR-126, from 1.11). Filed by what you can act on, not by
+        subject. standards/ is ongoing with a bar you hold, projects/ has an
+        end date, archive/ is done or dropped, decisions/ holds one file per
+        decision made, evidence/ is what you look things up in and cite.
+        Readers accept the legacy names history/ (archive/) and library/
+        (evidence/); a tool never moves a person's folders for them.
+    note: >
+      A private repo, so every document in it is `owner` by default. This is the
+      destination 3.5 has been sending owner documents to since 1.7. Separate
+      repo rather than a folder because a git host grants read at the repo, so
+      one collaborator on one business would otherwise see the operator's
+      identity and every other business. Lineage: filing by actionability is
+      PARA, by Tiago Forte; SPADE is the same idea with a name you can say.
+
+  systems:
+    description: "What an operation runs on today. The counterpart to a Context Core. ADR-118."
+    manifest: [plane]
+    files: [systems/register.md]
+    body_grammar:
+      sections: >
+        Up to three level-two sections, each holding one GFM table, all optional:
+        '## Software' (one row per tool), '## Where the work lives' (one row per
+        place files or records sit), '## Processes' (one row per repeated thing).
+        A missing section means it was not captured, never an error.
+      closed_columns: >
+        Found by header name, case-insensitively. A consumer ignores columns it
+        does not recognise; every other column is free text. A closed cell
+        carries the BARE value: no bold, no code ticks, no trailing note.
+        '| manual |', never '| **manual** |'. Emphasis defeats the grep the
+        whole profile rests on.
+    columns:
+      connects_via: [api, mcp, scrape, none]
+      runs: [manual, semi, automated]
+      call: [keep, automate, build, replace, retire]
+    note: >
+      Rows because the point is counting: `Runs` turns 'we should automate more'
+      into a number that moves, and both closed columns answer to `grep -c`,
+      which is the only tooling this profile assumes. The reader is code/scripts/systems-register.py in the reference
+      implementation; it checks the closed cells and counts the baseline. No logos, no per-app files, no frontmatter schema (ADR-107, and the
+      scalar-reader reason behind array_style: flow).

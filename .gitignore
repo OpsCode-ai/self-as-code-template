@@ -1,0 +1,11 @@
+.env
+.env.*
+.DS_Store
+
+# Local to this machine, never shared
+.claude/user.json
+.claude/settings.local.json
+.claude/checkpoint.json
+
+# Drawn by /sac dashboard from your plan, rebuilt any time
+.oac/dashboard.html
