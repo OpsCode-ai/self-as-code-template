@@ -2,12 +2,12 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "f6383da35afa137718791ed2673071dbbc7b41a875617714d05d709b51a9aa01",
+  "content_id": "1e8bb61cce7143deb442f061433284297b8babe5faccf0330cc090c58900e426",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
     ".claude/CLAUDE.md": {
-      "sha256": "60db111f2dae34efd5c8c9c3576f0beac0a2f4b610d943e1040df751120d8394"
+      "sha256": "e8e34654a621fb38f9f1c0b44bf27a0428a8ce680faee8c31a471e69c5be3c9a"
     },
     ".claude/commands/build-log.md": {
       "sha256": "fb6fdf71d29aa14a2d0cfdaae10c2f329fa8443e9cfe8b93e78269634cec9285"
@@ -37,7 +37,7 @@
       "sha256": "edb101392602009d3a6796b9083181462961da6b4bed3d8d7484e0f5bfc28072"
     },
     ".claude/commands/self-as-code.md": {
-      "sha256": "87fb5fec97e98e01e0a33cd4b276399fafee869afad6b560c470cb5f733ea6dd"
+      "sha256": "6ad04dbc9e84a5b00ed5bda8686e201489cf50a3af21b21e5e7c437fb78bc77b"
     },
     ".claude/commands/start.md": {
       "sha256": "a6a03a3c528c635ba432d577c72f06737d7f0cf9466efc608beed52de8668bb6"
@@ -61,7 +61,7 @@
       "sha256": "275659d511345105c198cd0cbb3b44eca9bdd098c3d02d7dc53105c672e73dbb"
     },
     ".oac/sac-framework.md": {
-      "sha256": "6cde58e2ab5e2ce12b3cf494b56207ae80fe732eb4dd30f71b8990cbcc78300e"
+      "sha256": "e36d46ba8d71a1cec22d62c1a65743a25018289be5a2296a2430bfdc7dbefa84"
     },
     "CLAUDE.md": {
       "sha256": "22edda41839d7e36e5d60f5c9bb33d01c8dfc17d2cc5ef1596321eb10be9ac9f"
@@ -157,13 +157,13 @@
       "sha256": "a3226b379424408a8ea000b0cb8dd94c75c467d54bde3107a48a605cc93a67c1"
     },
     "scripts/sac-dashboard.py": {
-      "sha256": "eeb4a2c59dbe973b240cb72de99b36d9f3b6e5a1ede098d06742651844735d22"
+      "sha256": "e8d96328a403d3a2adff5d43da1ad18538ad7bc44132e7b50e29b05e8a9ea3cc"
     },
     "scripts/sac-deploy.py": {
-      "sha256": "e1f9d43b6ccb6237ddaeec12891bf5645daa999d8a9d925c82eeabe79adead54"
+      "sha256": "921b473067015a74cc07ad0c3b05067153b720dc3ebd01992ff3617d33505afb"
     },
     "scripts/sac-meeting.py": {
-      "sha256": "ef87ca4781774c8f55be59f330f27afa9469603e3d391a5a78ca8a21bf2746a4"
+      "sha256": "6a85e547a2b79baa72415adae9c94d4d99fe79350d779536ffb4402a41ced954"
     },
     "scripts/self-as-code-split.py": {
       "sha256": "80c93600865e04b14190c908f56fa86ed7774418e85f2424dfbf68c78d5cc8d7"

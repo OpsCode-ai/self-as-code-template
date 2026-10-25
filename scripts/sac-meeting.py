@@ -96,6 +96,33 @@ def bare(slug: str) -> str:
     return slug[:-4] if slug.endswith("-ops") and len(slug) > 4 else slug
 
 
+# Framework 0.9: a `###` block under the baseline is one thing the person holds,
+# and its `Kind:` line says which. Only a business gets its own repo; a job, a
+# career, a family or a project stays in the private repo.
+NON_BUSINESS_KIND = re.compile(r"\b(job|career|employ\w*|family|household|home|project|study|studies|degree|course of study)\b", re.I)
+KIND_RE = re.compile(r"^\s*Kind:\s*(.+?)\s*$", re.I | re.M)
+
+
+def block_kind(body: str) -> str:
+    m = KIND_RE.search(body or "")
+    return m.group(1).strip() if m else ""
+
+
+def is_business(body: str) -> bool:
+    """True unless the block's Kind line names a job, a career, a family or a project."""
+    return not NON_BUSINESS_KIND.search(block_kind(body))
+
+
+def baseline_blocks(base: str) -> list[tuple[str, str]]:
+    """(name, body) for every `###` block under `## the baseline`, in order."""
+    out: list[tuple[str, str]] = []
+    heads = list(re.finditer(r"^###\s+(.+?)\s*$", base, re.M))
+    for i, m in enumerate(heads):
+        end = heads[i + 1].start() if i + 1 < len(heads) else len(base)
+        out.append((m.group(1).strip(), base[m.end():end]))
+    return out
+
+
 def owner_name(root: Path) -> str:
     spine = find_spine(root)
     if spine:
@@ -138,8 +165,9 @@ def businesses(root: Path) -> list[dict]:
     spine = find_spine(root)
     if spine:
         base = section(spine.read_bytes(), "the baseline") or ""
-        for m in re.finditer(r"^###\s+(.+?)\s*$", base, re.M):
-            name = m.group(1).strip()
+        for name, body in baseline_blocks(base):
+            if not is_business(body):
+                continue          # a job, a family, a project: it has no repo (framework 0.9)
             slug = bare(slugify(name))
             if slug and slug not in seen:
                 seen.add(slug)

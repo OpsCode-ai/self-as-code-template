@@ -27,7 +27,7 @@ installed (opscode-hq ADR-125).
   the business pack unpacked at `~/projects/<business>-ops`, named, seeded
   with that business's setup lines and what they chose to share, the first
   commit in, the private hub on GitHub when they are signed in, and this
-  repo's manifest pointing at it. It runs `python3 scripts/sac-deploy.py
+  repo's list of businesses naming it. It runs `python3 scripts/sac-deploy.py
   <business> --show` first, so they see what crosses, then the same without
   `--show` on their yes. Then `/oac` in the new repo.
 - **`/sac meeting <file>`** files a meeting transcript here first

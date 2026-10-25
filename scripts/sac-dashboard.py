@@ -74,6 +74,8 @@ FOLDERS = (
 OLD_FOLDER_NAMES = {"archive": "history", "evidence": "library"}
 RUNG_RE = re.compile(r"^\s*In (\d+) years?:\s*(.+?)\s*$", re.I)
 PARKED_RE = re.compile(r"^\s*Parked:\s*(.+?)\s*$", re.I)
+# Framework 0.9: `Value: <name>: <what it looks like on my worst day>` under the floor.
+VALUE_RE = re.compile(r"^\s*Value:\s*([^:]+?)\s*(?::\s*(.+?))?\s*$", re.I)
 FIXED_RE = re.compile(r"^\s*(" + "|".join(re.escape(k) for k in SETUP_LINES + ("Tomorrow", "This week")) + r"):\s*(.+?)\s*$", re.I)
 SEEDED_RE = re.compile(r"^\s*\*?\s*TO FILL IN\b", re.I)
 # The one plain line the session writes under each heading to say what it
@@ -166,6 +168,19 @@ def pull_fixed(lines: list[str]) -> tuple[dict[str, str], list[str]]:
     return fixed, rest
 
 
+def pull_values(lines: list[str]) -> tuple[list[tuple[str, str]], list[str]]:
+    """The `Value:` lines out of the floor, as (name, worst-day line), and what is left."""
+    values: list[tuple[str, str]] = []
+    rest: list[str] = []
+    for ln in lines:
+        m = VALUE_RE.match(ln.lstrip("-*• "))
+        if m:
+            values.append((m.group(1).strip(), (m.group(2) or "").strip()))
+        else:
+            rest.append(ln)
+    return values, rest
+
+
 def pull_parked(lines: list[str], where: str, parked: list[tuple[str, str]]) -> list[str]:
     rest = []
     for ln in lines:
@@ -184,6 +199,7 @@ def read_plan(spine: Path | None, root: Path) -> dict:
         "name": name_from_folder(root), "fields": {}, "written": False,
         "sections": {}, "about": [], "businesses": [], "rungs": [], "picture": [],
         "steps": [], "tomorrow": None, "this_week": None, "parked": [], "split": None,
+        "values": [],
     }
     if spine is None:
         return plan
@@ -241,6 +257,8 @@ def read_plan(spine: Path | None, root: Path) -> dict:
     for key in ("readme", "rewrite", "floor", "cut", "review"):
         if key in plan["sections"]:
             kept = pull_parked(drop_meaning(plain_lines(plan["sections"][key])), where_label[key], parked)
+            if key == "floor":
+                plan["values"], kept = pull_values(kept)
             plan["sections"][key] = "\n".join(kept)
 
     plan["split"] = read_split_rows(plan["sections"].get("split"))
@@ -480,7 +498,7 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
     # How: the leap, the floor, the cut
     parts.append('<section><div class="eyebrow">How</div><h2>The leap, the floor and the cut</h2><div class="grid">'
                  + card("My one big leap", "In the next six months", s.get("rewrite"))
-                 + card("My floor", "What I never drop below", s.get("floor"))
+                 + floor_card(plan["values"], s.get("floor"))
                  + card("My cut", "What I hand over, stop or say no to", s.get("cut"))
                  + "</div></section>")
 
@@ -496,13 +514,14 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
     parts.append('<section><div class="eyebrow">Every day</div><h2>What I do every day, no matter what</h2><div class="card">'
                  + (daily or empty()) + (f"<dl>{''.join(extra)}</dl>" if extra else "") + "</div></section>")
 
-    # Now: where I am, each business
+    # Now: where I am, each thing I hold (a business, a job, a family, a project)
     now_html = prose(plan["about"]) if plan["about"] else ""
     biz_html = ""
     for b in plan["businesses"]:
         setup = b["setup"]
         rows = "".join(f"<dt>{esc(k)}</dt><dd>{inline(setup[k.lower()])}</dd>" for k in SETUP_LINES if k.lower() in setup)
-        biz_html += (f'<div class="card"><h2>{esc(b["name"])}</h2>'
+        kind = setup.get("kind", "")
+        biz_html += (f'<div class="card">' + (f'<div class="eyebrow">{esc(kind)}</div>' if kind else "") + f'<h2>{esc(b["name"])}</h2>'
                      + (prose(b["words"]) if b["words"] else "")
                      + (f"<dl>{rows}</dl>" if rows else "")
                      + ("" if b["words"] or rows else empty())
@@ -554,6 +573,14 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
             f"<title>{esc(name)}: Self as Code</title>"
             f"<style>{font_css()}{CSS}</style></head><body><div class=\"wrap\">"
             + "".join(parts) + "</div></body></html>\n")
+
+
+def floor_card(values: list[tuple[str, str]], text: str | None) -> str:
+    """The floor: the values first, each with its worst-day line, then the conditions."""
+    rows = "".join(f"<dt>{esc(n)}</dt><dd>{inline(w) if w else empty('What this looks like on my worst day: not written yet.')}</dd>"
+                   for n, w in values)
+    body = (f'<p><strong>What I stand for</strong></p><dl>{rows}</dl>' if rows else "") + (prose(text) if text else "")
+    return f'<div class="card"><div class="eyebrow">What I never drop below</div><h2>My floor</h2>{body or empty()}</div>'
 
 
 def card(title: str, meaning: str, text: str | None) -> str:

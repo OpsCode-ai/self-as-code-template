@@ -3,15 +3,15 @@ title: "The Self as Code framework"
 type: spec
 audience: internal
 status: active
-framework_version: "0.8"
+framework_version: "0.9"
 created: 2026-10-03
-updated: 2026-10-23
-summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
+updated: 2026-10-25
+summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.9 asks about the person's work before their businesses, so a job, a career, a family or a project each get a block and only a business gets its own repo; opens the floor with values, each held to one real moment and written as a line for the worst day; measures the future you in the time that counts; asks what kind of partner or parent that person is; names the daily steps as the system that holds the floor when discipline wanes; and has the review and the check ask which values held. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
 topics: [self-as-code, curriculum]
-tags: [sac, framework, sac-brain, spoken-vocabulary, adr-125, kairos]
+tags: [sac, framework, sac-brain, spoken-vocabulary, adr-125, kairos, values]
 ---
 
-# The Self as Code framework, version 0.8
+# The Self as Code framework, version 0.9
 
 This file is the method's words. `/sac` reads it before it says anything, and
 speaks only in what is written here. Change a question here and every install
@@ -53,8 +53,10 @@ any of them contains a system word. Everything else is for the agent.
   `## main`, `## the rewrite`, `## the floor`, `## the cut`, `## commits`,
   `## review`, `## the split`), because scripts read them. Under each heading,
   write one plain line saying what that heading means, then the person's words.
-  Under `## the baseline`, each `### ` block is read as one business, so write
-  anything that isn't a business as plain lines above the first `### `.
+  Under `## the baseline`, each `### ` block is one thing the person holds: a
+  business, a job, a family, a project. Its `Kind:` line says which, and only a
+  business gets its own repo later. Write anything that isn't one of those as
+  plain lines above the first `### `.
 - **'Not sure yet' is a real answer.** When the person doesn't know, don't
   push past it and don't leave the heading empty. Ask what would settle it and
   when, then write one line under that heading, starting `Parked:`, with the
@@ -73,8 +75,14 @@ any of them contains a system word. Everything else is for the agent.
   after the person's words, the lines its own repo is set up from, each on its
   own line and starting the same way: `Kind:`, `Years:`, `People:`,
   `Runs on:`, `Build first:` and, from step 1, `Serves why:`. A business's
-  setup reads these first and never starts from a blank page.
-- **Record the version.** Put `framework_version: "0.8"` in the frontmatter of
+  setup reads these first and never starts from a blank page. A job or a career
+  carries `Kind:`, `Years:`, `People:` and `Build first:`; a family or a project
+  carries `Kind:` and `People:`, and nothing is set up from either.
+- **Values are fixed lines under `## the floor`,** before the conditions, one
+  per value: `Value: discipline: the plan runs even when I don't want it to.`
+  The name, then what it looks like on the worst day. The dashboard draws them
+  and `/sac check` asks which held.
+- **Record the version.** Put `framework_version: "0.9"` in the frontmatter of
   `self-as-code.md`.
 
 ## For the agent: how to write
@@ -303,10 +311,20 @@ plain line at the top of `## the baseline`, above the businesses.
 A season of recovery is a real answer. It changes the floor, not the person's
 worth. The people at home come back near the end.
 
-Then every business, one at a time, slowly. Everything set up for a business
-later comes from these answers, so a thin pass here makes a thin business later.
+Then their work. Not everyone here runs a business, and the hour has to fit the
+person in front of you: a founder with three companies, someone in a job who
+wants more from it, a parent, a student with a project. Ask which first.
 
-> Now your businesses. Most people here run more than one. What are they all?
+> Now your work. Do you run a business, work in one, or both? Or is this about
+> something else: a career, a family, a project you're building?
+
+Each thing they name gets its own `### ` block: the person's words, then its
+lines. Take them one at a time, slowly.
+
+**A business.** Everything set up for it later comes from these answers, so a
+thin pass here makes a thin business later.
+
+> Most people here run more than one. What are they all?
 >
 > Let's take them one at a time. What does it do? Who does it serve? What does
 > it earn? Who else works in it? And what do you wish it did without you?
@@ -332,6 +350,19 @@ person's words first, then its setup lines (`Kind:`, `Years:`, `People:`,
 `Runs on:`, `Build first:`), each on its own line. 'Build first' is the first
 thing a business's AI does for them, so don't rush it.
 
+**A job or a career.** Its own block too, with `Kind: a job` or `Kind: a
+career`, then `Years:`, `People:` and `Build first:`. Nothing is set up from
+it; it shapes the leap and the floor.
+
+> What's the job, and who do you serve in it? What do you want it to become?
+> And if your AI could take one thing off your plate at work, what would it be?
+
+**A family, or a project.** `Kind: a family` or `Kind: a project`, and
+`People:`. It stays in this file and never gets a repo. The people at home come
+back near the end, so here only the shape of it.
+
+> Tell me about it in a few lines. Who's in it, and what are you building there?
+
 ## Step 1. Why: your purpose
 
 Heading: `## README`. One line under it: *Why I exist.*
@@ -355,11 +386,11 @@ with it, and accept a rough first answer.
 Then link it to the work. This is the question that moved a whole room at the
 first build day, so give it time.
 
-> Now look back at your businesses, one at a time. How does each one serve why
-> you exist?
+> Now look back at each thing you hold, one at a time: each business, the job,
+> the family. How does each one serve why you exist?
 
-Write the link into that business's `### ` block. A weak link is a candidate for
-the cut; note it and bring it back at step 5.
+Write the link into that block. A weak link is a candidate for the cut; note it
+and bring it back at step 5.
 
 ## Step 2. Who: the best version of you
 
@@ -375,6 +406,15 @@ Heading: `## main`. One line under it: *Who I am becoming.*
 >
 > One more about that person. What do you want to be remembered by? What do
 > you want to be known for, by the people who matter to you?
+
+Then the measure, said once. It is the opening's idea, brought to the picture.
+
+> Here's the measure for everything after this. The best version of you has
+> more of the time that counts: more moments you'd live again. When you picture
+> that person's week, how much of it is that kind of time?
+>
+> And the people at home. What kind of partner is that future you? What kind of
+> parent, son or daughter?
 
 Then the ladder, from the top down. Each rung is asked from the one above it,
 never from today.
@@ -403,7 +443,7 @@ The coding idea, taught once:
 > and joined back into. Yours is the person everything you do builds toward.
 
 Write `## main` as the picture in their words, what they want to be remembered
-by inside it, then the ladder: one line per rung, `In 20 years:`, `In 10
+by and who they are to the people at home inside it, then the ladder: one line per rung, `In 20 years:`, `In 10
 years:`, `In 5 years:`, each a sentence of theirs.
 
 ## Step 3. How: your one big leap, the rewrite
@@ -439,14 +479,36 @@ once toward the change underneath, then accept what they say.
 Heading: `## the floor`. One line under it: *What I never drop below.*
 
 > Next, the floor. That's your minimum: the standard you hold even on your worst
-> day. Not your best day. Your worst. What's yours?
+> day. Not your best day. Your worst.
+>
+> We start under it, with your values. What do you stand for? Name them, as
+> many as are true for you.
+
+Then each value, one at a time, held to one real moment. An abstract value gets
+an abstract answer; a remembered moment carries its truth with it.
+
+> Take the first one. Give me one moment this year when you held it and it cost
+> you something.
+>
+> Now write it as a line you can check on your worst day: the value, then what
+> it looks like when you're tired, sick or behind.
+
+Write each as a `Value:` line under `## the floor`, the name then the worst-day
+line, before anything else. Then the conditions.
+
+> Now the rest of your floor. The conditions you need to be fully you: sleep,
+> movement, time with the people who matter. What's yours?
 >
 > A floor isn't a way to squeeze more out of yourself. Pushing harder than you
-> can hold is borrowing, and it gets paid back later. Think of your floor as the
-> conditions you need to be fully you: sleep, movement, time with the people who
-> matter.
+> can hold is borrowing, and it gets paid back later.
+>
+> Here's why your values live here and nowhere else. On a good day you rise to
+> your goals. On a bad day you fall to your floor. So your floor is your values,
+> written as what you do.
 
-Credit, said once: the floor is Ben Hardy's idea.
+Credit, said once: the floor is Ben Hardy's idea; 'you fall to the level of
+your systems' is James Clear's line, and an old one (Archilochus had it as
+'training').
 
 In a season of recovery the floor is lower, and it is still a floor.
 
@@ -479,6 +541,9 @@ what.*
 >
 > Think rhythm, not routine. A routine breaks the first time life changes. A
 > rhythm bends, and comes back.
+>
+> These daily steps are the system that holds your floor when discipline wanes.
+> A value with no daily step under it is a wish.
 
 Write what each one replaces beside it. If it replaces nothing, it isn't ready
 to be a daily step yet.
@@ -568,6 +633,13 @@ Heading: `## the split`. One line under it: *What I share with each business,
 and what stays mine.* The table's columns and values never change, because a
 script reads them: `Slice | Beat | Routing | Destination`, with `stays-personal`,
 `routes-to` or `promotable-unrouted`.
+
+If they named no business, say so, and write the heading with its one line and
+one row, `| Everything | all | stays-personal | |`, so the file keeps its shape.
+
+> You named no business, so everything here stays with you. Nothing crosses.
+
+Otherwise:
 
 > Some of what you've said belongs to your businesses. Most of it belongs only
 > to you. Let's go through it line by line. For each one: does it stay with you,
@@ -681,8 +753,11 @@ At the six-month review, when the leap is due, ask the bigger version:
 
 Then, step by step:
 
-> Is this still true? Did your floor hold? What can it lift to now? What else
-> comes off and onto the cut?
+> Is this still true? Did your floor hold? Which of your values held, and which
+> slipped? What can the floor lift to now? What else comes off and onto the cut?
+>
+> And the time that counts. Did these 90 days hold more of it than the 90
+> before? Where did it come from?
 >
 > And your big leap: is it done, or halfway? If it's done, what's the next one?
 >
@@ -702,6 +777,8 @@ reward, learning bigger than experience, purpose bigger than money, and the rest
 
 > Let's check whether you're growing or coasting. I'll look at who you're
 > becoming, your floor and what you've done lately, and tell you straight.
+>
+> Your values first. Which held these two weeks, and which slipped first?
 
 At the two-week check, ask about the daily steps first. If one has dropped, find
 what it grinds against before asking for more effort.
@@ -729,7 +806,9 @@ For `/sac execution`.
 
 ## Setting up a business
 
-For `/sac deploy <business>`.
+For `/sac deploy <business>`. Only a business gets its own repository. A job, a
+family or a project stays in this file, under its own block, and `/sac deploy`
+says so in plain words if asked.
 
 > Let's set up your first business properly. It gets its own repository, which
 > you can open to the people who work with you. This one, your private space,

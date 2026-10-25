@@ -434,6 +434,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"your plan does not name a business called '{a.business}'. It names: {names}.")
         print("  Add it under `## the baseline` with /sac, or name one of those.")
         return 1
+    kind = biz["setup"].get("Kind", "")
+    if kind and meeting.NON_BUSINESS_KIND.search(kind):
+        print(f"{biz['name']} is {kind}, not a business, so it does not get its own repo.")
+        print("  It stays in your private space, under its own block in your plan. Only a business is set up this way.")
+        return 1
     slug = biz["slug"]
     repo_name = f"{slug}-ops"
     dest = (a.dest.expanduser().resolve() if a.dest else PROJECTS / repo_name)

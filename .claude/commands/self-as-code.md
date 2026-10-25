@@ -128,7 +128,7 @@ checks, Ziglar for the opening line), never at every step. Match their energy.
 ## setup: the run
 
 Follow the framework in order: the opening, the copy on GitHub if it is
-missing, where you are today, then steps 1 to 7. Take the businesses slowly, one at a time. Everything `deploy` builds
+missing, where you are today, then steps 1 to 7. Take their work slowly, one thing at a time: each business, the job, the family. Everything `deploy` builds
 later comes from those answers, and it is often the first time someone hears
 their own portfolio read back.
 
