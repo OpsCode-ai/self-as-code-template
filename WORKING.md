@@ -90,20 +90,27 @@ python3 scripts/install-oac-branch-guard.py
 Install them the day the second session arrives, not before. A rail on a
 one-person repo is a rail nobody needed yet.
 
-## Upgrading: when the pack moves
+## Upgrading: when the template moves
 
-This repo started as a pack. The pack keeps moving: a new stage, a fixed
-script, a better hook. You take the new one without losing a line you wrote.
+This repo started from OpsCode's template on GitHub. The template keeps
+moving: a new stage, a fixed script, a better hook. You take the new one
+without losing a line you wrote.
 
-1. Download the current pack from your HQ and unzip it somewhere outside
-   this repo, for example `~/Downloads/`.
+1. Get the current template somewhere outside this repo, for example
+   `~/Downloads/`. Your private repo came from `self-as-code-template`, a
+   business repo from `operations-as-code-template`:
+
+```bash
+git clone --depth 1 https://github.com/OpsCode-ai/operations-as-code-template ~/Downloads/operations-as-code-template
+```
+
 2. Commit or `/done` first. The upgrade refuses a tree with unsaved work, so
    the upgrade is one diff you can read.
 3. Report, then apply:
 
 ```bash
-python3 scripts/oac-upgrade.py --from ~/Downloads/operations-as-code-pack
-python3 scripts/oac-upgrade.py --from ~/Downloads/operations-as-code-pack --apply
+python3 scripts/oac-upgrade.py --from ~/Downloads/operations-as-code-template
+python3 scripts/oac-upgrade.py --from ~/Downloads/operations-as-code-template --apply
 ```
 
 The report sorts every file into three kinds. **Engine** files under

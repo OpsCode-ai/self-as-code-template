@@ -18,7 +18,8 @@ WHAT IT DOES
        `operations:`. Refuses a name the plan does not know.
     2. Unpacks the Operations as Code pack into ~/projects/<business>-ops. The
        pack rides inside the Self as Code pack (.oac/operations-as-code-pack.zip)
-       so this works offline; --fetch refreshes that copy from plans.opscode.ai;
+       so this works offline; --fetch refreshes that copy from the public
+       template repository's archive on GitHub (ADR-135);
        --pack names a folder or a zip. Never a second scaffold: the pack is the
        one build-oac-packs.py makes.
     3. Names the repo after the business and points it back at this private
@@ -68,8 +69,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 PACK_NAME = "operations-as-code-pack"
 PACK_ZIP = Path(".oac") / f"{PACK_NAME}.zip"
-PACK_URL = f"https://plans.opscode.ai/nz-cohort/pack/{PACK_NAME}.zip"
-# Cloudflare answers Python's default user agent with a 403 (plans-live-mirror.py found it).
+# The public template's archive (ADR-135): GitHub serves the zip, nobody at OpsCode does.
+# Its top folder is `operations-as-code-template-main/`; unpack() takes any single top folder.
+PACK_URL = "https://github.com/OpsCode-ai/operations-as-code-template/archive/refs/heads/main.zip"
+# A browser user agent, because some hosts answer Python's default one with a 403.
 USER_AGENT = "Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 PROJECTS = Path.home() / "projects"
 DAY_ONE = "Operations as Code: day one"
@@ -405,7 +408,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--show", action="store_true", help="say what would cross and where; write nothing")
     ap.add_argument("--dest", type=Path, help="where to make it (default: ~/projects/<business>-ops)")
     ap.add_argument("--pack", help="the Operations as Code pack, a folder or a zip (default: the copy in .oac/)")
-    ap.add_argument("--fetch", action="store_true", help="refresh the copy in .oac/ from plans.opscode.ai first")
+    ap.add_argument("--fetch", action="store_true", help="refresh the copy in .oac/ from the public template on GitHub first")
     ap.add_argument("--local", action="store_true", help="make it on this laptop only; no GitHub")
     ap.add_argument("--owner", help="a GitHub organisation to own the repo (default: your account)")
     a = ap.parse_args(argv)
@@ -474,7 +477,7 @@ def main(argv: list[str] | None = None) -> int:
         print("\nshown only; nothing written. Run again without --show to make it.")
         return 0
     if pack is None:
-        print(f"\n  no business pack here ({PACK_ZIP.as_posix()}). Run again with --fetch to get it from plans.opscode.ai, or --pack <folder or zip>.")
+        print(f"\n  no business pack here ({PACK_ZIP.as_posix()}). Run again with --fetch to get it from GitHub, or --pack <folder or zip>.")
         return 1
 
     manifest = unpack(pack, dest)
