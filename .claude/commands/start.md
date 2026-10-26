@@ -6,8 +6,8 @@ audience: internal
 
 # /start: Begin a work session
 
-Thirty seconds. Pull the latest version, then know who you are, where you
-left off, and what the business needs before you type anything else.
+Thirty seconds. Bring down the latest copy, then know who you are, where you
+left off, and what needs doing before you type anything else.
 
 ## Steps
 
@@ -23,15 +23,16 @@ gitignored. Only ask if the name cannot be derived.
 
 ### Step 2: Where you left off
 
-Read the continuity log **first**. It is the primary resume signal:
+Read your log **first**. It is how you pick up the thread:
 
 ```
 team/{handle}/current.md          today's log
 team/{handle}/logs/               the newest file here if today has none yet
 ```
 
-Surface, verbatim and before anything else, the **Roll-forward** (`**Next:**`
-and `**When:**` if present) and the last one or two `### HH:MM` entries.
+Read out, word for word and before anything else, the **Next** line under
+`## Roll-forward` (and **When**, if there is one) and the last one or two
+`### HH:MM` entries.
 
 If there is no log at all, fall back to what git remembers:
 
@@ -39,13 +40,13 @@ If there is no log at all, fall back to what git remembers:
 git log --since="7 days ago" --name-only --pretty=format: | sort -u | head -20
 ```
 
-### Step 3: The state of the plane
+### Step 3: Where things are up to
 
 ```bash
 grep '^plane:' .oac/manifest.yml
 ```
 
-**Business plane** (`plane: business`). Two numbers, read from files, never
+**A business** (`plane: business`). Two numbers, read from files, never
 invented:
 
 ```bash
@@ -53,16 +54,17 @@ python3 scripts/systems-register.py --check
 python3 scripts/oac-validate.py . | head -8
 ```
 
-The first gives the manual-process count from `systems/register.md`. That is
-the number this repo exists to move. The second gives the OaC conformance
-level. If the register still says `status: seeded`, say so: nothing has been
-written down yet and the next step is `/oac`.
+The first is how many processes still run by hand, from
+`systems/register.md`. That is the number this repo exists to bring down. The
+second is how complete the files are, a level from 0 to 3. If the register
+still says `status: seeded`, say so: nothing has been written down yet and the
+next step is `/oac`.
 
-**Self plane** (`plane: self`). Read the frontmatter of `self-as-code.md`:
+**A private space** (`plane: self`). Read the top of `self-as-code.md`:
 `status`, `last_raised`, `next_raise`. If it is still `seeded`, the next step
-is `/sac`. If `next_raise` has passed, the next step is
-`/sac review`. Otherwise name the days until the next raise and
-move on. Then the conformance level, same command as above.
+is `/sac`. If `next_raise` has passed, the next step is `/sac review`.
+Otherwise say how many days until the next review and move on. Then the
+level, same command as above.
 
 ### Step 4: Pull the latest version
 
@@ -81,33 +83,32 @@ Uncommitted files from last time get one line too:
 git status --porcelain | wc -l
 ```
 
-### Step 5: Put the operator back in the room
+### Step 5: Say where they are
 
-Lead with the roll-forward, always:
+Lead with what they said they would do next, always:
 
 ```
-Roll-forward from {date}:
-   "{roll_forward_text}"
+Last time you said: "{roll_forward_text}" ({date})
    When: {when, if given}
 
-Register: {n} processes, {m} still manual. Level {k}.        (business plane)
-Your plan: {status}, next review {date} ({n} days). Level {k}. (self plane)
-GitHub: pulled {n} changes | already up to date | no copy on GitHub yet.
-Repo: clean | {n} uncommitted. On {branch}.
+Your business: {n} processes written down, {m} still by hand. Files at level {k}.   (a business)
+Your plan: next review {date}, in {n} days. Files at level {k}.                    (a private space)
+GitHub: {n} changes came down | you are up to date | no copy on GitHub yet.
+Unsaved: nothing | {n} files from last time. On {branch}.
 ```
 
-**If the roll-forward names one clear next thing**, offer to start it. Do not
+**If the note names one clear next thing**, offer to start it. Do not
 present a menu when the answer is already written down.
 
 **If there is nothing** (new repo, empty log), say that in one line and name
-the honest first move: `/oac` if the register is seeded, `/sac`
-if the spine is, otherwise ask what they are working on.
+the honest first move: `/oac` in a business that has not started, `/sac` in
+a private space that has not, otherwise ask what they are working on.
 
 ### Step 6: The loop
 
 ```
-Work in this folder. Finish with /done: it validates, writes your continuity
-note, commits, and pushes to GitHub. /task-bridge drops a note any time.
+Work in this folder. Finish with /done: it checks the files, writes your note
+for next time, saves, and sends it to GitHub. /task-bridge leaves a note any time.
 ```
 
 ## One person, then two
@@ -131,7 +132,7 @@ nothing collides. Worktrees, for one person running two sessions, are in
 | File | Purpose |
 |---|---|
 | `.claude/user.json` | Local identity, gitignored |
-| `team/{handle}/current.md` | The continuity log. `/done` writes it, `/start` reads it |
+| `team/{handle}/current.md` | Your log. `/done` writes it, `/start` reads it |
 | `team/{handle}/logs/{date}.md` | Archived days |
-| `systems/register.md` | What the business runs on today (business plane) |
-| `self-as-code.md` | The spine, with `next_raise` (self plane) |
+| `systems/register.md` | What the business runs on today (a business) |
+| `self-as-code.md` | Your plan, with `next_raise` (a private space) |

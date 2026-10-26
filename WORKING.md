@@ -1,41 +1,40 @@
 ---
-title: "How we work: sessions, continuity and parallel work"
+title: "How we work: sessions, notes and working side by side"
 type: standard
 audience: internal
 topics: [operations, tooling, onboarding]
 tags: [opscode, oac, sac, session-discipline, worktrees, checkpoint, task-bridge]
 ---
 
-# How we work: sessions, continuity and parallel work
+# How we work: sessions, notes and working side by side
 
-An agent session has no memory of the last one, and a repo has one working
-tree. Everything in this page follows from those two facts. It is the same
-standard OpsCode runs on its own repos (session discipline, ADR-113), cut down
-to what a business plane or a self plane needs on day one and on the day the
-second person arrives.
+A session has no memory of the last one, and a repo has one working copy.
+Everything in this page follows from those two facts. It is the same way
+OpsCode runs its own repos, cut down to what a business or a private space
+needs on day one and on the day the second person arrives.
 
 ## The loop: every session
 
 | | Command | What it does |
 |---|---|---|
-| Open | `/start` | Pulls the latest version from GitHub, reads your continuity log, then the plane's numbers. Puts you back in the room |
+| Open | `/start` | Brings down the latest copy from GitHub, reads your log, then says where things are up to |
 | Any time | `/commit`, `/push`, `/pull` | Save a step, send it to GitHub, bring down the latest. Each one does the git and says what it did. `/start` and `/done` run the same steps |
 | Any time | `/task-bridge` | A note to yourself. Twenty seconds. The next session reads it |
-| Close | `/done` | Validates the format, writes your log, commits by path, pushes to GitHub, refreshes your usage report |
+| Close | `/done` | Checks the files, writes your note for next time, saves by name, sends it to GitHub, refreshes your usage page |
 
-The log is `team/<you>/current.md`, one file per person per day, archived to
-`team/<you>/logs/`. The **Roll-forward** in it is the single current
-priority; `/start` leads with it. The whole point is that you never
-reconstruct yesterday from memory.
+Your log is `team/<you>/current.md`, one file per person per day, older days
+in `team/<you>/logs/`. The **Next** line at the top of it is the one thing you
+said you would do next; `/start` leads with it. The whole point is that you
+never rebuild yesterday from memory.
 
-The statusline briefing at session start shows the same loop from the other
-side: what moved, what you left off, who else worked and where, and a
-suggested focus when your log has none.
+The message at the top of the screen when you open the repo shows the same
+thing from the other side: what moved, where you left off, who else worked and
+where, and a suggested focus when your log has none.
 
 ## Checkpoints: a build bigger than one session
 
-When a piece of work runs past one context window, `/checkpoint` writes a
-document into `notable-plans/`: where it stands, what remains in order and
+When a piece of work is too big for one session, `/checkpoint` writes a
+document into `notable-plans/`: where it is up to, what is left in order and
 why, the evidence, what was ruled out, the hazards. `/checkpoint --restore`
 picks it up in a fresh session on any machine. One live checkpoint at a time;
 close it when the build ships. `notable-plans/README.md` has the rules.
@@ -49,9 +48,9 @@ That is correct, and it stays correct until the day a second session touches
 the same folder, whether that is a second person or you with two terminals
 open on the same repo.
 
-One clone has one working tree, one index and one HEAD. Two sessions in the
-same clone collide: one commits the other's half-written files, or one
-switches the branch under the other. The fix is not care, it is structure.
+One copy of the repo has one working folder. Two sessions in the same copy
+collide: one saves the other's half-written files, or one switches the branch
+under the other. The fix is not care, it is structure.
 
 **Every piece of work happens in its own worktree. The primary clone stays on
 `main` and clean.**
@@ -71,9 +70,9 @@ shared by every worktree of the clone, and `pop` takes the newest entry,
 which may belong to a session you cannot see. Set work aside with a WIP
 commit on your own branch instead.
 
-## The rail, when you are ready for it
+## The guard, when you are ready for it
 
-Remembering is not a mechanism. Two small hooks make the rule hold without
+Remembering is not a mechanism. Two small checks make the rule hold without
 anyone thinking about it, and they install once per machine:
 
 ```bash
@@ -81,14 +80,14 @@ python3 scripts/install-oac-branch-guard.py
 ```
 
 - **The branch guard** refuses to create a branch inside a primary clone and
-  prints the `git worktree add` line instead. It fails open, and
-  `OAC_ALLOW_BRANCH=1` is the escape hatch.
+  prints the `git worktree add` line instead. It never locks you out:
+  `OAC_ALLOW_BRANCH=1` turns it off for one command.
 - **The session health check** says, at session start, when the primary clone
   is off `main` or carrying uncommitted work, and says nothing when all is
   well.
 
-Install them the day the second session arrives, not before. A rail on a
-one-person repo is a rail nobody needed yet.
+Install them the day the second session arrives, not before. A guard on a
+one-person repo is a guard nobody needed yet.
 
 ## Upgrading: when the template moves
 
@@ -113,15 +112,14 @@ python3 scripts/oac-upgrade.py --from ~/Downloads/operations-as-code-template
 python3 scripts/oac-upgrade.py --from ~/Downloads/operations-as-code-template --apply
 ```
 
-The report sorts every file into three kinds. **Engine** files under
-`.claude/` are always refreshed; nobody edits those by hand. **Tooling**
-(scripts, commands, the method files, this file) is refreshed only if you
-never touched it; a file you changed is kept and named, and you take the
-pack's copy with `--take <path>` if you want it. **Yours** (`self-as-code.md`,
-the register, `context-core/`, `decisions/`, `team/`, `CLAUDE.md`, settings)
-is never written. Anything the new pack seeds that you do not have is added.
+The report sorts every file into two kinds. **Tools** (scripts, commands,
+this file) are refreshed only if you never touched them; a file you changed is
+kept and named, and you take the new copy with `--take <path>` if you want it.
+**Yours** (`self-as-code.md`, the register, `context-core/`, `decisions/`,
+`team/`, `CLAUDE.md`, settings) is never written. Anything new that you do not
+have is added.
 
-Then restart Claude Code, run `/aidlc --doctor`, and `/done`.
+Then restart Claude Code and run `/done`.
 
 ## What goes where
 
@@ -133,8 +131,7 @@ Then restart Claude Code, run `/aidlc --doctor`, and `/done`.
 | What was built, and what surfaced | `build-logs/<date>-<slug>.md`, via `/build-log` |
 | What your sessions cost | `team/<you>/usage.md`, refreshed by `/done` |
 
-## The modes
+## Which repo you are in
 
-Which repo you are in decides which mode you are in, and the statusline says
-so. `MODES.md` explains `SAC`, `OAC` and `AIDLC` and the commands that belong
-to each. This page is the same in all three.
+The bottom line of the screen says `SAC` in your private space and `OAC` in a
+business. `MODES.md` says what each one is for. This page is the same in both.

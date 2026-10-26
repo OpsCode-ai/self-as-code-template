@@ -12,17 +12,18 @@ notes, your own plans, what you know about the people you work with, the
 decisions only you make. Nothing here ever enters a shared business repo, and
 no business repo is ever a folder inside it.
 
-- `self-as-code.md` - the spine. Who you are becoming, and the standards you
-  refuse to fall below. Run `/sac` to write it
+- `self-as-code.md` - your plan. Who you are becoming, and what you refuse
+  to drop below. Run `/sac` to write it
 - `LICENCE.md` - what is OpsCode's (the method, CC BY 4.0; the scripts, MIT)
   and what is yours (everything you write). Made from OpsCode's Self as Code
   template, `https://github.com/OpsCode-ai/self-as-code-template`; new here,
   `INSTALL.md` is the way in
 The five folders spell SPADE:
 
-- `standards/` - ongoing, a bar you hold. Your ventures live here, and
-  partner intelligence at `standards/ventures/<venture>/partnerships/<name>/`.
-  Each person you hold a relationship with gets one folder, always the same
+- `standards/` - what you keep up, with no end date. Your businesses live
+  here, and your private notes on a partner at
+  `standards/ventures/<venture>/partnerships/<name>/`.
+  Each person or firm you deal with gets one folder, always the same
   shape: `meetings/`, `meetings/raw/`, `correspondence/`
 - `projects/` - has an end date
 - `archive/` - done or dropped

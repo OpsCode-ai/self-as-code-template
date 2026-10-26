@@ -6,7 +6,8 @@ audience: internal
 
 # /done: Finish a work session
 
-One minute. Validate, write the continuity note, commit, push to GitHub.
+One minute. Check the files, write your note for next time, save, send it to
+GitHub.
 Nothing you did today stays only on this laptop.
 
 ## Steps
@@ -23,18 +24,18 @@ leave alone and mention it. Never `git add .` or `git add -A`: stage by path.
 
 If nothing changed, say so and stop.
 
-### Step 2: Substantial build?
+### Step 2: A big piece of work?
 
 If the session added a new command, a new script, a new decision or a new
 folder, and there is no `build-logs/YYYY-MM-DD-*.md` for today, offer
 `/build-log` once. It is an offer, not a gate.
 
-### Step 3: Keep the indexes honest
+### Step 3: Update the lists
 
 - A new file in `decisions/` gets a row in `decisions/README.md`.
 - A new folder under `context-core/` gets a row in `context-core/README.md`.
 
-### Step 4: Validate the format
+### Step 4: Check the files
 
 ```bash
 python3 scripts/oac-validate.py --changed
@@ -45,7 +46,7 @@ style. Fix level 1 findings on files this session wrote. Leave files it did not
 touch. The pre-commit hook checks the same thing and blocks a new document
 below level 1, so fixing it here saves a second round.
 
-### Step 5: Write the continuity note
+### Step 5: Write the note for next time
 
 Follow `.claude/commands/task-bridge.md` for the file shape. You were there for
 the session, so draft it without asking:
@@ -59,9 +60,9 @@ the session, so draft it without asking:
 
 Ask exactly one question, and only at the end of the day:
 
-> Anything to carry into tomorrow that is not already in the roll-forward?
+> Anything for tomorrow that is not already written down as next?
 
-### Step 5b: Refresh your usage report
+### Step 5b: Refresh your usage page
 
 ```bash
 python3 scripts/oac-usage-report.py --write
@@ -76,7 +77,7 @@ step and say so.
 
 Follow the `/commit` steps (`.claude/commands/commit.md`): the same command the
 person types, so the git lives in one place. Stage by path: each file this
-session changed, plus the continuity note and usage report from steps 5 and 5b.
+session changed, plus your note and usage page from steps 5 and 5b.
 The message takes this format:
 
 ```
@@ -111,18 +112,18 @@ has work this laptop does not, and it never forces.
 **No copy on GitHub yet:** the commit is safe on this laptop and nowhere else.
 Say so plainly.
 
-- **Self plane** (`plane: self`): offer `/github`, which makes a private copy
+- **A private space** (`plane: self`): offer `/github`, which makes a private copy
   now (`.claude/commands/github.md`). On a no, leave it for next time.
-- **Business plane** (`plane: business`): point at the GitHub step of the
+- **A business** (`plane: business`): point at the GitHub step of the
   install order (`/oac` step 5) and stop here. Do not create a remote from this
   command; the business's repo names and who can see them are decided there.
 
 ### Step 8: Close
 
 ```
-Committed {n} files: {message first line}
-Pushed to GitHub ({remote}) | Not pushed: no copy on GitHub yet
-Continuity note written. Next: {roll-forward}
+Saved: {n} files. {message first line}
+Sent to GitHub ({remote}) | Not sent: no copy on GitHub yet
+Your note for next time is written. Next: {roll-forward}
 ```
 
 ## One person, then two
@@ -147,12 +148,12 @@ to `main` directly:
 Say what happened in plain words: 'saved on your branch, merged into the
 shared copy, and pulled back down'. Two people editing the same file on the
 same day can still clash; when the merge says so, show them the two versions
-and let them choose, never guess. Spokes with access by role, for staff who
-should see only part of the repo, come later from OpsCode.
+and let them choose, never guess. Access by role, for staff who should see
+only part of the repo, comes later from OpsCode.
 
 ## Rules
 
 - Stage by path. A blanket add takes files you did not mean to commit.
 - Never commit `.env`, credentials, or anything `audience: owner`. The hook
   blocks the last two; the first is on you.
-- The continuity note rides with the work it describes, in the same commit.
+- Your note for next time goes in the same save as the work it describes.

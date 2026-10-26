@@ -1,14 +1,14 @@
 ---
-title: "/task-bridge: The continuity log"
+title: "/task-bridge: A note to yourself"
 type: guide
 audience: internal
 ---
 
-# /task-bridge: The continuity log
+# /task-bridge: A note to yourself
 
-One job: capture where your head is, so the next session picks the thread
-straight up. `/done` owns git. `/task-bridge` owns the note to self. `/start`
-reads this log first.
+One job: write down where your head is, so next time picks the thread
+straight up. `/done` does the saving. `/task-bridge` is the note to yourself.
+`/start` reads it first.
 
 `/done` writes an entry automatically at the end of every session. This
 command is for the notes in between, and for the times you step away without
@@ -74,6 +74,6 @@ the last entry may set it to `closed`.
 
 ## Rules
 
-- Nothing `audience: owner` goes in here. `team/` is readable by everyone who
-  works in this business. Personal notes belong in your self plane.
+- Nothing `audience: owner` goes in here. In a business, `team/` is readable
+  by everyone who works there. Personal notes belong in your private space.
 - The log is never empty because someone was tired. `/done` makes sure of it.

@@ -32,7 +32,7 @@ push first, or the document describes a state that exists on one machine.
 
 ## Creating a checkpoint
 
-1. **Work out what actually happened.** Do not ask the operator to summarise.
+1. **Work out what actually happened.** Do not ask the person to summarise.
    Read `git log --oneline -20`, `git status --porcelain`, and the session
    itself. The commits say what changed; only the conversation says why, what
    was rejected, and what was learned the hard way.
@@ -68,7 +68,7 @@ Assume no memory at all.
 3. **Check reality against it**: `git log --oneline -5`, `git status`, open
    pull requests if the repo has them. If the checkpoint names something that
    has since moved, say so before doing anything else.
-4. **Put the operator back in the room** in under fifteen lines: what shipped,
+4. **Say where things are** in under fifteen lines: what shipped,
    what is open, what the next step is and why. Then stop and let them
    choose.
 

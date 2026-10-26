@@ -6,21 +6,18 @@ audience: owner
 
 # Standards
 
-The S in SPADE. Ongoing responsibilities with a bar you hold. No end date.
-Your health, your money, your family, and each venture you run.
+The S in SPADE. The things you keep up, with no end date: your health, your
+money, your family, and each business you run.
 
-Your ventures live here: `ventures/<venture>/`. Owner-only intelligence about
-a partner goes at `ventures/<venture>/partnerships/<name>/`, the pattern set by
-lopez-delon-ops ADR-018 and opscode-hq ADR-111. The shared repo's gitignored
-`engagements/*/private/` folders are drop zones only; anything written there
-gets swept to the matching partnerships folder here.
+Your businesses live here: `ventures/<venture>/`. Your private notes about a
+business partner go in `ventures/<venture>/partnerships/<name>/`. They stay
+here, in your own repo, and never in the business's shared one.
 
-## Engagements
+## The people you deal with
 
-A relationship you hold is an engagement: one folder per person or firm,
-`<area>/<who>/`. A business partner might be
-`ventures/<venture>/partnerships/<name>/`, your accountant
-`finance/<name>/`. Every one has the same shape (opscode-hq ADR-126):
+Each person or firm you deal with gets one folder, `<area>/<who>/`. A
+business partner might be `ventures/<venture>/partnerships/<name>/`, your
+accountant `finance/<name>/`. Every one has the same shape:
 
 | Part | Holds |
 |---|---|
@@ -28,12 +25,12 @@ A relationship you hold is an engagement: one folder per person or firm,
 | `meetings/` | One summary per meeting, date first |
 | `meetings/raw/` | Transcripts and recordings |
 | `correspondence/` | Emails sent and received that matter |
-| the top level | Your reads: private notes, prep, analysis |
+| the top level | Your own notes, prep and thinking |
 
 Make a subfolder the first time something needs it. To file a conversation,
-ask: who was it with? If it was someone you hold a relationship with, it goes
-in their folder. A talk, a course or a note to yourself goes in `evidence/`.
+ask: who was it with? If it was someone you deal with, it goes in their
+folder. A talk, a course or a note to yourself goes in `evidence/`.
 
-A venture folder here is NOT that business's Operations as Code repo. This is
-your private read on it. The business itself lives in `{business}-ops`, shared
-with the people who work in it (ADR-118).
+A business folder here is not that business's own repo. This is your private
+view of it. The business itself lives in `{business}-ops`, shared with the
+people who work in it.

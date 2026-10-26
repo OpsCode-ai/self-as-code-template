@@ -323,13 +323,13 @@ def self_core(root: Path) -> list[str]:
         try:
             days = (datetime.date.fromisoformat(nxt) - datetime.date.today()).days
             if days < 0:
-                rows.append(f"  Next raise: {nxt}, OVERDUE by {abs(days)} day(s)")
+                rows.append(f"  Next review: {nxt}, OVERDUE by {abs(days)} day(s)")
             elif days == 0:
-                rows.append(f"  Next raise: {nxt}, today")
+                rows.append(f"  Next review: {nxt}, today")
             else:
-                rows.append(f"  Next raise: {nxt}, in {days} day(s)")
+                rows.append(f"  Next review: {nxt}, in {days} day(s)")
         except ValueError:
-            rows.append(f"  Next raise: {nxt}")
+            rows.append(f"  Next review: {nxt}")
 
     found = {normalise_heading(h) for h in H2_RE.findall(body)}
     missing = [b for b in BEATS if b not in found]
@@ -341,9 +341,7 @@ def self_core(root: Path) -> list[str]:
     if "invariants" in found:
         coasting = len(COASTING_RE.findall(body))
         if coasting:
-            rows.append(f"  Invariants: {coasting} marked coasting")
-    else:
-        rows.append("  Invariants: no section, so the coasting signal is dark")
+            rows.append(f"  Your floor: {coasting} marked coasting")
     return rows
 
 
@@ -786,7 +784,7 @@ def announcement(root: Path) -> str | None:
     if is_self:
         for line in self_core(root):
             parsed = _split_label(line)
-            if parsed and parsed[0] in ("Next raise", "Steps", "Invariants"):
+            if parsed and parsed[0] in ("Next review", "Steps", "Your floor"):
                 rows.append((parsed[0], _cell(parsed[1], 90)))
         names = open_project_names(root)
         if names:
