@@ -6,7 +6,7 @@ audience: public
 
 # Licence
 
-**The method is CC BY 4.0.** the Self as Code framework in `.oac/sac-framework.md`, the commands in `.claude/commands/`, and the OaC File Format in `specs/` are published by OpsCode under the
+**The method is CC BY 4.0.** The Self as Code framework in `.oac/sac-framework.md`, the commands in `.claude/commands/`, and the OaC File Format in `specs/` are published by OpsCode under the
 Creative Commons Attribution 4.0 International licence, the same licence as the
 Operations as Code standard at https://opscode.ai/spec. Use them, change them,
 build on them, teach them, charge for doing so, and say they came from OpsCode
