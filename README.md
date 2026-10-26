@@ -14,6 +14,10 @@ ADR-111), and no business repo is ever a folder inside it (ADR-118).
 
 - `self-as-code.md` - the spine. Who you are becoming, and the standards you
   refuse to fall below. Run `/sac` to write it
+- `LICENCE.md` - what is OpsCode's (the method, CC BY 4.0; the scripts, MIT)
+  and what is yours (everything you write). Made from OpsCode's Self as Code
+  template, `https://github.com/OpsCode-ai/self-as-code-template`; new here,
+  `INSTALL.md` is the way in
 The five folders spell SPADE:
 
 - `standards/` - ongoing, a bar you hold. Your ventures live here, and

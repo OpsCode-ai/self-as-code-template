@@ -2,7 +2,7 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "1e8bb61cce7143deb442f061433284297b8babe5faccf0330cc090c58900e426",
+  "content_id": "32ab7ce906714e661c31f4fbf13eee7509685d11366964d24f1f67ae67534f86",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
@@ -58,7 +58,7 @@
       "sha256": "6ab2bc3d13e537a548c70ec768d02ab20c0acdf34d4ae2006ef560420aaacdc8"
     },
     ".oac/operations-as-code-pack.zip": {
-      "sha256": "275659d511345105c198cd0cbb3b44eca9bdd098c3d02d7dc53105c672e73dbb"
+      "sha256": "e6d2b45f82d5b0f4499b4c656202c16d0316fb7fce29905e6ac289a056adf70a"
     },
     ".oac/sac-framework.md": {
       "sha256": "e36d46ba8d71a1cec22d62c1a65743a25018289be5a2296a2430bfdc7dbefa84"
@@ -67,16 +67,16 @@
       "sha256": "22edda41839d7e36e5d60f5c9bb33d01c8dfc17d2cc5ef1596321eb10be9ac9f"
     },
     "INSTALL.md": {
-      "sha256": "f5b4a19bdf39efa226ba6a862f2e0c1f118476a8e851b7ac15498c22113e55ee"
+      "sha256": "2b323500db610e3ca24aa286cdf0a7dfb644ca7629bb93e754bebcabb52a7971"
     },
     "LICENCE.md": {
-      "sha256": "b9b99a62ead6fa6b478fc00850b632f9425f822a32895f316ab86ad3f395b1c3"
+      "sha256": "bcb5021236ef9c7f590799384edfaf8add9d25904b85f92dd5ea9fe1634dec2e"
     },
     "MODES.md": {
       "sha256": "c552fede91902bd1d2cb656159efb91b6bd1d7363315ebca95969e1e1bea41d7"
     },
     "README.md": {
-      "sha256": "e1956a1338ae0df642adf331ca41d72ffa6289d84e4195e51c90c3189e220383"
+      "sha256": "8883ff4bb4ce4c54a19bd8b5fb6823df329f536a404a6fd14af9080777e58d4b"
     },
     "STATUSLINE.md": {
       "sha256": "d605248adfe59665a7e3a3fef319872a775c26cd78912be122eaeeb16b139163"

@@ -20,11 +20,11 @@ every day.
 
 ## Steps
 
-1. On GitHub, open `https://github.com/OpsCode-ai/self-as-code-pack` and press **Use this template**,
+1. On GitHub, open `https://github.com/OpsCode-ai/self-as-code-template` and press **Use this template**,
    then **Create a new repository**. Name it `first-last-ops` with your own
    name, and choose **Private**. Or, in a terminal with GitHub's tool signed in:
    ```bash
-   gh repo create first-last-ops --template OpsCode-ai/self-as-code-pack --private --clone
+   gh repo create first-last-ops --template OpsCode-ai/self-as-code-template --private --clone
    ```
 2. Get it onto your computer if the line above did not: on your new
    repository's page, the green **Code** button, then **Open with GitHub
