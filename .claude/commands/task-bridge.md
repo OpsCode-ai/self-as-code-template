@@ -23,8 +23,10 @@ No modes, no interrogation. One file per person per day.
 
 ## The file
 
-`team/{handle}/current.md` is today. Yesterday lives in
-`team/{handle}/logs/{date}.md`.
+In a private space, `evidence/days/current.md` is today and yesterday lives
+beside it as `evidence/days/{date}.md`. In a business, `team/{handle}/current.md`
+is today and yesterday lives in `team/{handle}/logs/{date}.md`. A private
+space that still keeps its log under `team/` is read there until it moves it.
 
 ```markdown
 ---
@@ -55,6 +57,11 @@ Rules: `type: report`, flow-style lists, entries chronological and
 append-only, Roll-forward always replaced. `status: open` while the day runs;
 the last entry may set it to `closed`.
 
+In a private space, an entry may end with one `Floor:` line, written by
+`/done` after it asks: `Floor: honesty yes · sleep no`. The message at the
+top of the next session reads the last such line of each day. Keep it as the
+last line of the entry and change nothing else about it.
+
 ## Steps
 
 1. **Who.** `git config user.name`, first name lowercase. Only ask if it
@@ -64,7 +71,8 @@ the last entry may set it to `closed`.
    names a next step or a deadline, that becomes the Roll-forward; otherwise
    leave the standing one alone.
 3. **Date roll.** If `current.md` carries a `date:` that is not today, move it
-   to `team/{handle}/logs/{that-date}.md` and start fresh. Never overwrite an
+   to its older-days place (`evidence/days/{that-date}.md` in a private space,
+   `team/{handle}/logs/{that-date}.md` in a business) and start fresh. Never overwrite an
    archived day.
 4. **Write.** Append the `### HH:MM` entry, replace the Roll-forward if there
    is a new one, refresh `date`, `topics`, `status`.

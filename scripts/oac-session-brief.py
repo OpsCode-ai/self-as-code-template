@@ -399,6 +399,37 @@ def handle(root: Path) -> str | None:
     return first or None
 
 
+DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def log_home(root: Path, who: str | None, self_plane: bool) -> tuple[Path, Path] | None:
+    """Where the daily log lives: (today's file, the folder of older days).
+
+    A private space keeps its days at evidence/days/ (ADR-136 Rule 8): one
+    person, so no handle folder, and the days are evidence like everything
+    else they keep. A private space that still has team/<who>/ from an
+    earlier pack is read there until the person moves it; nobody renames by
+    hand. A business keeps team/<who>/current.md and team/<who>/logs/."""
+    if self_plane:
+        days = root / "evidence" / "days"
+        legacy = root / "team" / who if who else None
+        if (days / "current.md").is_file():
+            return days / "current.md", days
+        if legacy and ((legacy / "current.md").is_file() or (legacy / "logs").is_dir()):
+            return legacy / "current.md", legacy / "logs"
+        return days / "current.md", days
+    if not who:
+        return None
+    return root / "team" / who / "current.md", root / "team" / who / "logs"
+
+
+def older_days(folder: Path) -> list[Path]:
+    """The archived days in a folder, by date, oldest first."""
+    if not folder.is_dir():
+        return []
+    return sorted(f for f in folder.glob("*.md") if DAY_RE.match(f.stem))
+
+
 def roll_forward(root: Path, who: str | None, self_plane: bool, limit: int | None = 160) -> list[str]:
     """What /done and /task-bridge left in team/<handle>/current.md.
 
@@ -407,11 +438,12 @@ def roll_forward(root: Path, who: str | None, self_plane: bool, limit: int | Non
     that the answer is already written down. Falls back to the newest archived
     day when today has no log yet.
     """
-    if not who:
+    home = log_home(root, who, self_plane)
+    if home is None:
         return []
-    log = root / "team" / who / "current.md"
+    log, folder = home
     if not log.is_file():
-        archive = sorted((root / "team" / who / "logs").glob("*.md")) if (root / "team" / who / "logs").is_dir() else []
+        archive = older_days(folder)
         if not archive:
             return []
         log = archive[-1]
@@ -637,6 +669,357 @@ def _section_lines(text: str, heading_starts: str) -> list[str]:
     return out
 
 
+# ── How you're going: the day, read from the log and the businesses ──────────
+# ADR-136 Rule 2. The box at the top of every session is the check-in. It reads;
+# it never asks. `/done` writes one `Floor:` line per day (Rule 6), the plan's
+# `Tomorrow:` line names today's one thing, and each business repo's last
+# commit says whether it moved.
+VALUE_RE = re.compile(r"^\s*Value:\s*([^:]+?)\s*(?::\s*(.+?))?\s*$", re.I)
+FLOOR_LOG_RE = re.compile(r"^\s*Floor:\s*(.+?)\s*$", re.I | re.M)
+FIXED_RE = re.compile(r"^\s*(Tomorrow|This week):\s*(.+?)\s*$", re.I)
+GOAL_RE = re.compile(r"\[goal:\s*([^\]]+)\]\s*")
+GOAL_STATUSES = ("not started", "on track", "at risk", "done", "dropped")
+
+
+def goal_counts(repo: Path) -> dict[str, int] | None:
+    """What the business says about each goal it was sent, as counts by
+    status, read from goals.md under context-core/strategic-identity/ (the
+    root one, or one per venture). Only the status column is read; the
+    private repo never copies a business document (standard 6.2). None when
+    the business has no goals.md at all."""
+    base = repo / "context-core" / "strategic-identity"
+    files = [base / "goals.md"] + sorted(base.glob("*/goals.md")) if base.is_dir() else []
+    counts: dict[str, int] = {}
+    found = False
+    for f in files:
+        if not f.is_file():
+            continue
+        found = True
+        try:
+            text = f.read_text(encoding="utf-8", errors="replace")[:40000]
+        except Exception:
+            continue
+        for ln in text.splitlines():
+            s = ln.strip()
+            if not s.startswith("|") or re.match(r"^\|[\s:|-]+\|$", s):
+                continue
+            cells = [c.strip().lower() for c in s.strip("|").split("|")]
+            if len(cells) >= 2 and GOAL_RE.search(cells[0]) and cells[1] in GOAL_STATUSES:
+                counts[cells[1]] = counts.get(cells[1], 0) + 1
+    return counts if found else None
+
+
+def goal_status(repo: Path) -> str | None:
+    counts = goal_counts(repo)
+    if not counts:
+        return "no goal shared yet"
+    return "goals: " + ", ".join(f"{s} {counts[s]}" for s in GOAL_STATUSES if s in counts)
+
+
+def business_repo(name: str) -> Path | None:
+    slug = _slug(name)
+    return next((p for p in (projects_dir() / slug, projects_dir() / f"{slug}-ops") if (p / ".git").exists()), None)
+
+
+def days_since_note(root: Path, who: str | None, today: datetime.date | None = None) -> int | None:
+    """Days since the person last wrote in their log, or None with no log."""
+    home = log_home(root, who, True)
+    if home is None:
+        return None
+    cur, folder = home
+    today = today or datetime.date.today()
+    dates: list[str] = []
+    if cur.is_file() and readable(cur, True):
+        try:
+            d = field(cur.read_text(encoding="utf-8", errors="replace")[:4000], "date")
+            if d:
+                dates.append(d)
+        except Exception:
+            pass
+    dates += [f.stem for f in older_days(folder)]
+    if not dates:
+        return None
+    try:
+        last = max(datetime.date.fromisoformat(d) for d in dates if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d))
+    except ValueError:
+        return None
+    return max(0, (today - last).days)
+
+
+def plan_counts(root: Path, who: str | None) -> dict[str, int]:
+    """The whole numbers the brain may be sent about where a person is
+    (ADR-136 Rule 5). Never a word of the plan; counts only."""
+    spine = root / "self-as-code.md"
+    out: dict[str, int] = {}
+    if not spine.is_file() or not readable(spine, True):
+        return out
+    try:
+        text = spine.read_text(encoding="utf-8", errors="replace")[:120000]
+    except Exception:
+        return out
+    commits = _section_lines(text, "commits")
+    out["daily_steps"] = len([ln for ln in commits if not FIXED_RE.match(ln) and not ln.lower().startswith("parked:")])
+    out["floor_lines"] = len(floor_names(text))
+    days = floor_days(root, who)
+    out["floor_days_checked"] = len(days)
+    out["floor_days_held"] = sum(1 for _, m in days if m and all(m.values()))
+    names = plan_ventures(root, text)
+    out["businesses"] = len(names)
+    red = amber = green = with_goal = 0
+    for name in names:
+        repo = business_repo(name)
+        counts = goal_counts(repo) if repo else None
+        if counts:
+            with_goal += 1
+            red += counts.get("at risk", 0)
+            amber += counts.get("not started", 0)
+            green += counts.get("on track", 0) + counts.get("done", 0)
+    out["businesses_with_goal"] = with_goal
+    out["goals_red"], out["goals_amber"], out["goals_green"] = red, amber, green
+    out["parked"] = len(re.findall(r"^\s*Parked:", text, re.M | re.I))
+    out["inbox_open"] = inbox_open(root)
+    out["week_page"] = 1 if week_page(root) else 0
+    since = days_since_note(root, who)
+    if since is not None:
+        out["days_since_note"] = min(since, 9999)
+    return out
+
+
+def projects_dir() -> Path:
+    """Where business repos live on this machine: ~/projects, or
+    OAC_PROJECTS_DIR for a test."""
+    return Path(os.environ.get("OAC_PROJECTS_DIR") or (Path.home() / "projects"))
+
+
+def _slug(name: str) -> str:
+    s = re.sub(r"['\u2019]", "", name.lower())
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+
+
+def plan_ventures(root: Path, text: str) -> list[str]:
+    """The businesses the plan names: the `###` blocks under the baseline,
+    else the folders under standards/ventures/, else `operations:`."""
+    ventures: list[str] = []
+    m = re.search(r"^##\s+the baseline\b.*?(?=^##\s|\Z)", text, re.M | re.S | re.I)
+    if m:
+        ventures = [_cell(v, 60) for v in re.findall(r"^###\s+(.+?)\s*$", m.group(0), re.M)
+                    if not v.lower().startswith("how ")]
+    if not ventures:
+        vdir = root / "standards" / "ventures"
+        if vdir.is_dir():
+            ventures = sorted(d.name for d in vdir.iterdir()
+                              if d.is_dir() and not d.name.startswith(("_", ".")))
+    if not ventures and (root / ".oac" / "manifest.yml").is_file():
+        mm = re.search(r"^operations:\s*\[([^\]]*)\]",
+                       (root / ".oac" / "manifest.yml").read_text(encoding="utf-8", errors="replace"), re.M)
+        if mm:
+            ventures = [v.strip().strip("'\"") for v in mm.group(1).split(",") if v.strip()]
+    return ventures
+
+
+def floor_names(text: str) -> list[str]:
+    """The values on the floor, in the plan's order."""
+    out = []
+    for ln in _section_lines(text, "the floor"):
+        m = VALUE_RE.match(ln)
+        if m:
+            out.append(m.group(1).strip())
+    return out
+
+
+def _parse_floor_line(line: str) -> dict[str, bool]:
+    marks: dict[str, bool] = {}
+    for part in re.split(r"\s*[·,;]\s*", line):
+        words = part.strip().split()
+        if len(words) >= 2 and words[-1].lower() in ("yes", "no"):
+            marks[" ".join(words[:-1]).strip().lower()] = words[-1].lower() == "yes"
+    return marks
+
+
+def floor_days(root: Path, who: str | None, days: int = 7) -> list[tuple[str, dict[str, bool]]]:
+    """For each of the last `days` calendar days that carries a `Floor:` line
+    in the person's log, that day's marks (the last line written that day)."""
+    home = log_home(root, who, True)
+    if home is None:
+        return []
+    current, folder = home
+    out: list[tuple[str, dict[str, bool]]] = []
+    today = datetime.date.today()
+    current_text = ""
+    if current.is_file() and readable(current, True):
+        try:
+            current_text = current.read_text(encoding="utf-8", errors="replace")[:60000]
+        except Exception:
+            current_text = ""
+    current_date = field(current_text, "date") if current_text else None
+    for back in range(days):
+        d = (today - datetime.timedelta(days=back)).isoformat()
+        if current_text and (current_date == d or (current_date is None and back == 0)):
+            text = current_text
+        else:
+            f = folder / f"{d}.md"
+            if not (f.is_file() and readable(f, True)):
+                continue
+            try:
+                text = f.read_text(encoding="utf-8", errors="replace")[:60000]
+            except Exception:
+                continue
+        lines = FLOOR_LOG_RE.findall(text)
+        if lines:
+            marks = _parse_floor_line(lines[-1])
+            if marks:
+                out.append((d, marks))
+    return out
+
+
+def floor_row(text: str, root: Path, who: str | None) -> str | None:
+    names = floor_names(text)
+    if not names:
+        return None
+    days = floor_days(root, who)
+    if not days:
+        return "not checked yet. /done asks, one word per line"
+    held = sum(1 for _, marks in days if marks and all(marks.values()))
+    n = len(days)
+    row = f"held {held} of the last {n} day{'s' if n != 1 else ''} you checked"
+    slipped: dict[str, int] = {}
+    for _, marks in days:
+        for k, v in marks.items():
+            if not v:
+                slipped[k] = slipped.get(k, 0) + 1
+    if slipped:
+        worst = max(slipped.items(), key=lambda kv: kv[1])
+        row += f"; slipped most: {worst[0]} ({worst[1]} day{'s' if worst[1] != 1 else ''})"
+    return row
+
+
+def business_moves(names: list[str]) -> str | None:
+    """One phrase per business: moved n days ago, quiet since a date, or no
+    repo yet. The repo is ~/projects/<slug> or ~/projects/<slug>-ops."""
+    if not names:
+        return None
+    today = datetime.date.today()
+    parts = []
+    for name in names[:6]:
+        slug = _slug(name)
+        repo = next((p for p in (projects_dir() / slug, projects_dir() / f"{slug}-ops")
+                     if (p / ".git").exists()), None)
+        if repo is None:
+            parts.append(f"{name}: no repo yet")
+            continue
+        last = git(repo, "log", "-1", "--format=%cs")
+        if not last:
+            parts.append(f"{name}: nothing saved yet")
+            continue
+        try:
+            ago = (today - datetime.date.fromisoformat(last)).days
+        except ValueError:
+            parts.append(f"{name}: last moved {last}")
+            continue
+        if ago <= 0:
+            moved = f"{name} moved today"
+        elif ago <= 7:
+            moved = f"{name} moved {ago} day{'s' if ago != 1 else ''} ago"
+        else:
+            moved = f"{name} quiet since {last}"
+        status = goal_status(repo)
+        parts.append(f"{moved}; {status}" if status else moved)
+    return " · ".join(parts)
+
+
+def week_page(root: Path, today: datetime.date | None = None) -> Path | None:
+    """This ISO week's page, `projects/weeks/<year>-w<NN>.md`, if it exists."""
+    today = today or datetime.date.today()
+    y, w, _ = today.isocalendar()
+    p = root / "projects" / "weeks" / f"{y}-w{w:02d}.md"
+    return p if p.is_file() and readable(p, True) else None
+
+
+def today_row(root: Path, text: str) -> str | None:
+    """Today's one thing: this week's page if it has a line for today, else
+    the plan's `Tomorrow:` line, else `This week:`, else the first daily step."""
+    page = week_page(root)
+    if page is not None:
+        try:
+            ptext = page.read_text(encoding="utf-8", errors="replace")[:40000]
+        except Exception:
+            ptext = ""
+        day = datetime.date.today().strftime("%a")
+        for ln in _section_lines(ptext, "the days"):
+            m = re.match(rf"{day}\w*:\s*(.+)$", ln, re.I)
+            if m:
+                return m.group(1).strip()
+    commits = _section_lines(text, "commits")
+    fixed = {}
+    for ln in commits:
+        m = FIXED_RE.match(ln)
+        if m:
+            fixed[m.group(1).lower()] = m.group(2).strip()
+    if "tomorrow" in fixed:
+        return fixed["tomorrow"]
+    if "this week" in fixed:
+        return fixed["this week"]
+    steps = [ln for ln in commits if not FIXED_RE.match(ln) and not ln.lower().startswith("parked:")]
+    return f"your daily steps: {steps[0]}" if steps else None
+
+
+def next_moment(front: str) -> str | None:
+    """The next moment the plan itself sets: the two-week check, the 90-day
+    review when it is close, else the week."""
+    today = datetime.date.today()
+    last = field(front, "last_raised")
+    nxt = field(front, "next_raise")
+    try:
+        if last:
+            check = datetime.date.fromisoformat(last) + datetime.timedelta(days=14)
+            if check >= today:
+                when = "today" if check == today else check.isoformat()
+                return f"the two-week check, {when} (/sac check)"
+    except ValueError:
+        pass
+    try:
+        if nxt:
+            review = datetime.date.fromisoformat(nxt)
+            if 0 <= (review - today).days <= 14:
+                return f"your 90-day review, {'today' if review == today else nxt}"
+    except ValueError:
+        pass
+    if today.weekday() == 4:
+        return "your week's review, today (/sac week)"
+    sunday = today + datetime.timedelta(days=(6 - today.weekday()) % 7)
+    return f"your week: /sac week on Sunday {sunday.isoformat()}"
+
+
+def how_youre_going(root: Path, who: str | None) -> list[tuple[str, str]]:
+    """The check-in rows for a self plane. Everything is read; nothing is
+    asked. Empty when there is no plan yet."""
+    spine = root / "self-as-code.md"
+    if not spine.is_file() or not readable(spine, True):
+        return []
+    try:
+        text = spine.read_text(encoding="utf-8", errors="replace")[:120000]
+    except Exception:
+        return []
+    m = FRONTMATTER_RE.search(text)
+    front = m.group(1) if m else ""
+    if field(front, "status") == "seeded":
+        return []
+    rows: list[tuple[str, str]] = []
+    fl = floor_row(text, root, who)
+    if fl:
+        rows.append(("Floor", fl))
+    bm = business_moves(plan_ventures(root, text))
+    if bm:
+        rows.append(("Your businesses", _cell(bm, 300)))
+    td = today_row(root, text)
+    if td:
+        rows.append(("Today", _cell(td, 220)))
+    nm = next_moment(front)
+    if nm:
+        rows.append(("Next", nm))
+    return rows
+
+
 def spine_goals(root: Path) -> list[tuple[str, str]]:
     """The reminder rows for a self plane, read from self-as-code.md: the
     rewrite (the twelve-month leap), the venture goal the commits hang off,
@@ -660,19 +1043,7 @@ def spine_goals(root: Path) -> list[tuple[str, str]]:
             if re.search(r"\bgoal\b|\btarget\b", ln, re.I):
                 rows.append(("Venture goal", _cell(ln, 220)))
                 break
-    ventures = re.findall(r"^###\s+(.+?)\s*$", re.search(r"^##\s+the baseline\b.*?(?=^##\s|\Z)", text, re.M | re.S | re.I).group(0), re.M) \
-        if re.search(r"^##\s+the baseline\b", text, re.M | re.I) else []
-    ventures = [_cell(v, 60) for v in ventures if not v.lower().startswith("how ")]
-    if not ventures:
-        vdir = root / "standards" / "ventures"
-        if vdir.is_dir():
-            ventures = sorted(d.name for d in vdir.iterdir()
-                              if d.is_dir() and not d.name.startswith(("_", ".")))
-    if not ventures:
-        m = re.search(r"^operations:\s*\[([^\]]*)\]", (root / ".oac" / "manifest.yml").read_text(encoding="utf-8", errors="replace"), re.M) \
-            if (root / ".oac" / "manifest.yml").is_file() else None
-        if m:
-            ventures = [v.strip().strip("'\"") for v in m.group(1).split(",") if v.strip()]
+    ventures = plan_ventures(root, text)
     if ventures:
         rows.append(("Ventures", " · ".join(ventures[:6])))
     return rows
@@ -696,7 +1067,7 @@ def routed_goals(root: Path) -> list[tuple[str, str]]:
             if cells and cells[0]:
                 rows.append(("Shared here" if not rows else "", _cell(cells[0], 200)))
         elif s.startswith(("- ", "* ")):
-            rows.append(("Shared here" if not rows else "", _cell(s[2:], 200)))
+            rows.append(("Shared here" if not rows else "", _cell(GOAL_RE.sub("", s[2:]), 200)))
         if len(rows) >= 4:
             break
     return rows
@@ -705,11 +1076,10 @@ def routed_goals(root: Path) -> list[tuple[str, str]]:
 def first_time(root: Path, is_self: bool, who: str | None) -> bool:
     """True until the plane has been worked in: no continuity log for this
     person yet, and the spine (self) or register (business) still the seed."""
-    if who:
-        log_dir = root / "team" / who
-        if (log_dir / "current.md").is_file():
-            return False
-        if (log_dir / "logs").is_dir() and any((log_dir / "logs").glob("*.md")):
+    home = log_home(root, who, is_self)
+    if home is not None:
+        current, folder = home
+        if current.is_file() or older_days(folder):
             return False
     target = root / ("self-as-code.md" if is_self else "systems/register.md")
     if not target.is_file():
@@ -815,6 +1185,10 @@ def announcement(root: Path) -> str | None:
     out = [WORDMARK, f"◆ {long_name} · {mode}", f"{repo} · {branch} · {today}", ""]
     if goals:
         out += ["GOALS"] + box(goals) + [""]
+    if is_self:
+        going = how_youre_going(root, handle(root))
+        if going:
+            out += ["HOW YOU'RE GOING"] + box(going) + [""]
     out += ["STATUS"] + box(rows) + [""]
     out.append(f"{door} review when your 90 days are up · /start to begin · /done to finish"
                if is_self else f"{door} does the next thing · /start to begin · /done to finish")
@@ -910,6 +1284,10 @@ def main() -> int:
         # be empty or meaningless here (ADR-120).
         if not out_of_time():
             lines.extend(self_core(root))
+
+        if not out_of_time():
+            for k, v in how_youre_going(root, who):
+                lines.append(f"  {k}: {v}")
 
         if not out_of_time():
             projects = open_projects(root)

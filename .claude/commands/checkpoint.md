@@ -20,7 +20,7 @@ everything the next session needs and hand it back cleanly on the other side.
 | | `/task-bridge` | `/checkpoint` |
 |---|---|---|
 | Answers | where was I today? | what is the state of this whole build? |
-| Lives in | `team/{handle}/current.md` | `notable-plans/` |
+| Lives in | the log: `evidence/days/current.md` in a private space, `team/{handle}/current.md` in a business | `notable-plans/` |
 | Size | a note | a document with evidence |
 | Read by | `/start`, next session | `/checkpoint --restore`, next session |
 | Survives | a night | a context reset, a week, a different machine |

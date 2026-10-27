@@ -32,9 +32,9 @@ every day.
 3. Open Claude Code in that folder and paste the installer prompt below.
 4. When it says it is done, restart Claude Code and run `/sac`.
 
-**Done looks like:** the folder has a git history, its private copy is on
-GitHub, the bottom line of Claude Code says `SAC`, typing `sac` in a new
-Terminal window opens this folder with Claude Code running, and
+**Done looks like:** the folder has a git history. Its private copy is on
+GitHub. The bottom line of Claude Code says `SAC`. Typing `sac` in a new
+Terminal window opens this folder with Claude Code running. And
 `self-as-code.md` has your seven steps and what you share with each business,
 written by the session, not typed into a template by you.
 
@@ -49,7 +49,7 @@ after each one.
 1. **Check the layout.** Confirm this folder contains `CLAUDE.md`,
    `README.md`, `self-as-code.md`, `INSTALL.md`, `STATUSLINE.md`, `.oac/`,
    `.oac/sac-framework.md`, `.claude/commands/`, `.githooks/`, `scripts/`,
-   `specs/`, `team/`, and the five folders that spell SPADE: `standards/`,
+   `specs/`, and the five folders that spell SPADE: `standards/`,
    `projects/`, `archive/`, `decisions/` and `evidence/`. If anything is
    missing, stop and tell me.
 2. **Check the copy is private.** Run `git remote get-url origin` and
@@ -63,9 +63,9 @@ after each one.
    `first-last-ops` in `README.md` with the same pattern spelt with my name.
    If this repo is not already called that, tell me how to rename it on
    GitHub.
-4. **Turn the hook on and make my folder.** Run
-   `git config core.hooksPath .githooks`. Create `team/<firstname>/logs/`
-   with a `.gitkeep` inside, using my first name in lowercase. Then commit
+4. **Turn the hook on and make my days folder.** Run
+   `git config core.hooksPath .githooks`. Make sure `evidence/days/` exists,
+   with a `.gitkeep` inside if it is empty. Then commit
    everything as `Day one` and push. If the hook warns that gitleaks is not
    installed, tell me the install command for my computer and carry on.
 5. **Install the bottom line.** `python3 scripts/install-oac-statusline.py`
@@ -77,12 +77,12 @@ after each one.
    it reports. Do not fix anything.
 8. **Read `CLAUDE.md`** and tell me in two lines what this repo is for and why
    it is private.
-9. **Tell me you are done**, and what happens next, in order: Claude Code may
-   ask me to approve this project's settings, and I should approve them; then I
-   fully restart Claude Code; then I run `/sac`. To get back here any day, I
+9. **Tell me you are done**, and what happens next, in order. Claude Code may
+   ask me to approve this project's settings; I should approve them. Then I
+   fully restart Claude Code. Then I run `/sac`. To get back here any day, I
    open a new Terminal window and type `sac`. After today, every session
-   starts with `/start`, which pulls the latest version from GitHub, and ends
-   with `/done`, which saves my work and pushes it there. In between, `/commit`
+   starts with `/start`, which brings down the latest from GitHub, and ends
+   with `/done`, which saves my work and sends it there. In between, `/commit`
    saves a step, `/push` sends it to GitHub and `/pull` brings down the latest.
    And once my plan is written, `/sac dashboard` draws it as a page I can see.
 

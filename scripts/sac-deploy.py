@@ -504,6 +504,9 @@ def main(argv: list[str] | None = None) -> int:
         (dest / rel).parent.mkdir(parents=True, exist_ok=True)
         (dest / rel).write_text(content, encoding="utf-8")
         written.append(rel.as_posix())
+        grel = rel.with_name(split.GOALS_FILE)
+        (dest / grel).write_text(split.goals_doc(vrows, slug, venture, today), encoding="utf-8")
+        written.append(grel.as_posix())
     items = software_items(biz["setup"].get("Runs on", "")) if biz["setup"].get("Runs on") else []
     reg = dest / "systems" / "register.md"
     n_sw = n_pr = 0

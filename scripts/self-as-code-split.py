@@ -67,6 +67,13 @@ ROUTINGS = ("stays-personal", "routes-to", "promotable-unrouted")
 SPINE_ADDRESSES = ("self-as-code.md", "goals/self-as-code.md")
 DEST_DIR = Path("context-core") / "strategic-identity"
 DEST_FILE = "from-self-as-code.md"
+GOALS_FILE = "goals.md"
+# The up direction (self-as-code-standard.md 6.2, 6.3; ADR-136 Rule 3): every
+# routed statement carries a goal id, `<venture or unit>/<slug>`, and the
+# business keeps one row per id in goals.md. Only the status and its date
+# ever come back up.
+GOAL_RE = re.compile(r"\[goal:\s*([^\]]+)\]")
+STATUSES = ("not started", "on track", "at risk", "done", "dropped")
 BRANCH = "route-from-self-plane"
 SEPARATOR_RE = re.compile(r"^\|[\s:|-]+\|$")
 
@@ -240,6 +247,87 @@ def target_problem(target: Path) -> str | None:
     return None
 
 
+def _slug(text: str, words: int = 5) -> str:
+    s = re.sub(r"['\u2019]", "", text.lower())
+    s = re.sub(r"[^a-z0-9]+", "-", " ".join(s.split()[:words])).strip("-")
+    return s[:48].rstrip("-") or "goal"
+
+
+def goal_id(unit: str, venture: str, slice_text: str) -> str:
+    """The one name a goal has on both sides: `<venture or unit>/<slug of the
+    statement's first words>`. The private repo greps for it to read status
+    back; the business keeps a row for it."""
+    where = venture or unit
+    return f"{_slug(where, 4)}/{_slug(slice_text)}"
+
+
+def goals_rows(existing: str | None) -> dict[str, tuple[str, str, str]]:
+    """Rows of an existing goals.md by id: (statement, status, updated)."""
+    out: dict[str, tuple[str, str, str]] = {}
+    for ln in (existing or "").splitlines():
+        s = ln.strip()
+        if not s.startswith("|") or SEPARATOR_RE.match(s):
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        if len(cells) < 3:
+            continue
+        m = GOAL_RE.search(cells[0])
+        if not m:
+            continue
+        out[m.group(1).strip()] = (cells[0], cells[1], cells[2])
+    return out
+
+
+def goals_doc(rows: list[dict], unit: str, venture: str, today: str,
+              existing: str | None = None) -> str:
+    """The business's goals.md: one row per goal id the self plane sent. A
+    new id is seeded `not started`; a row the business already keeps is
+    carried as it is, status and date untouched; nothing is ever removed."""
+    where = f"{unit}/{venture}" if venture else unit
+    kept = goals_rows(existing)
+    seen: list[str] = []
+    table: list[str] = []
+    for r in rows:
+        gid = goal_id(unit, venture, r["slice"])
+        if gid in seen:
+            continue
+        seen.append(gid)
+        if gid in kept:
+            stmt, status, updated = kept[gid]
+            table.append(f"| {stmt} | {status} | {updated} |")
+        else:
+            table.append(f"| [goal: {gid}] {r['slice']} | not started | {today} |")
+    for gid, (stmt, status, updated) in kept.items():
+        if gid not in seen:
+            table.append(f"| {stmt} | {status} | {updated} |")
+    return "\n".join([
+        "---",
+        f'title: "Where each goal stands: {where}"',
+        "type: report",
+        "audience: internal",
+        "status: active",
+        "lifecycle: living",
+        f"updated: {today}",
+        'source: "the goal ids routed from the operator\'s self plane; the status is kept here, by this business"',
+        "topics: [self-as-code, goals]",
+        "tags: [goals, routed, self-as-code, the-up-direction]",
+        "---",
+        "",
+        "# Where each goal stands",
+        "",
+        "One row per goal the self plane sent here. This business keeps `Status`",
+        "and `Updated`; the private repo reads those two back and nothing else",
+        "(Self as Code standard 6.2). Status is one of: not started, on track,",
+        "at risk, done, dropped. Change the status here when it changes; never",
+        "edit the statement, change it in the self plane and route again.",
+        "",
+        "| Goal | Status | Updated |",
+        "|---|---|---|",
+        *table,
+        "",
+    ])
+
+
 def render(rows: list[dict], unit: str, venture: str, today: str, *,
            setup: dict[str, str] | None = None, by: str = "self-as-code-split.py") -> str:
     """The one document a business gets from the self plane. `setup` is the
@@ -271,7 +359,7 @@ def render(rows: list[dict], unit: str, venture: str, today: str, *,
     ]
     for r in rows:
         beat = f"**{r['beat']}**: " if r["beat"] else ""
-        lines.append(f"- {beat}{r['slice']}")
+        lines.append(f"- [goal: {goal_id(unit, venture, r['slice'])}] {beat}{r['slice']}")
     if not rows:
         lines.append("- Nothing shared yet. Choose what to share in `/sac`, under `## the split`, and run it again.")
     if setup:
@@ -314,14 +402,38 @@ def apply(root: Path, unit: str, target: Path, venture: str, push: bool) -> int:
     dest = target / rel
     content = render(chosen, unit, row_venture, today)
 
+    # The up direction: goals.md beside the statements, merged so a status
+    # the business set is never lost. Written whenever it would change.
+    goals_rel = rel.with_name(GOALS_FILE)
+    goals_dest = target / goals_rel
+    goals_existing = goals_dest.read_text(encoding="utf-8", errors="replace") if goals_dest.is_file() else None
+    goals_content = goals_doc(chosen, unit, row_venture, today, goals_existing)
+    goals_changed = goals_existing is None or goals_rows(goals_existing) != goals_rows(goals_content)
+
+    def commit_goals_only() -> int:
+        goals_dest.parent.mkdir(parents=True, exist_ok=True)
+        goals_dest.write_text(goals_content, encoding="utf-8")
+        run = git(target)
+        run("add", "--", str(goals_rel))
+        c = run("commit", "-m", f"Add: goals.md for {unit}, one row per goal the self plane sent", "--", str(goals_rel))
+        if c.returncode != 0:
+            print(f"\n  wrote {goals_rel} but the commit failed:\n  {c.stderr.strip()}\n")
+            return 1
+        print(f"\n  the statements were already here; wrote {goals_rel} ({len(goals_rows(goals_content))} goal(s)) and committed it.\n")
+        return 0
+
     if dest.is_file():
         existing = dest.read_text(encoding="utf-8", errors="replace")
         if existing == content:
+            if goals_changed:
+                return commit_goals_only()
             print(f"\n  {rel} is already exactly this. Nothing to do.\n")
             return 0
         # Same statements on a different day still differ by the date. Compare
         # the routed list itself before calling it a conflict.
         if section(existing, "What the self plane routed here") == section(content, "What the self plane routed here"):
+            if goals_changed:
+                return commit_goals_only()
             print(f"\n  {rel} already carries these statements. Nothing to do.\n")
             return 0
         stamp = _dt.datetime.now().strftime("%Y%m%d%H%M%S")
@@ -331,20 +443,26 @@ def apply(root: Path, unit: str, target: Path, venture: str, push: bool) -> int:
 
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(content, encoding="utf-8")
+    paths = [str(rel)]
+    if goals_changed:
+        goals_dest.write_text(goals_content, encoding="utf-8")
+        paths.append(str(goals_rel))
 
     run = git(target)
-    run("add", "--", str(rel))
+    run("add", "--", *paths)
     msg = (f"Add: {len(chosen)} statement(s) routed from the self plane to {unit}"
            f"{'/' + row_venture if row_venture else ''}\n\n"
            "Written by self-as-code-split.py from the operator's `## the split`\n"
            "table. What crossed is the decision, never the raw session (ADR-118,\n"
-           "ADR-122). Nothing was moved and no self-plane file was copied.\n")
-    c = run("commit", "-m", msg, "--", str(rel))
+           "ADR-122). Nothing was moved and no self-plane file was copied.\n"
+           + ("Each statement carries its goal id, and goals.md keeps one row per id\n"
+              "(standard 6.3); the status there is this business's to set.\n" if goals_changed else ""))
+    c = run("commit", "-m", msg, "--", *paths)
     if c.returncode != 0:
         print(f"\n  wrote {rel} but the commit failed:\n  {c.stderr.strip()}\n")
         return 1
     branch = run("branch", "--show-current").stdout.strip()
-    print(f"\n  wrote {rel}")
+    print(f"\n  wrote {rel}" + (f" and {goals_rel}" if goals_changed else ""))
     print(f"  {len(chosen)} statement(s), audience: internal, committed on {branch}")
 
     if push:

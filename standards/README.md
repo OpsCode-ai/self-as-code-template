@@ -13,6 +13,10 @@ Your businesses live here: `ventures/<venture>/`. Your private notes about a
 business partner go in `ventures/<venture>/partnerships/<name>/`. They stay
 here, in your own repo, and never in the business's shared one.
 
+How you sound is `voice.md`, what you like to look at is `brand.md`, and
+`outputs/` holds one page per kind of thing made for you. Everything made
+for you reads them first.
+
 ## The people you deal with
 
 Each person or firm you deal with gets one folder, `<area>/<who>/`. A

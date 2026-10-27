@@ -20,9 +20,11 @@ straight through:
 | `/sac` | the first run: where you are today, the seven steps, what you share with each business, then sending it, then your plan drawn |
 | `/sac review` | your 90-day review (`/sac refactor` still works) |
 | `/sac check` | the always-growing checks over who you're becoming, your floor and your recent commits |
-| `/sac execution` | planning the week: time-blocked work from your one big leap |
+| `/sac week` | your week: on Sunday it plans it, on Friday it reviews it, any other day it says where the week is up to (`/sac execution` still works) |
 | `/sac deploy <business>` | set up one business's own repo from what you captured |
 | `/sac dashboard` | your plan drawn as one page, on this laptop. Run it any time |
+| `/sac voice` | how you want to sound and what you like to look at, asked once; everything made for you reads them first |
+| `/sac help` | the one page: the four words to know, where things are, when |
 | `/sac meeting <file>` | a meeting transcript lands here first; the parts you choose go to each business as a pull request |
 
 ## What to do when this runs
@@ -34,7 +36,8 @@ merge it, and sends what they chose to share to each business as a pull
 request, in the same session.
 
 It runs the same way every time, with nothing else installed (ADR-125). There
-is no other path to explain.
+is no other path to explain. A word it does not know gets the help page, not
+a guess.
 
 **Run this in your private repo only**, the one named `first-last-ops`. The
 bottom line of the screen says `SAC` when you are in it. In a business repo the

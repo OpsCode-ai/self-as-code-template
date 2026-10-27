@@ -231,7 +231,26 @@ def progress(root: Path) -> dict:
             if h not in present:
                 present.append(h)
     out["headings_present"] = present
+    out.update(counts(root))
     return out
+
+
+def counts(root: Path) -> dict:
+    """The whole numbers the brain may take (ADR-136 Rule 5), from the session
+    brief's readers beside this script. An install without the brief sends
+    none, and the brain's older rules still answer."""
+    brief_path = Path(__file__).resolve().parent / "oac-session-brief.py"
+    if not brief_path.is_file():
+        return {}
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("oac_session_brief", brief_path)
+        brief = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(brief)
+        out = brief.plan_counts(root, brief.handle(root))
+    except Exception:
+        return {}
+    return {k: int(v) for k, v in out.items() if isinstance(v, int) and 0 <= v <= 9999}
 
 
 def next_step(root: Path, show: bool) -> tuple[str, int]:

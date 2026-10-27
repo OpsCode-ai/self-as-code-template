@@ -27,8 +27,10 @@ If nothing changed, say so and stop.
 ### Step 2: A big piece of work?
 
 If the session added a new command, a new script, a new decision or a new
-folder, and there is no `build-logs/YYYY-MM-DD-*.md` for today, offer
-`/build-log` once. It is an offer, not a gate.
+folder, and there is no `YYYY-MM-DD-*.md` for today in the build-log folder,
+offer `/build-log` once. It is an offer, not a gate. The folder is
+`build-logs/` in a business and `evidence/build-logs/` in a private space,
+where a build log is evidence like everything else you keep.
 
 ### Step 3: Update the lists
 
@@ -52,9 +54,10 @@ Follow `.claude/commands/task-bridge.md` for the file shape. You were there for
 the session, so draft it without asking:
 
 1. Handle from `git config user.name`.
-2. If `team/{handle}/current.md` carries a `date:` that is not today, move it
-   to `team/{handle}/logs/{that-date}.md` first. Never overwrite an archived
-   day.
+2. If the log's `current.md` carries a `date:` that is not today, move it
+   to its older-days place first: `evidence/days/{that-date}.md` in a private
+   space, `team/{handle}/logs/{that-date}.md` in a business. Never overwrite
+   an archived day.
 3. Append a `### HH:MM` entry: what happened, one short paragraph.
 4. Replace the Roll-forward only if this session produced a real next step.
 
@@ -62,13 +65,32 @@ Ask exactly one question, and only at the end of the day:
 
 > Anything for tomorrow that is not already written down as next?
 
+### Step 5a: The floor, one word per line (a private space only)
+
+Read `## the floor` in `self-as-code.md`. Each `Value:` line is one value with
+its worst-day line. If there are none, or this is a business, skip this step.
+Otherwise ask once, naming every value in the order the plan lists them:
+
+> Your floor today: {name}, {name}, {name}. A yes or a no for each.
+
+Write the answers as the last line of today's entry, in the same order:
+
+```
+Floor: {name} yes · {name} no · {name} yes
+```
+
+One line, nothing else. If they do not answer, write nothing: a floor nobody
+checked is not a no. The message at the top of the next session counts the
+days held and names what slipped most.
+
 ### Step 5b: Refresh your usage page
 
 ```bash
 python3 scripts/oac-usage-report.py --write
 ```
 
-Writes `team/{handle}/usage.md` from the statusline's ledger on this machine:
+Writes `usage.md` beside the log (`evidence/days/` in a private space,
+`team/{handle}/` in a business) from the statusline's ledger on this machine:
 sessions, hours, cost, tokens by month. Cost is Claude Code's own figure, not
 a bill. Include the file in the commit. If the script is missing, skip this
 step and say so.
@@ -89,7 +111,7 @@ The message takes this format:
 Actions: `Add`, `Update`, `Remove`, `Fix`, `Docs`.
 
 ```bash
-git add -- {each path this session changed} team/{handle}/current.md team/{handle}/usage.md
+git add -- {each path this session changed} {the log's current.md} {its usage.md}
 git commit -m "$(cat <<'EOF'
 {message}
 EOF

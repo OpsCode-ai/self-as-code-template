@@ -26,8 +26,9 @@ gitignored. Only ask if the name cannot be derived.
 Read your log **first**. It is how you pick up the thread:
 
 ```
-team/{handle}/current.md          today's log
-team/{handle}/logs/               the newest file here if today has none yet
+evidence/days/current.md          today's log, in a private space; older days beside it, by date
+team/{handle}/current.md          today's log, in a business
+team/{handle}/logs/               a business's older days; the newest file if today has none yet
 ```
 
 Read out, word for word and before anything else, the **Next** line under
@@ -97,6 +98,11 @@ GitHub: {n} changes came down | you are up to date | no copy on GitHub yet.
 Unsaved: nothing | {n} files from last time. On {branch}.
 ```
 
+In a private space, the box headed HOW YOU'RE GOING at the top of the screen
+is the check-in: the floor held so many of the days you checked, each
+business moved or quiet, today's one thing, the next moment. Read it out, one
+line each, and offer the Today line as the first thing to do.
+
 **If the note names one clear next thing**, offer to start it. Do not
 present a menu when the answer is already written down.
 
@@ -132,7 +138,7 @@ nothing collides. Worktrees, for one person running two sessions, are in
 | File | Purpose |
 |---|---|
 | `.claude/user.json` | Local identity, gitignored |
-| `team/{handle}/current.md` | Your log. `/done` writes it, `/start` reads it |
-| `team/{handle}/logs/{date}.md` | Archived days |
+| `evidence/days/current.md` | Your log in a private space. `/done` writes it, `/start` reads it; older days beside it, by date |
+| `team/{handle}/current.md` | Your log in a business; older days in `team/{handle}/logs/` |
 | `systems/register.md` | What the business runs on today (a business) |
 | `self-as-code.md` | Your plan, with `next_raise` (a private space) |

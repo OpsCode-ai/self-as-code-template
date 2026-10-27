@@ -54,6 +54,8 @@ repo except the pull requests the person agrees to at the end (ADR-125).
 | `/self-as-code check` | The always-growing checks over who they are becoming, their floor and their recent commits. Say where they are coasting rather than growing. |
 | `/self-as-code execution` | Planning the week: sort tasks, tie them to the one big leap, build the plan, propose strict time-blocks. |
 | `/self-as-code dashboard` | Their plan drawn as one page, on this laptop. Reads `self-as-code.md` and the five folders, writes `.oac/dashboard.html` and opens it. Nothing leaves the laptop. |
+| `/self-as-code voice` | How they want to sound, from three things they wrote, into `standards/voice.md`; what they like to look at into `standards/brand.md`. Once; also asked the first time anything is made for them while `voice.md` is still the seed. |
+| `/self-as-code help` | The one page: the four words to know, where things are, when. Also what you say when `/sac` is given a word it does not know. |
 | `/self-as-code meeting <file>` | A meeting transcript lands here first (`evidence/meetings/`), then the parts the person chooses go to each business as a pull request. The transcript never leaves this repo. |
 
 **Run this in their private repo, `{first}-{last}-ops`, never in a business
@@ -128,9 +130,17 @@ checks, Ziglar for the opening line), never at every step. Match their energy.
 ## setup: the run
 
 Follow the framework in order: the opening, the copy on GitHub if it is
-missing, where you are today, then steps 1 to 7. Take their work slowly, one thing at a time: each business, the job, the family. Everything `deploy` builds
+missing, where you are today, then steps 1 to 7. Take their work slowly, one
+thing at a time: each business, the job, the family. Everything `deploy` builds
 later comes from those answers, and it is often the first time someone hears
 their own portfolio read back.
+
+**One question at a time, in the framework's order.** Ask it, wait for the
+answer, then the next. Never two questions in one turn, never a step before
+the one that comes first, never a question the framework does not ask. If
+they answer a later question early, keep the answer and still walk the steps
+in order. The order is the method; a session that drifts from it is not
+running Self as Code (Adam's run, 27 October 2026).
 
 Then write `self-as-code.md`: frontmatter with `last_raised`, `next_raise` and
 `framework_version`; a `##` section per step plus `## the baseline`, headings
@@ -222,6 +232,7 @@ when a plan drops below my floor. Run the always-growing checks (future bigger t
 contribution bigger than reward, learning bigger than experience, purpose bigger than money, and
 the rest) over who I am becoming, my floor and my reviews, and tell me when I am coasting rather
 than growing. On my `next_raise` date, prompt me to run `/sac review`.
+Anything made for me (an email, a page, a report, an app) reads `standards/voice.md`, `standards/brand.md` and the page for its kind in `standards/outputs/` first, and is shown to me before it goes anywhere. If `standards/voice.md` is still the seed, ask me the voice questions once (`/sac voice`) before making the first thing.
 ```
 
 ## deploy: set up one business
@@ -265,19 +276,56 @@ new repo, which reads what was shared first and never asks for it again. If two
 people share the business, the second joins through GitHub afterwards; the
 business repo's own `/oac` says how.
 
-## execution: turn it into tracked work
+## week: Sunday plans it, Friday reviews it
 
-1. **Sort** every task that came up: serves the one big leap, holds the floor, or
-   belongs on the cut. Drop the rest.
-2. **Tie it to the leap.** A task that serves neither the leap nor the floor is
-   suspect.
-3. **Build the plan:** break the leap into tasks in order, each with a step, a
-   goal it serves and a due date.
-4. **Time-block it:** propose the concrete weekly blocks.
+`/self-as-code week`, or `execution`, the older name. The framework's
+'Planning your week' is what you say. The day decides what happens: on a
+Sunday, or any day they ask to plan, you write the week; on a Friday, or any
+day they ask to review, you finish it; on any other day you read it back and
+change nothing.
 
-Log the tasks as tracked items (private, shareable or shared, tied to a step and
-a goal) so they show up on their dashboard instead of vanishing in chat. Never
-log their deepest private material.
+The page is `projects/weeks/<year>-w<NN>.md`, ISO week, one per week:
+
+```markdown
+---
+title: "Week 44, 27 October to 2 November"
+type: report
+audience: owner
+week: 2026-W44
+from: 2026-10-27
+to: 2026-11-02
+status: planned
+---
+
+## the three
+- {the thing}: serves the leap | holds the floor. From {the plan | OpsCode's goal | the inbox}.
+
+## each business
+- {Business}: {the one thing this week}
+
+## the days
+- Mon: {daily steps first}; {fixed things}; {the work}
+- Tue: ...
+
+## parked
+- {thing}, settled by {date}
+
+## Friday
+- moved: ...
+- held: the floor {n} of {m} days; {line} slipped
+- carries: ...
+- one line for the review: ...
+```
+
+Before you ask anything on a Friday, read: the page; the log's `Floor:` lines
+for the week (`team/<handle>/current.md` and `logs/`); each business repo's
+commits this week (`~/projects/<business>` or `<business>-ops`, `git log
+--since` of the Monday). Say what you found, then ask the framework's three.
+Set `status: reviewed` when Friday is written. Commit the page by path; they
+merge and `/push` as always.
+
+Never log their deepest private material, and never write a business's own
+documents into this repo: one line per business is a pointer, not a copy.
 
 ## dashboard: see your plan drawn
 
@@ -337,12 +385,60 @@ pull request they merge (ADR-127 Rule 5). The mechanics are
 5. **Report** in one short list: business, file, pull request. The transcript
    never leaves this repo, and nothing lands on any business's `main`.
 
+## voice: how they sound, and what they like to look at
+
+`/self-as-code voice`, and the first time anything is made for the person (an
+email, a page, a report) while `standards/voice.md` still says 'Not written
+yet'. The framework's 'Your voice' section is what you say. Write
+`standards/voice.md` and `standards/brand.md` as it describes, on a branch;
+they merge. From then on, before making anything for them, read both files
+and the page for its kind under `standards/outputs/`, and show the thing to
+them before it goes anywhere. Nothing made for a person may look or sound
+like a machine made it.
+
+## help: the one page
+
+`/self-as-code help`, and what you say when `/sac` is given a word you do not
+know. Print this, as it is, and nothing else. Fill the three numbers from the
+plan's frontmatter and this week's page; leave a line out if it has nothing to
+say.
+
+```
+Self as Code. One plan, written once, that steers every day.
+
+Four words to know
+  /start      begin. Reads your plan and your last note, says how you're going.
+  /done       finish. Writes today down, asks your floor, saves, sends it to GitHub.
+  /sac        the questions, the first time. Then /sac check, /sac week, /sac review.
+  /sac help   this page.
+
+Where things are
+  self-as-code.md         your plan
+  evidence/days/          your days
+  projects/weeks/         this week
+  evidence/               what happened, and your reviews
+
+When
+  Every day: /start, then /done.      Two weeks in: /sac check, on {date}.
+  Sunday: /sac week.  Friday: /sac week.   Every 90 days: /sac review, next on {date}.
+
+Stuck? Say what you want in plain words. SAC on the bottom line means you're
+in the right place.
+```
+
 ## review: the 90-day review
 
 `/self-as-code review`, or `refactor`, the older name. Never say 'refactor' to
 the person: it sounds like hard code. Say 'your 90-day review'.
 
 Follow the framework's '90-day review' section, on a branch as above.
+
+Before step 1, read each business's `goals.md` (under
+`context-core/strategic-identity/` in the repo at `~/projects/<business>` or
+`<business>-ops`) and its register's count of what still runs by hand, and
+write what you found into `evidence/reviews/<date>.md`: one row per goal id,
+its status and when it was updated, one line per business. That page is the
+proof the quarter stands on. Say it back before you ask anything.
 
 1. Read the current `self-as-code.md` and say it back in five or six sentences.
 2. Step by step: still true? Did the floor hold? What can it lift to now? What

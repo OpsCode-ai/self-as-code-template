@@ -186,12 +186,14 @@ def legacy_home(target: Path, rel: str) -> str | None:
 
 
 def plan(src: Path, target: Path, new: dict, old: dict | None, take: set[str],
-         skip: set[str] = frozenset()) -> dict[str, list]:
-    """Decide every file. Returns lists keyed by outcome; nothing is written."""
+         skip: set[str] = frozenset(), remembered: set[str] = frozenset()) -> dict[str, list]:
+    """Decide every file. Returns lists keyed by outcome; nothing is written.
+    `remembered` is the part of `skip` the plane's manifest carried in from an
+    earlier upgrade, so the report can say where a skip came from."""
     out: dict[str, list] = {
         "add": [], "engine": [], "update": [], "unchanged": [],
         "kept": [], "kept-pack-unchanged": [], "take": [], "gone": [], "skip": [], "skipped": [],
-        "merge": [], "legacy": [],
+        "skipped_remembered": [], "clash": [], "merge": [], "legacy": [],
     }
     old_files = (old or {}).get("files", {})
     for rel, new_hash in sorted(new["files"].items()):
@@ -200,7 +202,13 @@ def plan(src: Path, target: Path, new: dict, old: dict | None, take: set[str],
         cls = classify(rel)
         dest = target / rel
         if rel in skip:
-            out["skipped"].append((rel, cls))
+            out["skipped_remembered" if rel in remembered else "skipped"].append((rel, cls))
+            continue
+        # A pack command whose name a skill in this plane already owns would
+        # give two commands of one name (Adam's /start, 26 October 2026). The
+        # plane's own skill wins; the pack's copy is not written and is named.
+        if rel.startswith(".claude/commands/") and (target / ".claude" / "skills" / Path(rel).stem).is_dir():
+            out["clash"].append((rel, cls))
             continue
         if not dest.exists():
             if legacy_home(target, rel):
@@ -266,6 +274,8 @@ def report(p: dict[str, list], new: dict, old: dict | None, apply: bool) -> None
         ("kept-pack-unchanged", "kept: you changed it, the pack did not"),
         ("skip", "kept: yours, never written"),
         ("skipped", "skipped: --skip, this plane does not want it"),
+        ("skipped_remembered", "skipped, remembered from an earlier upgrade of this plane; --take <path> to undo"),
+        ("clash", "NOT written: a skill of the same name in .claude/skills/ owns that command; archive the skill, or --skip the pack's"),
         ("gone", "left in place: no longer shipped by the pack"),
         ("legacy", "not added: your history/ is read as archive/ and library/ as evidence/ (SPADE). Rename them when you like"),
     )
@@ -344,7 +354,8 @@ def main() -> int:
         print(f"oac-upgrade: --take and --skip name the same file: {', '.join(sorted(cli_skip & take))}", file=sys.stderr)
         return 2
 
-    p = plan(src, target, new, old, take, skip)
+    remembered = set((old or {}).get("skip", [])) - take
+    p = plan(src, target, new, old, take, skip, remembered)
     report(p, new, old, args.apply)
 
     if not args.apply:
@@ -362,14 +373,20 @@ def main() -> int:
             (target / rel).write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
             written += 1
     (target / MANIFEST_REL).parent.mkdir(parents=True, exist_ok=True)
+    # Keep the manifest of the pack before this one beside the new one, so a
+    # later step (retiring the engine, telling a shipped file from a personal
+    # one) can still read what the earlier pack shipped.
+    if old is not None and (target / MANIFEST_REL).is_file() and old.get("content_id") != new.get("content_id"):
+        shutil.copyfile(target / MANIFEST_REL, target / MANIFEST_REL.with_name("pack-manifest.previous.json"))
     recorded = json.loads((src / MANIFEST_REL).read_text(encoding="utf-8"))
     recorded["skip"] = sorted(skip)
     (target / MANIFEST_REL).write_text(json.dumps(recorded, indent=2) + "\n", encoding="utf-8")
     print(f"\nwrote {written} file(s) and {MANIFEST_REL}" + (f" (remembering {len(skip)} skip(s))." if skip else "."))
     print("next:")
     print("  1. read the diff, then commit it with /done")
-    print("  2. restart Claude Code, then /aidlc --doctor")
+    print("  2. restart Claude Code")
     print("  3. python3 scripts/install-oac-statusline.py && python3 scripts/install-oac-branch-guard.py")
+    print("  4. bash scripts/install-shortcuts.sh, once, if the one word (sac or oac) does not open this folder yet")
     if p["kept"]:
         print(f"  4. {len(p['kept'])} tooling file(s) kept because you changed them; diff each against the pack")
     return 0

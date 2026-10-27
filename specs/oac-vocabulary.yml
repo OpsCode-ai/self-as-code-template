@@ -805,7 +805,7 @@ profiles:
       spine: "self-as-code.md carries the self-core profile above."
       buckets: >
         SPADE (ADR-126, from 1.11). Filed by what you can act on, not by
-        subject. standards/ is ongoing with a bar you hold, projects/ has an
+        subject. standards/ is what you keep up with no end date, projects/ has an
         end date, archive/ is done or dropped, decisions/ holds one file per
         decision made, evidence/ is what you look things up in and cite.
         Readers accept the legacy names history/ (archive/) and library/

@@ -6,7 +6,7 @@ status: active
 lifecycle: static
 version: 1.13
 owner: adam
-updated: 2026-10-20
+updated: 2026-10-27
 license: CC-BY-4.0
 summary: "The open standard for running an operation as version-controlled markdown that both people and agents can read."
 topics: [frontmatter, repo-structure, agents, self-as-code, context-core, operations, tooling]
@@ -681,7 +681,7 @@ One person's own operation, private, sitting above the businesses they run.
 - File: `self-as-code.md` at the root, the spine. It carries the `self-core`
   profile (section 7.1).
 - Directories, from 1.11, spelled **SPADE**:
-  - `standards/`: ongoing, a bar you hold. Ventures live here.
+  - `standards/`: what you keep up, with no end date. Ventures live here.
   - `projects/`: has an end date.
   - `archive/`: done or dropped.
   - `decisions/`: one file per decision made, so a settled choice is never

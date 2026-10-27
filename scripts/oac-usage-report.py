@@ -232,6 +232,15 @@ def main() -> int:
         if args.all:
             sys.exit("oac-usage-report: --write is per repo; drop --all")
         out = root / "team" / handle / "usage.md"
+        # A private space keeps its days at evidence/days/ (ADR-136 Rule 8),
+        # unless it still has team/<handle>/ from an earlier pack.
+        mf = root / ".oac" / "manifest.yml"
+        try:
+            is_self = mf.is_file() and re.search(r"^plane:\s*self\b", mf.read_text(encoding="utf-8"), re.M) is not None
+        except OSError:
+            is_self = False
+        if is_self and ((root / "evidence" / "days").is_dir() or not (root / "team" / handle).is_dir()):
+            out = root / "evidence" / "days" / "usage.md"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(text, encoding="utf-8")
         print(f"wrote {out.relative_to(root)}: {len(rows)} session(s)")

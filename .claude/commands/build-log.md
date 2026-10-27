@@ -32,7 +32,9 @@ and dropped, what surfaced by doing rather than planning.
 
 ## Step 2: Where it lives
 
-`build-logs/YYYY-MM-DD-<slug>.md`. Create the folder if it is the first one.
+`build-logs/YYYY-MM-DD-<slug>.md` in a business, `evidence/build-logs/YYYY-MM-DD-<slug>.md`
+in a private space (`plane: self` in `.oac/manifest.yml`). Create the folder if
+it is the first one.
 Today's date comes from the environment, never guessed.
 
 ## Step 3: The shape

@@ -22,7 +22,8 @@ needs on day one and on the day the second person arrives.
 | Any time | `/task-bridge` | A note to yourself. Twenty seconds. The next session reads it |
 | Close | `/done` | Checks the files, writes your note for next time, saves by name, sends it to GitHub, refreshes your usage page |
 
-Your log is `team/<you>/current.md`, one file per person per day, older days
+Your log is `evidence/days/current.md` in a private space, with older days
+beside it by date, and `team/<you>/current.md` in a business, with older days
 in `team/<you>/logs/`. The **Next** line at the top of it is the one thing you
 said you would do next; `/start` leads with it. The whole point is that you
 never rebuild yesterday from memory.
@@ -104,7 +105,10 @@ git clone --depth 1 https://github.com/OpsCode-ai/operations-as-code-template ~/
 ```
 
 2. Commit or `/done` first. The upgrade refuses a tree with unsaved work, so
-   the upgrade is one diff you can read.
+   the upgrade is one diff you can read. If this folder is the one your
+   timed jobs write to, the branch guard will refuse a branch here; make the
+   branch in a worktree (the guard prints the line), run the upgrade there,
+   and merge from this folder after a pull.
 3. Report, then apply:
 
 ```bash
@@ -125,13 +129,14 @@ Then restart Claude Code and run `/done`.
 
 | Thing | Place |
 |---|---|
-| Today's note to yourself | `team/<you>/current.md` |
+| Today's note to yourself | `evidence/days/current.md` in a private space; `team/<you>/current.md` in a business |
 | A build bigger than one session | `notable-plans/<date>-<slug>.md` |
 | A decision worth not debating twice | `decisions/NNN-<slug>.md`, via `/create-adr` |
 | What was built, and what surfaced | `build-logs/<date>-<slug>.md`, via `/build-log` |
-| What your sessions cost | `team/<you>/usage.md`, refreshed by `/done` |
+| What your sessions cost | `usage.md` beside the log, refreshed by `/done` |
 
 ## Which repo you are in
 
 The bottom line of the screen says `SAC` in your private space and `OAC` in a
-business. `MODES.md` says what each one is for. This page is the same in both.
+business. `/sac help` in your private space, and `MODES.md` in a business, say
+what each one is for. This page is the same in both.
