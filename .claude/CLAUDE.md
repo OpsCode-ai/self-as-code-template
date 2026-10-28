@@ -35,6 +35,11 @@ installed (opscode-hq ADR-125).
   they say yes to go to a business, as a pull request (`scripts/sac-meeting.py`).
   The transcript itself never leaves this repo, and nothing about anyone's pay,
   ownership or job goes anywhere without their yes to that line.
+- **`/capture`** writes what comes in (a thought, a voice note, a message, a
+  line from a meeting) into `inbox.md`, one line each, tagged to the business,
+  job, family or project it is about, or `you`. The session splits and tags,
+  shows the lines, and `python3 scripts/sac-capture.py add` writes the ones
+  they confirm. No commit; `/done` saves it. `/sac week` sorts it.
 - **One word opens this repo.** `bash scripts/install-shortcuts.sh` installs
   `sac`: typed in a new Terminal window, it opens this folder with Claude Code
   running, and `sacr` picks up the last conversation. If they ask how to get

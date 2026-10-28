@@ -37,7 +37,8 @@ push first, or the document describes a state that exists on one machine.
    itself. The commits say what changed; only the conversation says why, what
    was rejected, and what was learned the hard way.
 2. **Decide the slug** from the work, not the date alone:
-   `notable-plans/{YYYY-MM-DD}-{slug}.md`. If a checkpoint for this build
+   `notable-plans/{YYYY-MM-DD}-{slug}.md` in a business, `projects/{YYYY-MM-DD}-{slug}.md`
+   in a private space (a checkpoint is work in flight). If a checkpoint for this build
    already exists, **update it**. Two checkpoints for one build is how a later
    session picks the stale one.
 3. **Write the document.** Frontmatter: `title`, `type: strategy`,
@@ -50,7 +51,7 @@ push first, or the document describes a state that exists on one machine.
    next session must not rediscover); **what was decided against, and why**;
    **the hazards** (anything that fails silently, anything scheduled).
 4. **Write the pointer** `.claude/checkpoint.json` (gitignored):
-   `{"path": "notable-plans/…md", "branch": "…", "saved": "…"}`. It is a
+   `{"path": "notable-plans/…md or projects/…md", "branch": "…", "saved": "…"}`. It is a
    cursor; the document is the truth.
 5. **Add one task-bridge line**: `**Next:** resume {build}: /checkpoint --restore`.
 6. **Commit and push it**, then print the handoff: the path, and the two
@@ -61,7 +62,8 @@ push first, or the document describes a state that exists on one machine.
 Assume no memory at all.
 
 1. **Find it.** `.claude/checkpoint.json` if present, else the most recently
-   modified `notable-plans/*.md` with `status: in-progress`. Several match:
+   modified `notable-plans/*.md` (a business) or `projects/*.md` (a private
+   space) with `status: in-progress`. Several match:
    list them and ask. Never guess between two live builds.
 2. **Read the whole document**, not only the prompt. The prompt aims you; the
    body stops you redoing settled work.

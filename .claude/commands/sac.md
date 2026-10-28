@@ -27,6 +27,10 @@ straight through:
 | `/sac help` | the one page: the four words to know, where things are, when |
 | `/sac meeting <file>` | a meeting transcript lands here first; the parts you choose go to each business as a pull request |
 
+One more command is yours to type: `/capture`, when something comes in. It
+writes one line per thing into `inbox.md`, tagged to the business, job, family
+or project it is about, or `you`. `/sac week` sorts the inbox.
+
 ## What to do when this runs
 
 Invoke the `self-as-code` command with exactly the arguments given to `/sac`,

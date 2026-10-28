@@ -545,6 +545,9 @@ def suggestions(root: Path, self_plane: bool, have_focus: bool, dirty: int) -> l
             manual = manual_processes(root)
             if manual:
                 ideas.append(f"{manual} process(es) still manual: pick one and write it down")
+        due = goals_due(root)
+        if due:
+            ideas.append(f"{due} goal(s) the owner sent here have had no word for a week: /done asks for one")
         cc = root / "context-core"
         if cc.is_dir():
             folders = [d for d in cc.iterdir() if d.is_dir()]
@@ -681,15 +684,14 @@ GOAL_RE = re.compile(r"\[goal:\s*([^\]]+)\]\s*")
 GOAL_STATUSES = ("not started", "on track", "at risk", "done", "dropped")
 
 
-def goal_counts(repo: Path) -> dict[str, int] | None:
-    """What the business says about each goal it was sent, as counts by
-    status, read from goals.md under context-core/strategic-identity/ (the
-    root one, or one per venture). Only the status column is read; the
-    private repo never copies a business document (standard 6.2). None when
-    the business has no goals.md at all."""
+def goal_rows(repo: Path) -> list[tuple[str, str]] | None:
+    """(status, updated) for every goal row in goals.md under
+    context-core/strategic-identity/ (the root one, or one per venture). Only
+    those two cells are read; the private repo never copies a business
+    document (standard 6.2). None when the business has no goals.md at all."""
     base = repo / "context-core" / "strategic-identity"
     files = [base / "goals.md"] + sorted(base.glob("*/goals.md")) if base.is_dir() else []
-    counts: dict[str, int] = {}
+    rows: list[tuple[str, str]] = []
     found = False
     for f in files:
         if not f.is_file():
@@ -705,8 +707,39 @@ def goal_counts(repo: Path) -> dict[str, int] | None:
                 continue
             cells = [c.strip().lower() for c in s.strip("|").split("|")]
             if len(cells) >= 2 and GOAL_RE.search(cells[0]) and cells[1] in GOAL_STATUSES:
-                counts[cells[1]] = counts.get(cells[1], 0) + 1
-    return counts if found else None
+                rows.append((cells[1], cells[2] if len(cells) > 2 else ""))
+    return rows if found else None
+
+
+def goal_counts(repo: Path) -> dict[str, int] | None:
+    """What the business says about each goal it was sent, as counts by
+    status. None when the business has no goals.md at all."""
+    rows = goal_rows(repo)
+    if rows is None:
+        return None
+    counts: dict[str, int] = {}
+    for status, _ in rows:
+        counts[status] = counts.get(status, 0) + 1
+    return counts
+
+
+def goals_due(repo: Path, days: int = 7, today: datetime.date | None = None) -> int:
+    """How many goals sent here have had no word for `days` or more: not done,
+    not dropped, and the Updated date that old or unreadable. The business's
+    /done asks one word per goal (scripts/oac-goals.py due); this only says
+    how many are waiting."""
+    today = today or datetime.date.today()
+    n = 0
+    for status, updated in goal_rows(repo) or []:
+        if status in ("done", "dropped"):
+            continue
+        try:
+            age = (today - datetime.date.fromisoformat(updated[:10])).days
+        except ValueError:
+            age = None
+        if age is None or age >= days:
+            n += 1
+    return n
 
 
 def goal_status(repo: Path) -> str | None:

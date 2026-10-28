@@ -317,6 +317,11 @@ status: planned
 - one line for the review: ...
 ```
 
+On a Sunday the inbox comes last, item by item: `python3 scripts/sac-capture.py
+open` lists every unticked line with its tag and its age. A keeper goes into a
+day, a 'later' is parked with a date, the rest is dropped and said so. Tick each
+line in `inbox.md` as it is sorted.
+
 Before you ask anything on a Friday, read: the page; the log's `Floor:` lines
 for the week (`team/<handle>/current.md` and `logs/`); each business repo's
 commits this week (`~/projects/<business>` or `<business>-ops`, `git log
@@ -416,6 +421,7 @@ Where things are
   self-as-code.md         your plan
   evidence/days/          your days
   projects/weeks/         this week
+  inbox.md                what came in. /capture adds a line; /sac week sorts it
   evidence/               what happened, and your reviews
 
 When

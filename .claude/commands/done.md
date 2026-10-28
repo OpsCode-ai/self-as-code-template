@@ -83,7 +83,30 @@ One line, nothing else. If they do not answer, write nothing: a floor nobody
 checked is not a no. The message at the top of the next session counts the
 days held and names what slipped most.
 
-### Step 5b: Refresh your usage page
+### Step 5b: Each goal, one word (a business only)
+
+```bash
+python3 scripts/oac-goals.py due
+```
+
+It lists the goals the owner's plan sent here whose last word is a week old
+or more, with what this repo saved since. If it says nothing is due, or this
+is a private space, skip this step. Otherwise ask once, naming each goal:
+
+> {The goal}. Last word '{status}' on {date}, and {n} saves here since. Not
+> started, on track, at risk, done or dropped?
+
+Write each answer as they give it:
+
+```bash
+python3 scripts/oac-goals.py set <goal id> "<status>"
+```
+
+Only the status and today's date change. Include the goals file in the
+commit. The owner's plan reads those two back and nothing else, so the word
+written here is what their check-in says about this business.
+
+### Step 5c: Refresh your usage page
 
 ```bash
 python3 scripts/oac-usage-report.py --write
@@ -99,7 +122,8 @@ step and say so.
 
 Follow the `/commit` steps (`.claude/commands/commit.md`): the same command the
 person types, so the git lives in one place. Stage by path: each file this
-session changed, plus your note and usage page from steps 5 and 5b.
+session changed, plus your note from step 5, the goals file if step 5b wrote
+it, and the usage page from step 5c.
 The message takes this format:
 
 ```
@@ -111,7 +135,7 @@ The message takes this format:
 Actions: `Add`, `Update`, `Remove`, `Fix`, `Docs`.
 
 ```bash
-git add -- {each path this session changed} {the log's current.md} {its usage.md}
+git add -- {each path this session changed} {the log's current.md} {its usage.md} {goals.md, if step 5b wrote it}
 git commit -m "$(cat <<'EOF'
 {message}
 EOF
