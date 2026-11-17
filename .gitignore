@@ -9,3 +9,6 @@
 
 # Drawn by /sac dashboard from your plan, rebuilt any time
 .oac/dashboard.html
+# Drawn by /sac vision, the three looks and your pick; rebuilt any time
+.oac/looks.html
+.oac/looks.json

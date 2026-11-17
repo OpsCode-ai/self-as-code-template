@@ -37,7 +37,7 @@ THE JSON the session writes, from the plan:
     {"looks": [{"name": "Quiet paper", "feel": "quiet, warm, exact",
                 "ink": "#1f1d1a", "paper": "#faf7f1", "accent": "#b4532a",
                 "typeface": "Inter", "movement": "a little", "icons": "carbon",
-                "letterhead": "Jane Smith", "under": "Plumber. Teacher. Home by six.",
+                "letterhead": "Jane Smith", "under": "Plumber. Teacher. Mum of two.",
                 "because": ["'home by six', under the floor"]}]}
     Two or three looks. Every colour as hex. "icons" is carbon or lucide, the
     one set that look's pages draw from (ADR-138). Anything missing falls back

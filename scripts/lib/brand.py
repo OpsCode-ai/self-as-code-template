@@ -20,7 +20,7 @@ THE FILE
     - Light or dark: light
     - Movement: a little
     - Letterhead: Jane Smith
-    - Under it: Plumber. Teacher. Home by six.
+    - Under it: Plumber. Teacher. Mum of two.
     - Icons: carbon
 
     `Icons:` names the one icon set a page draws from, carbon (the default)

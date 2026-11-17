@@ -254,15 +254,23 @@ mechanics are one script, `scripts/sac-deploy.py`; the words are yours.
    `## the split`. Read that back to them. Nothing else from this repo crosses:
    not their words about the business, not another heading, not a file. If the
    plan does not name the business, it says which ones it does; add the block
-   with `/sac` rather than typing a name past it.
-2. **On their yes, run it without `--show`.** It unpacks the Operations as
+   with `/sac` rather than typing a name past it. When their own look is
+   picked, ask the framework's question about the business's look: start from
+   theirs, or its own. If `standards/brand.md` is still the seed, say so and
+   skip it.
+2. **On their yes, run it without `--show`**, with `--look mine` if they chose
+   their look (only the look's lines cross: ink, paper, accent, typeface,
+   light or dark, movement, which icons; never the reasons, which quote their
+   plan) and as it is for its own. It unpacks the Operations as
    Code pack (the copy in `.oac/`, so no download; `--fetch` refreshes that
    copy from plans.opscode.ai) into `~/projects/{business}-ops`, names it,
    points its manifest back here, and writes the seeds before the first
    commit: the shared statements and the setup lines in
    `context-core/strategic-identity/from-self-as-code.md`, one software row
    per thing in 'runs on' and the 'build first' line as the first process in
-   `systems/register.md`, and `systems/team.md`. Then one commit on `main`,
+   `systems/register.md`, `systems/team.md`, and with `--look mine` the
+   business's `standards/brand.md` from their look's lines, its own name as
+   the letterhead. Then one commit on `main`,
    'Operations as Code: day one', through the pack's own hook.
 3. **GitHub, private.** When they are signed in, the pack's hub tool makes the
    private repo and pushes. When they are not, it says so and the repo stays

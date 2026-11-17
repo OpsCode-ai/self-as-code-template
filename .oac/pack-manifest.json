@@ -2,7 +2,7 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "c95f6c5c8e295957360d876c8e71def65975fde96c4c20a94ebe907d528ecefd",
+  "content_id": "d44e091a133a86424951436296a7cd35aab68bd1e2b60fc031aa2512e3c33fa3",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
@@ -40,7 +40,7 @@
       "sha256": "26e1c44e2fb7f5467fe2195eea5ba36e2f6263a2fe320bc3121db78180256277"
     },
     ".claude/commands/self-as-code.md": {
-      "sha256": "3bf80cbff5d0bade8abc339021657c03a327cafec895477b8e64af3c704e40af"
+      "sha256": "2fe41cb9539ef6e2b8007dde49e43ec07a20bb05d27ed52fb9fcbcebd3fea332"
     },
     ".claude/commands/start.md": {
       "sha256": "d669595d8e7eb689e2fe9d4ca4aa209a8c75b66a16d111190d3a605a154a8310"
@@ -55,16 +55,16 @@
       "sha256": "25010a7723781da9aa66ab2ea970182203ba71289e9b2c3f01ae3305f870a2c7"
     },
     ".gitignore": {
-      "sha256": "4cd77d1e943bd3979acf2ba01c7a3c92808fb63557bc7350a013d3770a94c934"
+      "sha256": "9e54f2d165ec2b8274082be4c1653ef30d6816c97fd0e1eb484d803da577fd72"
     },
     ".oac/manifest.yml": {
       "sha256": "6ab2bc3d13e537a548c70ec768d02ab20c0acdf34d4ae2006ef560420aaacdc8"
     },
     ".oac/operations-as-code-pack.zip": {
-      "sha256": "1354fa688c9da51bbf3ad5293a93c0f3ed1c2b40f340cbf12284afdcc08d0b19"
+      "sha256": "28a46f8c5ded5b9bec61110d7621529114aeadc478398ffe98708bd20ba7a302"
     },
     ".oac/sac-framework.md": {
-      "sha256": "464a7d4adbe72f9ac6351c8258490d3e2497fa2108dde4c5559adea645d53e65"
+      "sha256": "cfe4eb760746269f2d3929a70fdca151279518353c630fbb5f8c85f098cdfee0"
     },
     "CLAUDE.md": {
       "sha256": "8fe6c6d071631422c00796d224200f3bd78480a7ae17823e323da7a94069a2ea"
@@ -121,7 +121,7 @@
       "sha256": "182405b0a28762d3bd2cc6b65c885c89c23bba88ecc47a97f440a73c6ce3d78a"
     },
     "scripts/lib/brand.py": {
-      "sha256": "fb713cac3a5edfe5c68c2ab60114082e929f89f5c2f473537aa7f8dd8417d4e7"
+      "sha256": "aec259f78c6fea13bd101db57afba41f53d9527beb7b01583805617b6ee46348"
     },
     "scripts/lib/fonts/inter-variable.woff2": {
       "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
@@ -886,7 +886,7 @@
       "sha256": "ea0c1c947d0e7f9c8c93a66a979388e52678e12ebfccec0e363a60f5cb923225"
     },
     "scripts/oac-vision.py": {
-      "sha256": "7f47a07f23f34cee043885371fe1abe4df6679a726c26312da5bba70ecde84fe"
+      "sha256": "0f4860ad3faaa612396885595c18accd1d9ebd978583d10c5ed799e2556e539d"
     },
     "scripts/sac-brain.py": {
       "sha256": "b523b930561fd77a5d8405d3837785ff9f8d779eba456297ebfaf8d401371702"
@@ -898,7 +898,7 @@
       "sha256": "b484be8db521da397d7c10a28f2ac0a5776a89c0b48a93301af088a3f30c76f6"
     },
     "scripts/sac-deploy.py": {
-      "sha256": "04bda3c70340c0e49d01b98fb3887fc5a5710f4cea8e87fa5882ff2802028a8e"
+      "sha256": "67254af42d47c293c6345679db1c256654f5ca771c0bba642322f560f66c24a1"
     },
     "scripts/sac-meeting.py": {
       "sha256": "6a85e547a2b79baa72415adae9c94d4d99fe79350d779536ffb4402a41ced954"

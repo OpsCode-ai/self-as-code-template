@@ -3,10 +3,10 @@ title: "The Self as Code framework"
 type: spec
 audience: internal
 status: active
-framework_version: "0.11"
+framework_version: "0.12"
 created: 2026-10-03
-updated: 2026-10-30
-summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.11 settles your look before anything is made for you: the session reads your plan for who you are, draws three quiet looks on one page with a sample report, a sample dashboard and your name as a letterhead, you say a number, and standards/brand.md holds it; vision.md beside your plan lists what your plan makes and how often; nothing made for you looks off the shelf, the vibe-coded look every AI tool makes. Version 0.10 gives the week its own moment: /sac week plans on Sunday, reviews on Friday and says where the week is up to on any other day, one page per week; each business gets its one thing from the goal it was sent; Friday reads the floor from the log and each business's repo before it asks; and the message at the top of every session reads the floor held, each business moved or quiet, today's line and the next moment, with /done asking the floor one word per line. Version 0.9 asks about the person's work before their businesses, so a job, a career, a family or a project each get a block and only a business gets its own repo; opens the floor with values, each held to one real moment and written as a line for the worst day; measures the future you in the time that counts; asks what kind of partner or parent that person is; names the daily steps as the system that holds the floor when discipline wanes; and has the review and the check ask which values held. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
+updated: 2026-11-18
+summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.12 asks, when a business is set up, whether it starts from your look or picks its own; only the look's lines cross, never the reasons. Version 0.11 settles your look before anything is made for you: the session reads your plan for who you are, draws three quiet looks on one page with a sample report, a sample dashboard and your name as a letterhead, you say a number, and standards/brand.md holds it; vision.md beside your plan lists what your plan makes and how often; nothing made for you looks off the shelf, the vibe-coded look every AI tool makes. Version 0.10 gives the week its own moment: /sac week plans on Sunday, reviews on Friday and says where the week is up to on any other day, one page per week; each business gets its one thing from the goal it was sent; Friday reads the floor from the log and each business's repo before it asks; and the message at the top of every session reads the floor held, each business moved or quiet, today's line and the next moment, with /done asking the floor one word per line. Version 0.9 asks about the person's work before their businesses, so a job, a career, a family or a project each get a block and only a business gets its own repo; opens the floor with values, each held to one real moment and written as a line for the worst day; measures the future you in the time that counts; asks what kind of partner or parent that person is; names the daily steps as the system that holds the floor when discipline wanes; and has the review and the check ask which values held. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
 topics: [self-as-code, curriculum]
 tags: [sac, framework, sac-brain, spoken-vocabulary, adr-125, kairos, values]
 ---
@@ -82,7 +82,7 @@ any of them contains a system word. Everything else is for the agent.
   per value: `Value: discipline: the plan runs even when I don't want it to.`
   The name, then what it looks like on the worst day. The dashboard draws them
   and `/sac check` asks which held.
-- **Record the version.** Put `framework_version: "0.11"` in the frontmatter of
+- **Record the version.** Put `framework_version: "0.12"` in the frontmatter of
   `self-as-code.md`.
 
 ## For the agent: how to write
@@ -949,3 +949,18 @@ says so in plain words if asked.
 > Let's set up your first business properly. It gets its own repository, which
 > you can open to the people who work with you. This one, your private space,
 > stays yours alone.
+
+Then its look, once the setup lines and the shared statements have been read
+back and before anything is made. Only when the person's own look is picked
+(`standards/brand.md` is no longer the seed); if it is not, say so, skip the
+question, and the business picks its own the first time something is made
+for it.
+
+> One more thing: how this business should look. Its pages can start from
+> your own look, so they match yours. Or it can have a look of its own, picked
+> the first time something is made for it. Which?
+
+On 'mine', run the deploy with `--look mine`. Only the look's lines cross:
+ink, paper, accent, typeface, light or dark, movement and which icons. The
+reasons behind them are the plan's words, and they stay home. On 'its own',
+run it as it is. Either way, say which it was.

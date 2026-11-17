@@ -44,7 +44,9 @@ WHAT CROSSES, AND WHAT NEVER DOES
     Only the setup lines of that business's block and the split rows routed to
     it. Not the person's words about the business, not any other heading, not
     a file. Nothing `audience: owner` is written and no file from this repo is
-    copied. --show prints exactly what would cross and writes nothing.
+    copied. --show prints exactly what would cross and writes nothing. The
+    owner's look crosses on their yes (--look mine): the look's lines only,
+    never the reasons behind them (ADR-137, amended 18 November 2026).
 
 Usage:
     python3 scripts/sac-deploy.py <business> --show
@@ -149,6 +151,8 @@ def _load(name: str, filename: str):
 split = _load("sac_split", "self-as-code-split.py")
 meeting = _load("sac_meeting", "sac-meeting.py")
 dashboard = _load("sac_dashboard", "sac-dashboard.py")
+sys.path.insert(0, str(HERE))
+from lib import brand  # noqa: E402  (the one reader of standards/brand.md)
 
 
 def git(cwd: Path, *args: str) -> subprocess.CompletedProcess:
@@ -382,6 +386,42 @@ def add_operation(text: str, name: str) -> tuple[str, bool]:
 
 # ── The run ──────────────────────────────────────────────────────────────────
 
+LOOK_LINES = ("ink", "paper", "accent", "typeface", "mode", "movement", "icons")
+
+
+def say_look(look: dict, want: str) -> str:
+    """What happens to the business's look, said once; returns 'mine' or 'own'.
+
+    'mine' crosses the look's lines only: the colours, the typeface, light or
+    dark, movement and which icons. The reasons behind them quote the plan,
+    and the plan stays home (ADR-137, amended 18 November 2026)."""
+    if want == "mine" and look.get("written"):
+        face = look.get("typeface") or "no typeface named"
+        print(f"  its look: yours. Ink {look['ink']}, paper {look['paper']}, accent {look['accent']}, {face}, "
+              f"{look['mode']}, movement {look['movement']}, {look.get('icons', 'carbon')} icons cross; "
+              "the reasons behind them are your plan's words and stay home")
+        return "mine"
+    if want == "mine":
+        print("  its look: your own is not picked yet (standards/brand.md is the seed), so the business chooses its own "
+              "the first time something is made for it. Run /sac vision first if it should start from yours")
+        return "own"
+    print("  its look: its own, chosen the first time something is made for it, or its brand put into its standards/brand.md")
+    return "own"
+
+
+def business_brand(dest: Path, look: dict, biz: dict, owner: str, today: str) -> Path:
+    """The business's standards/brand.md from the owner's look lines, written the
+    business way (audience: internal, its name as the letterhead)."""
+    vision = _load("vision", "oac-vision.py")
+    crossing = {k: look[k] for k in LOOK_LINES if k in look}
+    crossing.update({
+        "name": "the owner's look", "feel": look.get("feel") or "",
+        "letterhead": biz["name"], "under": biz["setup"].get("Serves why", "") or "",
+        "because": [f"Started from {owner}'s own look at /sac deploy on {today}. Change it here, never there."],
+    })
+    return vision.write_brand(dest, crossing, "business", today)
+
+
 def say_crossing(biz: dict, groups: dict[str, list[dict]]) -> None:
     if biz["setup"]:
         print(f"  from its block in your plan, {len(biz['setup'])} setup line{'s' if len(biz['setup']) != 1 else ''}:")
@@ -411,6 +451,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--fetch", action="store_true", help="refresh the copy in .oac/ from the public template on GitHub first")
     ap.add_argument("--local", action="store_true", help="make it on this laptop only; no GitHub")
     ap.add_argument("--owner", help="a GitHub organisation to own the repo (default: your account)")
+    ap.add_argument("--look", choices=("mine", "own"), default="own",
+                    help="start the business from your look (mine: only the look's lines cross), or let it choose its own the first time something is made (own, the default)")
     a = ap.parse_args(argv)
     root = Path(a.root).resolve()
 
@@ -460,6 +502,8 @@ def main(argv: list[str] | None = None) -> int:
     if not biz["in_plan"]:
         print("  named in your manifest but with no block in your plan, so no setup lines")
     say_crossing(biz, groups)
+    look = brand.read(root)
+    look_choice = say_look(look, a.look)
 
     if dest.exists():
         print(f"\n  {dest} already exists, so nothing was made. Open it and run /oac there, or pick another place with --dest.")
@@ -513,6 +557,9 @@ def main(argv: list[str] | None = None) -> int:
     if reg.is_file():
         text, n_sw, n_pr = seed_register(reg.read_text(encoding="utf-8"), items, biz["setup"].get("Build first"), owner_first, today)
         reg.write_text(text, encoding="utf-8")
+    if look_choice == "mine":
+        business_brand(dest, look, biz, owner, today)
+        written.append("standards/brand.md")
     people = biz["setup"].get("People")
     people_line = f"\nSelf as Code says: {people}. Add a row for each. [source: self-as-code, 'people']\n" if people else ""
     (dest / "systems" / "team.md").write_text(
@@ -529,7 +576,8 @@ def main(argv: list[str] | None = None) -> int:
                       f"Set up by `/sac deploy` on {today} from {owner}'s Self as Code: "
                       f"{len(biz['setup'])} setup line(s) and {n_rows} shared statement(s) in "
                       f"`context-core/strategic-identity/`, {n_sw} software row(s) to confirm and "
-                      f"{n_pr} process in `systems/register.md`, and `systems/team.md`.\n", encoding="utf-8")
+                      f"{n_pr} process in `systems/register.md`, and `systems/team.md`"
+                      + (", and the owner's look in `standards/brand.md`" if look_choice == "mine" else "") + ".\n", encoding="utf-8")
 
     # Day one, on main, through the hook.
     r = git(dest, "init", "-q", "-b", "main")
