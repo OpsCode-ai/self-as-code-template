@@ -2,7 +2,7 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "c0f4b5c8d13dc243d4ea9eea6b966ced1d90126ee4ee4fa26d4043803ea4f1c5",
+  "content_id": "7a263fa5a6afd0ff90e9ee77a028b5a11d7024bddae498ff366024a16e34fe66",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
@@ -25,7 +25,7 @@
       "sha256": "4ce8af121d5bb31ece3eb7b2621fe9dc45b60fd3ce704f00763f8a054666680e"
     },
     ".claude/commands/done.md": {
-      "sha256": "45180c48b94d90172f24622761052e4a4d9c696f0b269f886a5a78935b3953f8"
+      "sha256": "a76fecd9324e9d22a72d0038a94f00638c20b811b473eb9948d4c5c3f369b200"
     },
     ".claude/commands/github.md": {
       "sha256": "3712358ae889908c301d08a80963a8cb76c2eea2a6731d40fe62d2dfe5715355"
@@ -43,7 +43,7 @@
       "sha256": "cbe2617a1df399ba29b8a944f4430e3d29bab65803f829c7e24434f12a0434ea"
     },
     ".claude/commands/start.md": {
-      "sha256": "83200178fb302101bf338e6d6a6c8f8f96bb24ea83912886da3d2e7c7eb5db72"
+      "sha256": "d669595d8e7eb689e2fe9d4ca4aa209a8c75b66a16d111190d3a605a154a8310"
     },
     ".claude/commands/task-bridge.md": {
       "sha256": "2c4d2e7411954731345b42dbb205c6204a8da505cd514ef0ddc9e90b18a04db4"
@@ -61,7 +61,7 @@
       "sha256": "6ab2bc3d13e537a548c70ec768d02ab20c0acdf34d4ae2006ef560420aaacdc8"
     },
     ".oac/operations-as-code-pack.zip": {
-      "sha256": "45b79fcb2b4abc3377627d810f2488127fab38bc4eea45639280f3d5b219a288"
+      "sha256": "40ba051fe30f09b86152053d4f28dc8f060a51ba0a045f0af41227702e5a1866"
     },
     ".oac/sac-framework.md": {
       "sha256": "a6b7fa866578a4ce2f36459cff3853a1db7767f730ba5acbf1d2e4deca2d0739"
@@ -149,6 +149,9 @@
     },
     "scripts/oac-statusline.sh": {
       "sha256": "5b098c2f8caa7e4252ca8e534944b5dd9a142bb81f9684e28c8c457ee936cfa5"
+    },
+    "scripts/oac-sync-check.py": {
+      "sha256": "240490294dbdf44f8fb5321cb0b7ed6d64de60e522b0c8c982d2051cd270cc59"
     },
     "scripts/oac-upgrade.py": {
       "sha256": "f6096a9ead6ced28f4a770d385099f423385c109c9a7b9d0071cd1b00b9948cd"

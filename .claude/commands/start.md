@@ -78,11 +78,17 @@ laptop and GitHub already match, or that there is no copy on GitHub yet. If it
 stops on something (unsaved changes in the way, a conflict), sort that out
 before any work starts.
 
-Uncommitted files from last time get one line too:
+Then check nothing is waiting to be saved, on any branch:
 
 ```bash
-git status --porcelain | wc -l
+python3 scripts/oac-sync-check.py --no-fetch --risks
 ```
+
+It only looks. If it lists anything, say it in plain words and offer to save
+it: 'You have 2 files from last time that are not saved yet' or 'Your
+branch from Tuesday has work that is not on GitHub yet. Send it now?' On a
+yes, run the `/commit` steps for files and the `/push` steps for that branch.
+If it says everything is saved, say nothing about it.
 
 ### Step 5: Say where they are
 

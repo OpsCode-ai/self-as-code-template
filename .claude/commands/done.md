@@ -164,11 +164,26 @@ Say so plainly.
   install order (`/oac` step 5) and stop here. Do not create a remote from this
   command; the business's repo names and who can see them are decided there.
 
+**Then the rest of this laptop.** Today's work is pushed; check nothing else
+is waiting:
+
+```bash
+python3 scripts/oac-sync-check.py --no-fetch --risks
+```
+
+If another branch has work that is not on GitHub, say so in plain words and
+offer to send it: 'Your branch from Tuesday has 2 saves that are only on this
+laptop. Send them to GitHub too?' On a yes, push that branch without
+leaving this one: `git push -u origin <branch>`. Say what went. Never merge
+it or delete it here. If everything is
+saved, say nothing about it.
+
 ### Step 8: Close
 
 ```
 Saved: {n} files. {message first line}
 Sent to GitHub ({remote}) | Not sent: no copy on GitHub yet
+Everything else on this laptop: saved | {n} branch(es) still only here
 Your note for next time is written. Next: {roll-forward}
 ```
 
