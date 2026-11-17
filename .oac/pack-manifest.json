@@ -2,7 +2,7 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "1c9376da0f5bf336dc9f7eaa73feec5885fc9c8c3768be1d5a07f9fe18097f26",
+  "content_id": "c0f4b5c8d13dc243d4ea9eea6b966ced1d90126ee4ee4fa26d4043803ea4f1c5",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
@@ -25,7 +25,7 @@
       "sha256": "4ce8af121d5bb31ece3eb7b2621fe9dc45b60fd3ce704f00763f8a054666680e"
     },
     ".claude/commands/done.md": {
-      "sha256": "55ce45c7df33f2e2b3f7871e20f82a80f046f2d0141586d6d12d9651eb848d5b"
+      "sha256": "45180c48b94d90172f24622761052e4a4d9c696f0b269f886a5a78935b3953f8"
     },
     ".claude/commands/github.md": {
       "sha256": "3712358ae889908c301d08a80963a8cb76c2eea2a6731d40fe62d2dfe5715355"
@@ -61,7 +61,7 @@
       "sha256": "6ab2bc3d13e537a548c70ec768d02ab20c0acdf34d4ae2006ef560420aaacdc8"
     },
     ".oac/operations-as-code-pack.zip": {
-      "sha256": "4a5e324bfb29068dd4c4fc8e8a3722d48ff1af8d28a2e9c8f5b45630709b49f9"
+      "sha256": "45b79fcb2b4abc3377627d810f2488127fab38bc4eea45639280f3d5b219a288"
     },
     ".oac/sac-framework.md": {
       "sha256": "a6b7fa866578a4ce2f36459cff3853a1db7767f730ba5acbf1d2e4deca2d0739"

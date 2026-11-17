@@ -187,12 +187,32 @@ to `main` directly:
 2. Commit by path on that branch, as above, then push it:
    `git push -u origin <branch>`.
 3. Open the pull request and merge it, unless the business has asked for a
-   review first: `gh pr create --fill --base main && gh pr merge --merge --delete-branch`.
+   review first: `gh pr create --fill --base main && gh pr merge --merge`.
+   No `--delete-branch`: whether the branch goes is the person's call (step 5).
 4. Back to `main` and up to date: `git switch main && git pull --ff-only`.
-   Tomorrow's `/start` makes tomorrow's branch.
+5. Ask once, in plain words, and only after the merge landed:
+
+   > Your work is in the shared copy now. Will you come back to this branch
+   > for more work?
+   >
+   > - **No, tidy it away.** Most days this is the answer
+   > - **Yes, keep it.** For work you will pick up again on this branch
+
+   On **No**: `git branch -d <branch>`, then `git push origin --delete <branch>`.
+   `-d`, never `-D`: if git says the branch is not fully merged, something on
+   it never reached the shared copy, so keep it and say so. If GitHub already
+   removed its copy, say that and carry on.
+   On **Yes**: touch nothing. `python3 scripts/oac-hub.py branch` switches back
+   to it while it is still today's branch; after that, `git switch <branch>`.
+
+   If the pull request is still waiting for a review, do not ask. The branch
+   stays until it merges, and the next `/done` asks then.
+
+   Tomorrow's `/start` makes tomorrow's branch either way.
 
 Say what happened in plain words: 'saved on your branch, merged into the
-shared copy, and pulled back down'. Two people editing the same file on the
+shared copy, pulled back down, and your branch tidied away' (or 'kept for
+later'). Two people editing the same file on the
 same day can still clash; when the merge says so, show them the two versions
 and let them choose, never guess. Access by role, for staff who should see
 only part of the repo, comes later from OpsCode.
