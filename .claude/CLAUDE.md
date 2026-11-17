@@ -23,6 +23,24 @@ installed (opscode-hq ADR-125).
   from `self-as-code.md` and the five folders, and opens it in the browser.
   It runs `python3 scripts/sac-dashboard.py`. Nothing leaves the laptop.
   Offer it the moment a plan is merged, and whenever they ask to see it.
+- **`/sac vision`** settles how things look before anything is made. It
+  reads the plan for who the person is, proposes three quiet looks, draws
+  them on one page with a sample report, a sample dashboard and their
+  letterhead (`python3 scripts/oac-vision.py looks`), and writes the one they
+  pick to `standards/brand.md` (`pick N`). Then it reads `vision.md` back,
+  the list of what their plan makes, and asks what else. Once; also the
+  first time a page, a report or a dashboard is asked for while `brand.md`
+  is still the seed.
+- **Everything made for them reads `vision.md` first.** Before any report,
+  dashboard, board, page or timeline, read `vision.md`, `standards/brand.md`,
+  `standards/voice.md` and the page for its kind under `standards/outputs/`,
+  and follow them. If what they ask for is not in `vision.md` yet, add it
+  there first and show them, then make it. Before a page is shown, run
+  `python3 scripts/oac-vision.py check <page>`: a colour that is not theirs
+  is fixed, not explained. Nothing made for a person looks off the shelf,
+  the vibe-coded look every AI tool makes: the purple fade, the same rounded
+  cards, the same font everywhere, dark panels with green text, code font for
+  ordinary words. It is made for them: their words, their colours, their name.
 - **`/sac deploy <business>`** makes one business's own repo from the plan:
   the business pack unpacked at `~/projects/<business>-ops`, named, seeded
   with that business's setup lines and what they chose to share, the first

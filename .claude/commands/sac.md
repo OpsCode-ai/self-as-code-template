@@ -23,7 +23,8 @@ straight through:
 | `/sac week` | your week: on Sunday it plans it, on Friday it reviews it, any other day it says where the week is up to (`/sac execution` still works) |
 | `/sac deploy <business>` | set up one business's own repo from what you captured |
 | `/sac dashboard` | your plan drawn as one page, on this laptop. Run it any time |
-| `/sac voice` | how you want to sound and what you like to look at, asked once; everything made for you reads them first |
+| `/sac voice` | how you want to sound, asked once from three things you wrote; everything written for you reads it first |
+| `/sac vision` | your look, picked once from three samples on one page, then what your plan makes for you (`vision.md`); everything made for you reads them first |
 | `/sac help` | the one page: the four words to know, where things are, when |
 | `/sac meeting <file>` | a meeting transcript lands here first; the parts you choose go to each business as a pull request |
 

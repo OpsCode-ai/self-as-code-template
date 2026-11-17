@@ -1,0 +1,17 @@
+/* Gentle movement, and none when the computer asks for less (ADR-138).
+   CSS only: a page made for a person carries no script. Everything sits
+   inside prefers-reduced-motion: no-preference, so a person who has asked
+   for less gets a still page with nothing missing. */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes lib-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes lib-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes lib-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+  .fx-rise{animation:lib-rise .5s ease both;animation-delay:calc(var(--i,0)*80ms)}
+  .fx-grow{transform-origin:left center;animation:lib-grow .6s ease both}
+  .fx-draw{stroke-dasharray:1;stroke-dashoffset:1;pathLength:1;animation:lib-draw 1.2s ease both}
+  .fx-lift{transition:transform .2s ease}
+  .fx-lift:hover{transform:translateY(-2px)}
+  @supports (animation-timeline:view()){
+    .fx-reveal{animation:lib-rise linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+  }
+}

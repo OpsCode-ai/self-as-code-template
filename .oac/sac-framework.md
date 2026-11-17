@@ -3,10 +3,10 @@ title: "The Self as Code framework"
 type: spec
 audience: internal
 status: active
-framework_version: "0.10"
+framework_version: "0.11"
 created: 2026-10-03
-updated: 2026-10-27
-summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.10 gives the week its own moment: /sac week plans on Sunday, reviews on Friday and says where the week is up to on any other day, one page per week; each business gets its one thing from the goal it was sent; Friday reads the floor from the log and each business's repo before it asks; and the message at the top of every session reads the floor held, each business moved or quiet, today's line and the next moment, with /done asking the floor one word per line. Version 0.9 asks about the person's work before their businesses, so a job, a career, a family or a project each get a block and only a business gets its own repo; opens the floor with values, each held to one real moment and written as a line for the worst day; measures the future you in the time that counts; asks what kind of partner or parent that person is; names the daily steps as the system that holds the floor when discipline wanes; and has the review and the check ask which values held. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
+updated: 2026-10-30
+summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.11 settles your look before anything is made for you: the session reads your plan for who you are, draws three quiet looks on one page with a sample report, a sample dashboard and your name as a letterhead, you say a number, and standards/brand.md holds it; vision.md beside your plan lists what your plan makes and how often; nothing made for you looks off the shelf, the vibe-coded look every AI tool makes. Version 0.10 gives the week its own moment: /sac week plans on Sunday, reviews on Friday and says where the week is up to on any other day, one page per week; each business gets its one thing from the goal it was sent; Friday reads the floor from the log and each business's repo before it asks; and the message at the top of every session reads the floor held, each business moved or quiet, today's line and the next moment, with /done asking the floor one word per line. Version 0.9 asks about the person's work before their businesses, so a job, a career, a family or a project each get a block and only a business gets its own repo; opens the floor with values, each held to one real moment and written as a line for the worst day; measures the future you in the time that counts; asks what kind of partner or parent that person is; names the daily steps as the system that holds the floor when discipline wanes; and has the review and the check ask which values held. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
 topics: [self-as-code, curriculum]
 tags: [sac, framework, sac-brain, spoken-vocabulary, adr-125, kairos, values]
 ---
@@ -82,7 +82,7 @@ any of them contains a system word. Everything else is for the agent.
   per value: `Value: discipline: the plan runs even when I don't want it to.`
   The name, then what it looks like on the worst day. The dashboard draws them
   and `/sac check` asks which held.
-- **Record the version.** Put `framework_version: "0.10"` in the frontmatter of
+- **Record the version.** Put `framework_version: "0.11"` in the frontmatter of
   `self-as-code.md`.
 
 ## For the agent: how to write
@@ -748,15 +748,74 @@ not every time.
 
 Write `standards/voice.md`: the three as they are under `## Three things I
 wrote`, then `## How I sound` in the person's own words, then `## Never` with
-the one line. Then:
+the one line. Then their look: 'Your look', below. From then on, everything
+made for the person reads both files first, and the page for its kind under
+`standards/outputs/`.
 
-> And what you like to look at. Two or three colours you'd put on your own
-> page, a typeface if you have one, light or dark. If you don't know, say so,
-> and it stays plain black on white until you do.
+## Your look
 
-Write `standards/brand.md`: the colours as hex if they gave any, the typeface,
-light or dark, one line each. From then on, everything made for the person
-reads both files first, and the page for its kind under `standards/outputs/`.
+For `/sac vision`, and the first time a page, a report or a dashboard is made
+for the person while `standards/brand.md` is still the seed. Once, not every
+time. If `standards/voice.md` is still the seed, 'Your voice' comes first.
+
+Read before you speak: the whole plan, `standards/voice.md`, the folder notes,
+and what is in `projects/` and `evidence/`. You are reading for who this
+person is, not what they own: what they protect, what they said about rest,
+noise, home and the people in it, what they want to be remembered by. Then:
+
+> Before anything gets made for you, let's settle how it should look. I've
+> read your plan. I'd say you're [three words], because you wrote '[a line]',
+> '[a line]' and '[a line]'.
+>
+> From that, three looks. I'll put them on one page: each with a sample
+> report, a sample dashboard, your name at the top the way it would sit on
+> a letter, and the pieces a page is built from: a button, a chart, a few
+> icons, a table. Have a look and tell me the number. Or say what's wrong
+> with each one, and I'll try again.
+
+Write the three to `.oac/looks.json` (the shape is in `scripts/oac-vision.py`):
+for each, a name, three words for the feel, an ink colour, a paper colour and
+one accent as hex, a typeface, how much things move, the two letterhead lines
+(their name, then one line from `## README` or `## main`), and the plan lines
+it came from. Then run `python3 scripts/oac-vision.py looks`; it draws the
+page and opens it.
+
+Every piece on the page comes from the library (`scripts/lib/library.py`):
+the icons by name, a chart from numbers, a button by its class. Never draw an
+icon or invent a chart; a page with a piece from nowhere fails the check.
+
+Keep every look quiet, and make it theirs. One accent, not three. Space, not
+boxes. Their name in their typeface, not a logo. Never the look every AI tool
+makes, which people call vibe-coded: the purple fade, the same rounded cards,
+the same font on every page, a badge on everything, a glow, dark panels with
+bright green text, code font for ordinary words. A person should look at
+their page and see something made for them, not something made for anyone.
+Dark is fine when it is calm.
+
+If none of the three is them:
+
+> Open refero.design in your browser. It shows screens from real apps and
+> sites. Find two you'd be happy to look at every day, tell me what you liked
+> about them, and I'll make a fourth look from that.
+
+On their number, run `python3 scripts/oac-vision.py pick N`. It writes
+`standards/brand.md`. Then:
+
+> That's your look. It lives in one file, standards/brand.md. Everything made
+> for you reads it first: your dashboard, your reports, your pages. Change it
+> there once and the next thing follows.
+
+Then what the plan makes. `vision.md` beside the plan already lists four
+things: the dashboard, the weekly report, the project board and the future
+self journey. Say them in one line each, then:
+
+> What else do you want your plan to make for you? A monthly money page, a
+> reading list, a page for each business. Say it and I'll add it.
+
+Add each as a row in `vision.md`: what it is, what it shows, what it reads,
+how often, where it is kept. Then run `python3 scripts/sac-dashboard.py`, so
+the first thing they see is their own plan in their own look. Nothing in
+`vision.md` is made until they ask for it. The file is the list.
 
 ## The 90-day review
 

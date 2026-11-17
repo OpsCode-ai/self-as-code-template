@@ -54,7 +54,8 @@ repo except the pull requests the person agrees to at the end (ADR-125).
 | `/self-as-code check` | The always-growing checks over who they are becoming, their floor and their recent commits. Say where they are coasting rather than growing. |
 | `/self-as-code execution` | Planning the week: sort tasks, tie them to the one big leap, build the plan, propose strict time-blocks. |
 | `/self-as-code dashboard` | Their plan drawn as one page, on this laptop. Reads `self-as-code.md` and the five folders, writes `.oac/dashboard.html` and opens it. Nothing leaves the laptop. |
-| `/self-as-code voice` | How they want to sound, from three things they wrote, into `standards/voice.md`; what they like to look at into `standards/brand.md`. Once; also asked the first time anything is made for them while `voice.md` is still the seed. |
+| `/self-as-code voice` | How they want to sound, from three things they wrote, into `standards/voice.md`. Once; also asked the first time anything is written for them while `voice.md` is still the seed. |
+| `/self-as-code vision` | Their look, picked once from three samples drawn on one page, into `standards/brand.md`; then `vision.md`, the list of what their plan makes. Also the first time a page, a report or a dashboard is asked for while `brand.md` is still the seed. `look` also works. |
 | `/self-as-code help` | The one page: the four words to know, where things are, when. Also what you say when `/sac` is given a word it does not know. |
 | `/self-as-code meeting <file>` | A meeting transcript lands here first (`evidence/meetings/`), then the parts the person chooses go to each business as a pull request. The transcript never leaves this repo. |
 
@@ -232,7 +233,7 @@ when a plan drops below my floor. Run the always-growing checks (future bigger t
 contribution bigger than reward, learning bigger than experience, purpose bigger than money, and
 the rest) over who I am becoming, my floor and my reviews, and tell me when I am coasting rather
 than growing. On my `next_raise` date, prompt me to run `/sac review`.
-Anything made for me (an email, a page, a report, an app) reads `standards/voice.md`, `standards/brand.md` and the page for its kind in `standards/outputs/` first, and is shown to me before it goes anywhere. If `standards/voice.md` is still the seed, ask me the voice questions once (`/sac voice`) before making the first thing.
+Anything made for me (an email, a page, a report, a dashboard, an app) reads `vision.md`, `standards/voice.md`, `standards/brand.md` and the page for its kind in `standards/outputs/` first, and is shown to me before it goes anywhere. If `standards/voice.md` is still the seed, ask me the voice questions once (`/sac voice`) before writing the first thing. If `standards/brand.md` is still the seed, show me three looks once (`/sac vision`) before making the first page. If what I ask for is not in `vision.md` yet, add it there first and show me, then make it.
 ```
 
 ## deploy: set up one business
@@ -350,7 +351,41 @@ business, anything parked, what they share, and their folders.
 
 If the script says there is no plan yet, say so and offer `/sac`. If a
 browser does not open, give them the path to open themselves. Never edit the
-page by hand; it is rebuilt from the plan every time.
+page by hand; it is rebuilt from the plan every time. It draws in their look
+when `standards/brand.md` is written, and plain black on white until then; if
+they ask why it is plain, offer `/sac vision`.
+
+## vision: pick a look, then what the plan makes
+
+`/self-as-code vision` (`look` also works), and the first time a page, a
+report or a dashboard is made for the person while `standards/brand.md` is
+still the seed. Once. The framework's 'Your look' section is what you say and
+the order you do it in: read the whole plan for who they are, say the three
+words back with the lines they came from, write two or three quiet looks to
+`.oac/looks.json` (the shape is in the script's docstring; every colour as
+hex, never a word), then run:
+
+```bash
+python3 scripts/oac-vision.py looks
+```
+
+It draws `.oac/looks.html`, each look with a sample report, a sample
+dashboard and their letterhead, and opens it. On their number:
+
+```bash
+python3 scripts/oac-vision.py pick N
+```
+
+writes `standards/brand.md`. Then read `vision.md` back to them, one line per
+row, ask what else they want their plan to make, add each as a row, and run
+the dashboard so the first thing they see is their plan in their look. If
+none of the three looks is them, say the refero.design line from the
+framework and make a fourth from what they liked; never load that site, or
+anything, into a page made for them.
+
+From then on, before any page or dashboard is shown, run
+`python3 scripts/oac-vision.py check <page>`. A colour that is not
+theirs is fixed, not explained.
 
 ## meeting: a meeting lands here first, then goes to each business
 
@@ -396,10 +431,11 @@ pull request they merge (ADR-127 Rule 5). The mechanics are
 email, a page, a report) while `standards/voice.md` still says 'Not written
 yet'. The framework's 'Your voice' section is what you say. Write
 `standards/voice.md` and `standards/brand.md` as it describes, on a branch;
-they merge. From then on, before making anything for them, read both files
-and the page for its kind under `standards/outputs/`, and show the thing to
-them before it goes anywhere. Nothing made for a person may look or sound
-like a machine made it.
+they merge. The look itself is `/sac vision`, below: three samples, not a
+question about colours. From then on, before making anything for them, read
+both files, `vision.md` and the page for its kind under `standards/outputs/`,
+and show the thing to them before it goes anywhere. Nothing made for a person
+may look or sound like a machine made it.
 
 ## help: the one page
 
@@ -414,11 +450,12 @@ Self as Code. One plan, written once, that steers every day.
 Four words to know
   /start      begin. Reads your plan and your last note, says how you're going.
   /done       finish. Writes today down, asks your floor, saves, sends it to GitHub.
-  /sac        the questions, the first time. Then /sac check, /sac week, /sac review.
+  /sac        the questions, the first time. Then /sac check, /sac week, /sac review, /sac vision.
   /sac help   this page.
 
 Where things are
   self-as-code.md         your plan
+  vision.md               what your plan makes for you. Your look is standards/brand.md
   evidence/days/          your days
   projects/weeks/         this week
   inbox.md                what came in. /capture adds a line; /sac week sorts it

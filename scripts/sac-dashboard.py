@@ -13,6 +13,13 @@ WHAT LEAVES THE LAPTOP
     fonts are read from disk and embedded in the page. Delete the page any
     time; it is rebuilt from the plan.
 
+THE LOOK
+    standards/brand.md, when it is written, sets the ink, the paper, the one
+    accent, the typeface and the two letterhead lines (ADR-136 Rule 11;
+    ADR-137). Every other colour on the page is a blend of those three, so
+    `oac-vision.py check` can prove the page kept to the look. A seed, or no
+    file, is plain black on white: the promise the seed makes.
+
 WHAT IT SHOWS
     The ladder (20, 10 and 5 years, the six-month leap, the next review, this
     week, tomorrow, every day); why they exist; who they are becoming; the
@@ -48,6 +55,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib.frontmatter import body as fm_body, frontmatter  # noqa: E402
+from lib.brand import PLAIN, palette, font_stack, read as read_brand  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 SPINE_ADDRESSES = ("self-as-code.md", "goals/self-as-code.md")
@@ -395,18 +403,25 @@ def font_css() -> str:
     return "".join(rules)
 
 
+def root_css(look: dict) -> str:
+    """The page's colours and type, from the look: three colours and their blends."""
+    pal = palette(look)
+    return (f":root{{--ink:{pal['ink']};--paper:{pal['paper']};--accent:{pal['accent']};--muted:{pal['muted']};"
+            f"--line:{pal['line']};--soft:{pal['soft']};--accent-soft:{pal['accent_soft']};"
+            f"--accent-ink:{pal['accent_ink']};--font:{font_stack(look)}}}")
+
+
 CSS = """
-:root{--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--soft:#f6f7f9;--accent:#16a34a;--accent-soft:#dcfce7;--accent-ink:#166534}
 *{box-sizing:border-box}
-html{background:#fff}
-body{margin:0;background:#fff;color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--font);-webkit-font-smoothing:antialiased}
 .wrap{max-width:960px;margin:0 auto;padding:44px 16px 72px}
-.eyebrow{font:600 12px/1.2 'JetBrains Mono',ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font:600 12px/1.2 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h1{font-size:34px;line-height:1.15;letter-spacing:-.01em;margin:8px 0 6px}
 h2{font-size:20px;margin:0 0 12px;letter-spacing:-.005em}
 .meta{color:var(--muted);margin:0}
 section{margin-top:44px}
-.card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:#fff}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--paper)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .why p{font-size:22px;line-height:1.45;margin:0 0 10px}
 p{margin:0 0 10px}p:last-child{margin-bottom:0}
@@ -415,7 +430,7 @@ ul{margin:0 0 10px;padding-left:20px}ul:last-child{margin-bottom:0}li{margin:4px
 .ladder{position:relative;margin-left:8px;padding-left:28px;border-left:2px solid var(--line)}
 .rung{position:relative;padding:0 0 22px}
 .rung:last-child{padding-bottom:4px}
-.rung::before{content:'';position:absolute;left:-36px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
+.rung::before{content:'';position:absolute;left:-36px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--accent)}
 .rung.now::before{background:var(--accent);box-shadow:0 0 0 6px var(--accent-soft)}
 .rung .eyebrow{margin-bottom:4px}
 .rung p{margin:0}
@@ -434,14 +449,19 @@ code{font:13px/1.4 'JetBrains Mono',ui-monospace,monospace;background:var(--soft
 """
 
 
-def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today: str) -> str:
+def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today: str,
+           look: dict | None = None) -> str:
+    look = look or dict(PLAIN)
     s = plan["sections"]
     f = plan["fields"]
-    name = plan["name"]
+    # The letterhead in brand.md names the page when it is written; the plan's title otherwise.
+    name = look.get("letterhead") or plan["name"]
     parts: list[str] = []
 
     # Header
     meta = []
+    if look.get("under"):
+        meta.append(esc(look["under"]))
     if f.get("framework_version"):
         meta.append(f"Written on version {esc(f['framework_version'])}")
     if f.get("last_raised"):
@@ -571,7 +591,7 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
     return ("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
             "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
             f"<title>{esc(name)}: Self as Code</title>"
-            f"<style>{font_css()}{CSS}</style></head><body><div class=\"wrap\">"
+            f"<style>{root_css(look)}{font_css()}{CSS}</style></head><body><div class=\"wrap\">"
             + "".join(parts) + "</div></body></html>\n")
 
 
@@ -593,7 +613,8 @@ def card(title: str, meaning: str, text: str | None) -> str:
 def build(root: Path, out: Path, today: str | None = None) -> Path:
     spine = find_spine(root)
     plan = read_plan(spine, root)
-    page = render(plan, folder_counts(root), recent_saves(root), today or date.today().isoformat())
+    page = render(plan, folder_counts(root), recent_saves(root), today or date.today().isoformat(),
+                  look=read_brand(root))
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")
     return out
