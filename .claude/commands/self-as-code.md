@@ -91,7 +91,8 @@ branch and becomes theirs when they merge it. Nothing is final until they say so
 
 1. **After the GitHub check, before the first question**, make the branch:
    `git switch -c sac/$(date +%Y-%m-%d)`. If a guard refuses because this is the
-   main folder, run the `git worktree add` line it prints, and work there.
+   main folder, open a session folder the way `/start` step 4b does (the guard
+   prints the line), move into it, and make the branch there.
 2. **Commit after each step**, with the step's plain name as the message
    ('Your purpose', 'Your minimum'). The framework teaches what a commit is in
    step 6; by then they have watched five. **Step 6 they save themselves**, by

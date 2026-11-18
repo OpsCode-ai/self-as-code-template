@@ -90,6 +90,58 @@ branch from Tuesday has work that is not on GitHub yet. Send it now?' On a
 yes, run the `/commit` steps for files and the `/push` steps for that branch.
 If it says everything is saved, say nothing about it.
 
+### Step 4b: A folder of its own for this session
+
+Every session works in its own folder, beside the repo, so nothing else on
+this laptop can save or switch something under it: not a second window, not
+a timed job. The person never types a command for this. This step does it,
+and `/done` brings the work back and closes the folder.
+
+```bash
+python3 scripts/oac-worktree.py where
+```
+
+**It says `session <short> <branch> <path>`:** this session already has its
+folder. Say so in one line, 'Working in `{short}`', and go to step 5.
+
+**It says `main <path>`:** first look at the folders already open.
+
+```bash
+git worktree list
+```
+
+Any listed under `{repo}-sessions/` were left by an earlier session. Another
+window may still be using one, so ask once, naming them, before you touch
+any: 'You have 2 other session folders open: `price-page` and `nov-17`. If no
+other window is using them, close them?' On a yes, run
+`python3 scripts/oac-worktree.py close <short>` for each. It only closes a
+folder whose work is saved and already in `main`. When it refuses, say why
+in plain words and offer the fix:
+
+- **Unsaved files:** leave it. That window still has work in it.
+- **Saves not in `main` yet:** one person, offer to bring them home now. Run
+  `git merge --no-edit <branch>`, then the `/push` steps, then `close` again.
+  More than one person, the branch goes by pull request, as `/done` does it.
+
+Then open this session's folder. Name it from the work, two or three
+lowercase words joined by dashes (`price-page`): the **Next** line from step
+2, or what they typed after `/start`. With nothing named, use today's date
+(`2026-11-18`).
+
+```bash
+python3 scripts/oac-worktree.py open <short>
+```
+
+Its last line is the folder's path. Move this session into it with the
+`EnterWorktree` tool, `path:` that line. Then say it once:
+
+> This session has its own folder, `{short}`, so nothing else on this laptop
+> can get in its way. `/done` brings the work back and closes it.
+
+The status line shows `⧉ {short}` from here on. If `EnterWorktree` is not
+there (an older Claude Code), run `close <short>` at once and carry on in the
+main folder as before. `/done` works there too.
+
 ### Step 5: Say where they are
 
 **The words come from the saved method, by version**, so every install says
@@ -137,25 +189,20 @@ for next time, saves, and sends it to GitHub. /task-bridge leaves a note any tim
 
 ## One person, then two
 
-While one person works in this repo, everything happens on `main` and `/done`
-pushes straight there. **When `team/` has more than one person**, start the
-day on `main` and up to date, then on your own branch:
-
-```bash
-git switch main && git pull --ff-only
-python3 scripts/oac-hub.py branch
-```
-
-`/done` merges that branch at the end of the session. Each laptop's files come
-in with `python3 scripts/oac-hub.py inbox <path>...`, into `inbox/<you>/`, so
-nothing collides. Worktrees, for one person running two sessions, are in
-`WORKING.md`.
+Step 4b gives every session its own folder on its own branch,
+`<handle>/<short>`, so one person with two windows open is safe from the
+first day. The only thing that changes when **`team/` has more than one
+person** is the end: `/done` merges your branch by pull request on GitHub,
+never straight into `main`. Each laptop's files come in with
+`python3 scripts/oac-hub.py inbox <path>...`, into `inbox/<you>/`, so nothing
+collides. `WORKING.md` says how it all fits.
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `.claude/user.json` | Local identity, gitignored |
+| `.claude/user.json` | Local identity, gitignored. `oac-worktree.py open` copies it into each session folder |
+| `{repo}-sessions/<short>/` | This session's folder, beside the repo. `/start` opens it, `/done` closes it |
 | `evidence/days/current.md` | Your log in a private space. `/done` writes it, `/start` reads it; older days beside it, by date |
 | `team/{handle}/current.md` | Your log in a business; older days in `team/{handle}/logs/` |
 | `systems/register.md` | What the business runs on today (a business) |

@@ -158,11 +158,48 @@ The pre-commit hook runs: a secret scan if gitleaks is installed, the
 owner-audience check, and the frontmatter check. If it blocks, read what it
 says and fix that. Do not reach for `--no-verify`.
 
-### Step 7: Push to GitHub
+### Step 7: Bring it home, and push to GitHub
 
-Say it plainly as you do it: 'Pushing today's work to GitHub, so it is backed
-up and on every device.' Git is part of the method here, so the person should
-always know when it runs.
+```bash
+python3 scripts/oac-worktree.py where
+```
+
+**It says `main <path>`:** there is no session folder. Go straight to the
+push below.
+
+**It says `session <short> <branch> <path>`:** today's saves are on
+`<branch>`, in this session's own folder (`/start` step 4b). Bring them home
+to `main`, then close the folder. Say it as you do it: 'Bringing today's work
+back to your main folder.'
+
+1. **Leave the folder:** the `ExitWorktree` tool, `action: "keep"`. This
+   session is back in the main folder.
+
+   If it says there is no worktree session to leave, this session began
+   inside the folder (Claude Code was opened there). Do not close it:
+   removing the folder a session started in breaks Claude Code's checks
+   until it restarts. Run the `/push` steps from here, so the branch is on
+   GitHub, and say: 'Saved on `<branch>` and on GitHub. Your next `/start`,
+   in the main folder, brings it home.' Then go to step 8.
+2. **Bring down the latest:** the `/pull` steps.
+3. **One person:** `git merge --no-edit <branch>`. If git stops because the
+   same lines changed in both places, run `git merge --abort`, show them the
+   two versions and let them choose. Never guess.
+   **More than one person:** follow 'One person, then two' below instead,
+   from its step 2. Their branch goes to `main` by pull request, never by a
+   merge here.
+4. **Close the folder:**
+
+   ```bash
+   python3 scripts/oac-worktree.py close <short>
+   ```
+
+   It refuses if anything is unsaved or not home yet, and says what. Sort
+   that out. Never force it.
+
+**Then push.** Say it plainly as you do it: 'Pushing today's work to GitHub,
+so it is backed up and on every device.' Git is part of the method here, so
+the person should always know when it runs.
 
 Run the `/push` steps (`.claude/commands/push.md`). It pulls first if GitHub
 has work this laptop does not, and it never forces.
@@ -194,6 +231,7 @@ saved, say nothing about it.
 
 ```
 Saved: {n} files. {message first line}
+Brought home to main, and the session folder closed | Kept in {short}: your next /start brings it home
 Sent to GitHub ({remote}) | Not sent: no copy on GitHub yet
 Everything else on this laptop: saved | {n} branch(es) still only here
 Your note for next time is written. Next: {roll-forward}
@@ -201,23 +239,29 @@ Your note for next time is written. Next: {roll-forward}
 
 ## One person, then two
 
-While you are the only person in this repo, committing to `main` and pushing
-is correct and this command does exactly that.
+While you are the only person in this repo, step 7 merges your session's
+branch into `main` on this laptop and pushes. That is correct, and it is all
+this command does.
 
 **When `team/` has more than one person** (a business with two founders, or
-anyone who joined through `python3 scripts/oac-hub.py join`), nobody commits
-to `main` directly:
+anyone who joined through `python3 scripts/oac-hub.py join`), nobody merges
+into `main` on their own laptop:
 
-1. Be on your own branch, `<handle>/<date>`. On `main`, run
-   `python3 scripts/oac-hub.py branch` first; it makes or switches to it and
-   carries your uncommitted work along.
+1. Be on your own branch. A session folder already is, `<handle>/<short>`.
+   Working in the main folder instead (no session folder), run
+   `python3 scripts/oac-hub.py branch` first; it makes or switches to
+   `<handle>/<date>` and carries your uncommitted work along.
 2. Commit by path on that branch, as above, then push it:
-   `git push -u origin <branch>`.
+   `git push -u origin <branch>`. This works from the main folder too.
 3. Open the pull request and merge it, unless the business has asked for a
-   review first: `gh pr create --fill --base main && gh pr merge --merge`.
+   review first:
+   `gh pr create --head <branch> --fill --base main && gh pr merge <branch> --merge`.
    No `--delete-branch`: whether the branch goes is the person's call (steps 5
    and 6).
-4. Back to `main` and up to date: `git switch main && git pull --ff-only`.
+4. Back to `main` and up to date: `git pull --ff-only` in the main folder
+   (`git switch main` first if you worked there on a branch). Then close the
+   session folder, step 7's item 4. Its branch is on GitHub, so `close`
+   leaves the branch for the question below.
 5. **A log-only branch tidies itself.** Read what the pull request touched:
 
    ```bash
@@ -245,13 +289,14 @@ to `main` directly:
    `-d`, never `-D`: if git says the branch is not fully merged, something on
    it never reached the shared copy, so keep it and say so. If GitHub already
    removed its copy, say that and carry on.
-   On **Yes**: touch nothing. `python3 scripts/oac-hub.py branch` switches back
-   to it while it is still today's branch; after that, `git switch <branch>`.
+   On **Yes**: touch nothing. Next time, `/start` with the same name opens a
+   folder on it again, where you left it.
 
-   If the pull request is still waiting for a review, do not ask. The branch
-   stays until it merges, and the next `/done` asks then.
+   If the pull request is still waiting for a review, do not ask, and do not
+   close the session folder. The branch stays until it merges, and the next
+   `/done` asks then.
 
-   Tomorrow's `/start` makes tomorrow's branch either way.
+   The next `/start` opens a fresh folder either way.
 
 Say what happened in plain words: 'saved on your branch, merged into the
 shared copy, pulled back down, and your branch tidied away' (or 'kept for

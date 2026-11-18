@@ -15,25 +15,38 @@ out when something has already gone wrong.
 This puts one line at the bottom of every session that answers all of it.
 
 ```
-you@yourmachine:~/Documents/your-ops · main* | Opus 5 (1M) [ctx: 43%]
+you@yourmachine:~/projects/your-name-ops · main* | SAC · Opus 5 [ctx: 43%] $4.12
 ```
 
 | Part | What it tells you |
 | --- | --- |
-| `you@yourmachine` | Which machine. Easy to forget once you have more than one |
-| `~/Documents/your-ops` | The folder you are actually in |
-| `⧉ name` | You are in a worktree, a second copy of the repo. Magenta, and missing when you are in the normal folder |
-| `· main*` | The branch you are on. The `*` means you have unsaved changes |
-| `Opus 5 (1M)` | Which model, so a quiet downgrade is visible |
-| `[ctx: 43%]` | How full the context is. Green under 50, amber under 80, red from 80 |
+| `you@yourmachine` | Which computer. Easy to forget once you have more than one |
+| `~/projects/your-name-ops` | The folder you are actually in. If it is not your folder, Claude cannot see your work |
+| `⧉ name` | You are in this session's own folder (git calls it a worktree). `/start` opens one for every session and `/done` closes it. Magenta, and missing in your main folder |
+| `· main*` | The branch you are on. The `*` means you have changes not saved yet; `/done` saves them |
+| `⌂ main +2` | Your main folder has changes not saved (amber), or is not on `main` (red). Missing when all is well |
+| `SAC` / `OAC` / `AIDLC` | Where you are. `SAC` is your private space, `OAC` a business. `AIDLC` shows while a software build is running step by step. No word means you are outside your folders |
+| `Opus 5` | Which Claude is answering, so a quiet change is visible |
+| `[ctx: 43%]` | How full the conversation is. Green under 50, amber under 80, red from 80. At red, run `/done`, then `/clear` |
+| `$4.12` | What this session would cost at list prices. On a Max or Team plan it is a guide, not a bill. `/clear` starts it again from zero |
+
+On a narrow screen the line splits into two or three. Nothing is dropped; only
+where it breaks moves.
+
+**The line under it is Claude Code's own.** It shows how much Claude asks
+before it acts: hold Shift and press Tab to change it (ask before each change,
+accept file changes, or plan first and change nothing). `esc to interrupt`
+means Esc stops Claude mid-answer. When helpers are working in the background
+it says how many. And `/rename` gives a session a name, shown on the rule above
+where you type.
 
 ## Why it is worth five minutes
 
 **Edits land on the wrong branch.** You think you are on your working branch. You
 are not. The line tells you before you type.
 
-**A second copy gets mistaken for the real one.** Worktrees are handy and they
-look identical. The magenta marker is the only visible difference.
+**A session's folder gets mistaken for the main one.** They look the same.
+The magenta marker is the only visible difference.
 
 **The context fills and the session forgets.** Claude compacts the conversation
 when it runs out of room, and things quietly drop out. Watching the percentage

@@ -17,10 +17,10 @@ needs on day one and on the day the second person arrives.
 
 | | Command | What it does |
 |---|---|---|
-| Open | `/start` | Brings down the latest copy from GitHub, reads your log, then says where things are up to |
+| Open | `/start` | Brings down the latest copy from GitHub, opens a folder of its own for this session, reads your log, then says where things are up to |
 | Any time | `/commit`, `/push`, `/pull` | Save a step, send it to GitHub, bring down the latest. Each one does the git and says what it did. `/start` and `/done` run the same steps |
 | Any time | `/task-bridge` | A note to yourself. Twenty seconds. The next session reads it |
-| Close | `/done` | Checks the files, writes your note for next time, saves by name, sends it to GitHub, refreshes your usage page |
+| Close | `/done` | Checks the files, writes your note for next time, saves by name, brings the work back to the main folder, sends it to GitHub, refreshes your usage page |
 
 Your log is `evidence/days/current.md` in a private space, with older days
 beside it by date, and `team/<you>/current.md` in a business, with older days
@@ -42,39 +42,41 @@ close it when the build ships. `notable-plans/README.md` has the rules.
 
 A checkpoint is not a substitute for committing. Commit and push first.
 
-## One person, then two: worktrees
+## A folder of its own for every session
 
-While one person works in this repo, `/done` commits to `main` and pushes.
-That is correct, and it stays correct until the day a second session touches
-the same folder, whether that is a second person or you with two terminals
-open on the same repo.
+One copy of the repo has one working folder. Two sessions in the same folder
+collide: one saves the other's half-written files, or switches the branch
+under the other. A second window is all it takes. So the commands give every
+session its own folder:
 
-One copy of the repo has one working folder. Two sessions in the same copy
-collide: one saves the other's half-written files, or one switches the branch
-under the other. The fix is not care, it is structure.
+- **`/start` opens a folder for the session**, beside the repo in
+  `<repo>-sessions/<short>`, on your own branch, `<you>/<short>`. The status
+  line shows `⧉ <short>` while you are in it. (Git calls this a worktree.)
+- **`/done` brings the work back into `main`**, closes the folder and pushes.
+  With more than one person in the business, the work reaches `main` by pull
+  request instead.
+- **The main folder stays on `main` and clean.** The status line's `⌂`
+  marker watches it, and only shows when something was left there.
 
-**Every piece of work happens in its own worktree. The primary clone stays on
-`main` and clean.**
+The folders sit beside the repo, never inside it, so nothing that reads the
+whole repo counts a file twice. You never need to type a worktree command. To
+look under the hood:
 
 ```bash
-git worktree add ~/projects/_wt-<short> -b <you>/<what>   # open one
-git worktree list                                          # what is open
-git worktree remove ~/projects/_wt-<short>                 # close one, refuses if dirty
+python3 scripts/oac-worktree.py where   # which folder this session is in
+git worktree list                        # every folder open
 ```
-
-Name the folder after the work, short enough to read in the list. Work in
-it, `/done` from it (which then pushes a branch and opens a pull request when
-the repo has a remote that reviews), and remove it when it merges.
 
 **Never `git stash pop`** when worktrees are in play: the stash stack is
 shared by every worktree of the clone, and `pop` takes the newest entry,
 which may belong to a session you cannot see. Set work aside with a WIP
 commit on your own branch instead.
 
-## The guard, when you are ready for it
+## The guard, for everything else
 
-Remembering is not a mechanism. Two small checks make the rule hold without
-anyone thinking about it, and they install once per machine:
+`/start` and `/done` keep your own sessions out of the main folder. Two small
+checks hold the same rule for anything else that runs here, and they install
+once per machine:
 
 ```bash
 python3 scripts/install-oac-branch-guard.py
@@ -87,8 +89,8 @@ python3 scripts/install-oac-branch-guard.py
   is off `main` or carrying uncommitted work, and says nothing when all is
   well.
 
-Install them the day the second session arrives, not before. A guard on a
-one-person repo is a guard nobody needed yet.
+Install them the day a timed job or a second person starts working here, not
+before. A guard nobody needed yet is noise.
 
 ## Upgrading: when the template moves
 
@@ -105,10 +107,8 @@ git clone --depth 1 https://github.com/OpsCode-ai/operations-as-code-template ~/
 ```
 
 2. Commit or `/done` first. The upgrade refuses a tree with unsaved work, so
-   the upgrade is one diff you can read. If this folder is the one your
-   timed jobs write to, the branch guard will refuse a branch here; make the
-   branch in a worktree (the guard prints the line), run the upgrade there,
-   and merge from this folder after a pull.
+   the upgrade is one diff you can read. Run it in a session folder, the one
+   `/start` opens, so `/done` brings it home like any other piece of work.
 3. Report, then apply:
 
 ```bash

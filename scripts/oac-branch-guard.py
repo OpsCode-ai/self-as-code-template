@@ -178,6 +178,23 @@ def main():
 
         slug = branch if branch != "(new branch)" else "<name>"
         short = slug.split("/")[-1][:12] or "work"
+        top = git(cwd, "rev-parse", "--show-toplevel") or cwd
+        if os.path.isfile(os.path.join(top, "scripts", "oac-worktree.py")):
+            # A pack: sessions get their own folder beside the repo (/start
+            # step 4b), so point there rather than at the hub's ~/projects path.
+            short = "".join(c if c.isalnum() else "-" for c in short.lower()).strip("-") or "work"
+            sys.stderr.write(
+                "BLOCKED: `git " + sub + "` would take your main folder off main.\n"
+                "\n"
+                "Each session works in a folder of its own, so the main folder\n"
+                "stays on main and clean. Open one and move this session in:\n"
+                "\n"
+                "  python3 scripts/oac-worktree.py open " + short + "\n"
+                "\n"
+                "then EnterWorktree with the path it prints. `/start` does both for you.\n"
+                "Genuinely need a branch here? OAC_ALLOW_BRANCH=1 skips this.\n"
+            )
+            return 2
         sys.stderr.write(
             "BLOCKED: `git " + sub + "` would take the primary clone off main.\n"
             "\n"

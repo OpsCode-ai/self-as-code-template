@@ -2,7 +2,7 @@
   "pack": "self-as-code-pack",
   "repository": "OpsCode-ai/self-as-code-template",
   "released": "2026-11-18",
-  "hub_rev": "65ce50fc540a8cc56b3baa5084460a8d2ce51cfb",
-  "content_id": "d3a6561f0772a5a3379c164ee1a11415060d026c336e4e778483e22296805e7b",
+  "hub_rev": "8cf7a24ca61204e7ea87b7717e0a0a7305f750d1",
+  "content_id": "2a83eceb9e0eaf909c86e83812eb1083400ed63bb47e54ba2ee77b5f82d03921",
   "framework_version": "0.13"
 }
