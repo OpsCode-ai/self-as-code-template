@@ -50,6 +50,18 @@ below level 1, so fixing it here saves a second round.
 
 ### Step 5: Write the note for next time
 
+**The questions and the close come from the saved method, by version:**
+
+```bash
+python3 scripts/sac-brain.py section done      # a private space
+python3 scripts/oac-brain.py section done      # a business
+```
+
+It prints the lines steps 5, 5a, 5b, 7 and 8 say, in order. Say them from
+there, each filled from the files. If it exits 1 (no saved copy yet, or an
+older version without the section), the lines in those steps stand; they
+are the same words.
+
 Follow `.claude/commands/task-bridge.md` for the file shape. You were there for
 the session, so draft it without asking:
 

@@ -2,12 +2,12 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "20a99451ff3ed5a79f7e87e3af4c6869b7e0f0a851ce4c8f1012f9a17f19993f",
+  "content_id": "d3a6561f0772a5a3379c164ee1a11415060d026c336e4e778483e22296805e7b",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
     ".claude/CLAUDE.md": {
-      "sha256": "4b799a1e4cf835102ccffcdf9d2b132078ac367dbd6f76bc31660e39e924b72d"
+      "sha256": "3450e082f1c6ce41954edf45c6a176b77be5647b447f64acd93452b87a16a099"
     },
     ".claude/commands/build-log.md": {
       "sha256": "ce3b9499a830135372125cb791c7ef990446511c3a00ee7de905ef1039b87bbf"
@@ -25,7 +25,7 @@
       "sha256": "4ce8af121d5bb31ece3eb7b2621fe9dc45b60fd3ce704f00763f8a054666680e"
     },
     ".claude/commands/done.md": {
-      "sha256": "85f671dee23a9e350c243985f177ab3d4545d823324746a1df78afc97948947f"
+      "sha256": "6b7aee18b5a92d609ebf1910d5b70aa84c75e68c90e3a46884ec7e241a819a64"
     },
     ".claude/commands/github.md": {
       "sha256": "3712358ae889908c301d08a80963a8cb76c2eea2a6731d40fe62d2dfe5715355"
@@ -40,10 +40,10 @@
       "sha256": "26e1c44e2fb7f5467fe2195eea5ba36e2f6263a2fe320bc3121db78180256277"
     },
     ".claude/commands/self-as-code.md": {
-      "sha256": "2fe41cb9539ef6e2b8007dde49e43ec07a20bb05d27ed52fb9fcbcebd3fea332"
+      "sha256": "d6f73b19cd21df5aa7be0a5e0b5812ed6a47f3c7d6c929e0245d2f5ea21868d4"
     },
     ".claude/commands/start.md": {
-      "sha256": "d669595d8e7eb689e2fe9d4ca4aa209a8c75b66a16d111190d3a605a154a8310"
+      "sha256": "0014c831df5ee45849781bdd6b888ff9e140601bb7523556970b747871995d67"
     },
     ".claude/commands/task-bridge.md": {
       "sha256": "2c4d2e7411954731345b42dbb205c6204a8da505cd514ef0ddc9e90b18a04db4"
@@ -61,10 +61,10 @@
       "sha256": "6ab2bc3d13e537a548c70ec768d02ab20c0acdf34d4ae2006ef560420aaacdc8"
     },
     ".oac/operations-as-code-pack.zip": {
-      "sha256": "adcc7749749737b755b43536e9020926cd2d179d34b00d16c4ad8a99205b3502"
+      "sha256": "c7ff358217fc0d89d7e494efb5bd3a68c6a0a8db6c94f0b4e5d33cc76f1c02b8"
     },
     ".oac/sac-framework.md": {
-      "sha256": "cfe4eb760746269f2d3929a70fdca151279518353c630fbb5f8c85f098cdfee0"
+      "sha256": "00e973bfb861fb62cc64960c4b01ae15d1ce2d8b0bc231ebf99b5d9b63f6243c"
     },
     "CLAUDE.md": {
       "sha256": "8fe6c6d071631422c00796d224200f3bd78480a7ae17823e323da7a94069a2ea"
@@ -889,7 +889,7 @@
       "sha256": "0f4860ad3faaa612396885595c18accd1d9ebd978583d10c5ed799e2556e539d"
     },
     "scripts/sac-brain.py": {
-      "sha256": "b523b930561fd77a5d8405d3837785ff9f8d779eba456297ebfaf8d401371702"
+      "sha256": "36265931ea5f7122c096d48446912703bf0b203db10bb3164efa29f9c6385f75"
     },
     "scripts/sac-capture.py": {
       "sha256": "f18674f5da14ae8e34cb4f7e39a42ec5560a90dc888f984010b4b712cb7afe0c"

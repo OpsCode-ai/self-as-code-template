@@ -3,10 +3,10 @@ title: "The Self as Code framework"
 type: spec
 audience: internal
 status: active
-framework_version: "0.12"
+framework_version: "0.13"
 created: 2026-10-03
 updated: 2026-11-18
-summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.12 asks, when a business is set up, whether it starts from your look or picks its own; only the look's lines cross, never the reasons. Version 0.11 settles your look before anything is made for you: the session reads your plan for who you are, draws three quiet looks on one page with a sample report, a sample dashboard and your name as a letterhead, you say a number, and standards/brand.md holds it; vision.md beside your plan lists what your plan makes and how often; nothing made for you looks off the shelf, the vibe-coded look every AI tool makes. Version 0.10 gives the week its own moment: /sac week plans on Sunday, reviews on Friday and says where the week is up to on any other day, one page per week; each business gets its one thing from the goal it was sent; Friday reads the floor from the log and each business's repo before it asks; and the message at the top of every session reads the floor held, each business moved or quiet, today's line and the next moment, with /done asking the floor one word per line. Version 0.9 asks about the person's work before their businesses, so a job, a career, a family or a project each get a block and only a business gets its own repo; opens the floor with values, each held to one real moment and written as a line for the worst day; measures the future you in the time that counts; asks what kind of partner or parent that person is; names the daily steps as the system that holds the floor when discipline wanes; and has the review and the check ask which values held. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
+summary: "Everything a Self as Code session says, in plain words. Self as Code is the best version of you in the future, bridged back to today, as four questions: Now, Why, Who, How. Version 0.13 carries the words of every session: what /start says as it opens, what /done says as it closes, and the one page /sac help prints, so they come from here by version with the saved copy in the pack, and one edit reaches every install (ADR-136 Rule 9). Version 0.12 asks, when a business is set up, whether it starts from your look or picks its own; only the look's lines cross, never the reasons. Version 0.11 settles your look before anything is made for you: the session reads your plan for who you are, draws three quiet looks on one page with a sample report, a sample dashboard and your name as a letterhead, you say a number, and standards/brand.md holds it; vision.md beside your plan lists what your plan makes and how often; nothing made for you looks off the shelf, the vibe-coded look every AI tool makes. Version 0.10 gives the week its own moment: /sac week plans on Sunday, reviews on Friday and says where the week is up to on any other day, one page per week; each business gets its one thing from the goal it was sent; Friday reads the floor from the log and each business's repo before it asks; and the message at the top of every session reads the floor held, each business moved or quiet, today's line and the next moment, with /done asking the floor one word per line. Version 0.9 asks about the person's work before their businesses, so a job, a career, a family or a project each get a block and only a business gets its own repo; opens the floor with values, each held to one real moment and written as a line for the worst day; measures the future you in the time that counts; asks what kind of partner or parent that person is; names the daily steps as the system that holds the floor when discipline wanes; and has the review and the check ask which values held. Version 0.8 says before the first question that it is hard on purpose and what stays private, takes 'not sure yet' as an answer and parks it with a date, asks what the person wants to be remembered by, walks the future back from 20 years to 10, to 5, to the six-month leap, the 90-day review, the week and tomorrow, and asks each business what kind it is, what it runs on and what to build first, so a business repo starts from the person's answers. Version 0.6 teaches the four-question shape; from 0.5 it plans in the time that counts, not clock time: it opens with a 30-second experience of the two kinds of time, asks for the 20-year picture in detail and then why it can't start in six months, makes the one big leap a six-month change of course, recognised at every review, asks what each new habit replaces, checks goals for clashes in hours as well as words, asks where the plan leans on the people at home, and ends with the first step tomorrow and a check in two weeks. The person still runs their own git with /commit, /push and /pull. /sac reads this file and speaks only in its words; the SAC brain (ADR-125 Rule 5) serves it by version, and every pack carries a saved copy."
 topics: [self-as-code, curriculum]
 tags: [sac, framework, sac-brain, spoken-vocabulary, adr-125, kairos, values]
 ---
@@ -82,7 +82,7 @@ any of them contains a system word. Everything else is for the agent.
   per value: `Value: discipline: the plan runs even when I don't want it to.`
   The name, then what it looks like on the worst day. The dashboard draws them
   and `/sac check` asks which held.
-- **Record the version.** Put `framework_version: "0.12"` in the frontmatter of
+- **Record the version.** Put `framework_version: "0.13"` in the frontmatter of
   `self-as-code.md`.
 
 ## For the agent: how to write
@@ -964,3 +964,108 @@ On 'mine', run the deploy with `--look mine`. Only the look's lines cross:
 ink, paper, accent, typeface, light or dark, movement and which icons. The
 reasons behind them are the plan's words, and they stay home. On 'its own',
 run it as it is. Either way, say which it was.
+
+## Starting a session
+
+For `/start`. Every session opens with it. The box headed HOW YOU'RE GOING is
+already on the screen when you arrive. These are the lines you say after it,
+each one filled from the files and never made up. Leave a line out if it has
+nothing to say.
+
+> Last time you said: '{the Next line from your log}' ({date}). When: {when,
+> if there was one}.
+>
+> Your plan: next review {date}, in {n} days. Files at level {k}.
+>
+> GitHub: {n} changes came down. Or: you're up to date. Or: no copy on GitHub
+> yet.
+>
+> Unsaved: nothing. Or: {n} files from last time, on {branch}.
+
+Then the box, one line each: the floor held so many of the days you checked,
+each business moved or quiet, today's one thing, the next moment. Offer the
+Today line as the first thing to do.
+
+If the note names one clear next thing, offer it and nothing else:
+
+> Start there?
+
+If there is nothing yet, no log and nothing saved, say so in one line:
+
+> Nothing's written down yet. The first move is `/sac`.
+
+And the loop, said once, at the end:
+
+> Work in this folder. Finish with `/done`. It checks the files, writes your
+> note for next time, saves, and sends it to GitHub. `/task-bridge` leaves a
+> note any time.
+
+## Ending a session
+
+For `/done`. Every session ends with it. Say each step as you do it, so the
+person always knows when git runs.
+
+If the session touched nothing:
+
+> Nothing changed today, so there's nothing to save.
+
+The note for next time, one question, only at the end of the day:
+
+> Anything for tomorrow that's not already written down as next?
+
+The floor, one word per line. Name every value in the order the plan lists
+them. Skip it if the plan has no `Value:` lines:
+
+> Your floor today: {name}, {name}, {name}. A yes or a no for each.
+
+The push, said as it runs:
+
+> Pushing today's work to GitHub, so it's backed up and on every device.
+
+If there is no copy on GitHub yet:
+
+> Today's work is saved on this laptop and nowhere else. `/github` makes a
+> private copy now. Want to?
+
+If another branch has work that is only here:
+
+> Your work from {day} has {n} saves that are only on this laptop. Send them
+> to GitHub too?
+
+And the close, four lines:
+
+> Saved: {n} files. {what the save says}
+> Sent to GitHub. Or: not sent, no copy on GitHub yet.
+> Everything else on this laptop: saved. Or: {n} branches still only here.
+> Your note for next time is written. Next: {your note}
+
+## The one page
+
+For `/sac help`, and what you say when `/sac` is given a word you do not know.
+Print this, as it is, and nothing else. Fill the two dates from the plan's
+frontmatter and this week's page; leave a line out if it has nothing to say.
+
+```
+Self as Code. One plan, written once, that steers every day.
+
+Four words to know
+  /start      begin. Reads your plan and your last note, says how you're going.
+  /done       finish. Writes today down, asks your floor, saves, sends it to GitHub.
+  /sac        the questions, the first time. Then /sac check, /sac week, /sac review, /sac vision.
+  /sac help   this page.
+
+Where things are
+  self-as-code.md         your plan
+  vision.md               what your plan makes for you. Your look is standards/brand.md
+  evidence/days/          your days
+  projects/weeks/         this week
+  inbox.md                what came in. /capture adds a line; /sac week sorts it
+  evidence/               what happened, and your reviews
+
+When
+  Every day: /start, then /done.      Two weeks in: /sac check, on {date}.
+  Sunday: /sac week.  Friday: /sac week.   Every 90 days: /sac review, next on {date}.
+
+Stuck? Say what you want in plain words. SAC on the bottom line means you're
+in the right place.
+```

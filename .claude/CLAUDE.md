@@ -11,7 +11,10 @@ installed (opscode-hq ADR-125).
 - **The questions stay current.** Before it asks anything, `/sac` runs
   `scripts/sac-brain.py fetch`, which brings the newest questions down from
   OpsCode when `SAC_BRAIN_KEY` is set in `.env` (never committed), and keeps
-  the saved copy otherwise. It sends nothing about the person.
+  the saved copy otherwise. It sends nothing about the person. What `/start`
+  says, what `/done` asks and the page `/sac help` prints come from the same
+  saved copy: `python3 scripts/sac-brain.py section start` (or `done`,
+  `help`), so one edit on the brain reaches every install on its next fetch.
 - **OpsCode's brain, inside a session.** When this repo is connected to the
   brain (`sac-brain` in `.mcp.json`), its tools are here: `whats_new` (what
   changed in the method since a version), `next_step` (where they are up to)

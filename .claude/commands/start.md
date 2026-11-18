@@ -92,6 +92,18 @@ If it says everything is saved, say nothing about it.
 
 ### Step 5: Say where they are
 
+**The words come from the saved method, by version**, so every install says
+the same thing and one edit reaches them all:
+
+```bash
+python3 scripts/sac-brain.py section start     # a private space
+python3 scripts/oac-brain.py section start     # a business
+```
+
+Say what it prints, each line filled from the files above and never made up.
+If it exits 1 (no saved copy yet, or an older version without the section),
+say the lines below instead; they are the same words.
+
 Lead with what they said they would do next, always:
 
 ```

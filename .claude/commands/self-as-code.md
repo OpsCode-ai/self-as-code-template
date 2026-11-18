@@ -448,9 +448,17 @@ may look or sound like a machine made it.
 ## help: the one page
 
 `/self-as-code help`, and what you say when `/sac` is given a word you do not
-know. Print this, as it is, and nothing else. Fill the three numbers from the
-plan's frontmatter and this week's page; leave a line out if it has nothing to
-say.
+know. The page comes from the framework, by version (ADR-136 Rule 9):
+
+```bash
+python3 scripts/sac-brain.py section help
+```
+
+In opscode-hq, it is the 'The one page' section of
+`code/workers/sac-brain/framework.md`. Print what it gives, as it is, and
+nothing else. If it exits 1 (an older saved copy without the page), print the
+page below instead; it is the same page. Fill the two dates from the plan's
+frontmatter and this week's page; leave a line out if it has nothing to say.
 
 ```
 Self as Code. One plan, written once, that steers every day.
