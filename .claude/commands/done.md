@@ -203,9 +203,25 @@ to `main` directly:
    `git push -u origin <branch>`.
 3. Open the pull request and merge it, unless the business has asked for a
    review first: `gh pr create --fill --base main && gh pr merge --merge`.
-   No `--delete-branch`: whether the branch goes is the person's call (step 5).
+   No `--delete-branch`: whether the branch goes is the person's call (steps 5
+   and 6).
 4. Back to `main` and up to date: `git switch main && git pull --ff-only`.
-5. Ask once, in plain words, and only after the merge landed:
+5. **A log-only branch tidies itself.** Read what the pull request touched:
+
+   ```bash
+   gh pr view <branch> --json files --jq '.files[].path'
+   ```
+
+   When every path is your own log (`team/<handle>/current.md`,
+   `team/<handle>/logs/*.md`, `team/<handle>/usage.md`), nobody needs the
+   branch again once it merges, so do not ask: `git branch -d <branch>`, then
+   `git push origin --delete <branch>`, and say it in one line: 'Tidied
+   `<branch>`: log only, merged.' If git says the branch is not fully merged,
+   keep it and say so. One other file in the pull request and it is not
+   log-only; it gets the question below like any other branch.
+
+6. Ask once, in plain words, only after the merge landed, and only about a
+   branch that is not log-only:
 
    > Your work is in the shared copy now. Will you come back to this branch
    > for more work?
