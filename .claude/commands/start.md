@@ -90,6 +90,24 @@ branch from Tuesday has work that is not on GitHub yet. Send it now?' On a
 yes, run the `/commit` steps for files and the `/push` steps for that branch.
 If it says everything is saved, say nothing about it.
 
+### Step 4a: The spokes (in a business's brain only)
+
+If `specs/spokes/` holds a plan with a `github:` line, and `.oac/manifest.yml`
+does not say `spoke:`, bring every spoke's work in and send the brain's latest
+out. Say it first: 'Bringing in the spokes' work, and sending them the
+latest.'
+
+```bash
+python3 scripts/oac-spoke.py sync
+```
+
+Nobody approves anything: work flows both ways, and what never leaves the
+brain is decided by the gate, not by a review. Say in one line what came in
+and what went out, and any request for a new spoke (offer `/spoke` for it).
+If it reports a file changed in both places, say which and offer to merge it;
+everything else has already flowed. Then run the `/pull` steps again, so this
+folder has what came in.
+
 ### Step 4b: A folder of its own for this session
 
 Every session works in its own folder, beside the repo, so nothing else on
