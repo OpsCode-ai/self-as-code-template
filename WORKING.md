@@ -42,6 +42,14 @@ close it when the build ships. `notable-plans/README.md` has the rules.
 
 A checkpoint is not a substitute for committing. Commit and push first.
 
+## What eats your time: /problems
+
+`/problems` asks what eats your time, one question at a time: the jobs, how
+often, how long, what you do them in, where your work lives, the questions
+people keep asking you. It saves the answers in your own folder,
+`team/<your first name>/problems.md` in a business, `evidence/problems.md` in
+your private space. Run it again any time to add to it. Then `/done`.
+
 ## A folder of its own for every session
 
 One copy of the repo has one working folder. Two sessions in the same folder

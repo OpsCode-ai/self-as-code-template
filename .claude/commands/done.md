@@ -118,6 +118,14 @@ Only the status and today's date change. Include the goals file in the
 commit. The owner's plan reads those two back and nothing else, so the word
 written here is what their check-in says about this business.
 
+In a team's own repo (its `.oac/manifest.yml` says `spoke:`), `due` lists only
+that team's goals, and the answers go back to the owners when they pull the
+team's work in. In the business's main repo, when
+`context-core/strategic-identity/teams/` exists, also run
+`python3 scripts/oac-goals.py tree --write` and include
+`context-core/strategic-identity/roll-up.md` in the commit: each company goal
+with the team goals under it.
+
 ### Step 5c: Refresh your usage page
 
 ```bash
