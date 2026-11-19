@@ -2,7 +2,7 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "cd8744e35525a827b01c44e79968880420305381ac7991243e81d0446ccef81c",
+  "content_id": "f2b0334e4fdc736b3cef95b01826638e72ff9e28773fdfb0d3be9b791471aca9",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
@@ -64,7 +64,7 @@
       "sha256": "6ab2bc3d13e537a548c70ec768d02ab20c0acdf34d4ae2006ef560420aaacdc8"
     },
     ".oac/operations-as-code-pack.zip": {
-      "sha256": "8f7e7a719c25a019e597f1105ac1e1e919ca3b02e800afe2f0c6e8101cc4263e"
+      "sha256": "27ca8cff37ece3db7455abd11c8e3a7a8f2da443d455adafe48b65ce18fccfc0"
     },
     ".oac/sac-framework.md": {
       "sha256": "00e973bfb861fb62cc64960c4b01ae15d1ce2d8b0bc231ebf99b5d9b63f6243c"
