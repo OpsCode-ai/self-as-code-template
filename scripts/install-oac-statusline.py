@@ -27,7 +27,9 @@ SRC = Path(__file__).resolve().parent / "oac-statusline.sh"
 CLAUDE_DIR = Path.home() / ".claude"
 DEST = CLAUDE_DIR / "statusline-command.sh"
 SETTINGS = CLAUDE_DIR / "settings.json"
-WANT = f"bash {DEST}"
+# Forward slashes, quoted: on Windows an unquoted C:\\Users\\... loses its backslashes
+# in bash, and the line finds no file and goes blank.
+WANT = f'bash "{DEST.as_posix()}"'
 
 
 def main() -> int:

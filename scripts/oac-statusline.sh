@@ -45,12 +45,21 @@
 # Install for all your repos: python3 code/scripts/install-oac-statusline.py
 # Standard: brand/standards/claude-code-statusline-standard.md
 
-# Rule 5 of the standard: degrade, never vanish. python3 is not guaranteed on
-# a fresh macOS (it needs Xcode Command Line Tools). Without this guard the
-# statusline would silently print nothing, which is the exact failure this
-# standard exists to prevent.
-if ! command -v python3 >/dev/null 2>&1; then
-  printf '%s: python3 missing, statusline degraded (xcode-select --install)' "${PWD/#$HOME/~}"
+# Rule 5 of the standard: degrade, never vanish. Use the first Python that
+# actually runs, not the first that exists. A fresh macOS has python3 only
+# with the Xcode Command Line Tools. On Windows, python3 is often the Microsoft
+# Store placeholder, which is on the PATH but does not run Python, and the
+# real one answers to python or py -3 (found on NZ Coal & Carbon's laptops,
+# 20 Nov 2026). Without this the line went blank on those laptops.
+PY=""
+for cand in python3 python "py -3"; do
+  if $cand -c "import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)" >/dev/null 2>&1; then
+    PY="$cand"
+    break
+  fi
+done
+if [ -z "$PY" ]; then
+  printf '%s: no Python that runs, statusline degraded (Mac: xcode-select --install; Windows: python.org)' "${PWD/#$HOME/~}"
   exit 0
 fi
 
@@ -62,7 +71,7 @@ fi
 OAC_COLS="${COLUMNS:-}"
 export OAC_COLS
 
-exec python3 -c '
+exec $PY -c '
 import json, os, platform, re, subprocess, sys
 
 try:
