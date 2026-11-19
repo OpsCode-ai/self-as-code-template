@@ -2,7 +2,7 @@
   "schema_version": 1,
   "pack": "self-as-code-pack",
   "plane": "self",
-  "content_id": "f2b0334e4fdc736b3cef95b01826638e72ff9e28773fdfb0d3be9b791471aca9",
+  "content_id": "40ca632a5ebf035485099a99764ce4545f1dc00e320f22b6532c09912cc3d4e6",
   "upgrade": "python3 scripts/oac-upgrade.py --from <unzipped newer pack> [--apply]",
   "skip": [],
   "files": {
@@ -64,7 +64,7 @@
       "sha256": "6ab2bc3d13e537a548c70ec768d02ab20c0acdf34d4ae2006ef560420aaacdc8"
     },
     ".oac/operations-as-code-pack.zip": {
-      "sha256": "27ca8cff37ece3db7455abd11c8e3a7a8f2da443d455adafe48b65ce18fccfc0"
+      "sha256": "d08e562b6592a87fb187355cb2f831b93db5dfa4f8038fe08632ac15d140c0c8"
     },
     ".oac/sac-framework.md": {
       "sha256": "00e973bfb861fb62cc64960c4b01ae15d1ce2d8b0bc231ebf99b5d9b63f6243c"
@@ -901,7 +901,7 @@
       "sha256": "f18674f5da14ae8e34cb4f7e39a42ec5560a90dc888f984010b4b712cb7afe0c"
     },
     "scripts/sac-dashboard.py": {
-      "sha256": "b484be8db521da397d7c10a28f2ac0a5776a89c0b48a93301af088a3f30c76f6"
+      "sha256": "755ab739e7a4f6a9cc16f8b7389996b668c4bad670cbcc18c39bd6f71ecfff00"
     },
     "scripts/sac-deploy.py": {
       "sha256": "67254af42d47c293c6345679db1c256654f5ca771c0bba642322f560f66c24a1"
@@ -940,7 +940,7 @@
       "sha256": "91d015fb61694969c9eadd4670c0ee7d83bb19d5623730f3ceaa07d65dd22394"
     },
     "standards/outputs/dashboard.md": {
-      "sha256": "53f8eb5179e7a40c6ad944673cb89c709aa55d3ede6f0b555dd4dcfaf16f536e"
+      "sha256": "355450917a1c8162eee25e9f82a179c0ba11439e2f6580f6c82517e80ea7f3a4"
     },
     "standards/outputs/email.md": {
       "sha256": "b9d5a8e6fbeac854d9512dff4bad5ae382abf47652d53755f303d63b02f0678d"

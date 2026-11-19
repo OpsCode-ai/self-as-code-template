@@ -20,6 +20,15 @@ THE LOOK
     `oac-vision.py check` can prove the page kept to the look. A seed, or no
     file, is plain black on white: the promise the seed makes.
 
+THE SHAPE: AN APP, NOT A DOCUMENT (Adam, 20 Nov 2026)
+    A menu down the left, like any software people use, with an icon from the
+    look's one icon set (the element library, ADR-138); on a phone it folds
+    into a Menu button at the top, with no script. It opens on the timeline:
+    the future you at 20 years down through 10, 5, 2 and 1 year (the ones the
+    plan has), six months, the next review, this week, tomorrow and every
+    day, across the page on a laptop and down it on a phone. Under it, this
+    week and the floor side by side.
+
 WHAT IT SHOWS
     The ladder (20, 10 and 5 years, the six-month leap, the next review, this
     week, tomorrow, every day); why they exist; who they are becoming; the
@@ -56,6 +65,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib.frontmatter import body as fm_body, frontmatter  # noqa: E402
 from lib.brand import PLAIN, palette, font_stack, read as read_brand  # noqa: E402
+try:
+    from lib import library  # noqa: E402  the icons for the menu, from the look's one set
+except ImportError:                       # an old pack without the library: a menu without icons
+    library = None
 
 HERE = Path(__file__).resolve().parent
 SPINE_ADDRESSES = ("self-as-code.md", "goals/self-as-code.md")
@@ -413,27 +426,43 @@ def root_css(look: dict) -> str:
 
 CSS = """
 *{box-sizing:border-box}
-html{background:var(--paper)}
+html{background:var(--paper);scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--font);-webkit-font-smoothing:antialiased}
-.wrap{max-width:960px;margin:0 auto;padding:44px 16px 72px}
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--soft);padding:28px 14px}
+.side .brand{font-weight:700;font-size:17px;line-height:1.25;margin:0 10px 4px}
+.side .brand-sub{font:600 11px/1.3 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 10px 22px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;margin:2px 0;border-radius:10px;color:var(--ink);text-decoration:none;font-size:15px}
+.nav a:hover,.nav a:focus-visible{background:var(--accent-soft);color:var(--accent-ink);outline:none}
+.nav a svg{flex:none;color:var(--muted)}
+.nav a:hover svg{color:var(--accent-ink)}
+.topbar{display:none}
+.main{min-width:0;max-width:1120px;padding:40px 44px 72px}
 .eyebrow{font:600 12px/1.2 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h1{font-size:34px;line-height:1.15;letter-spacing:-.01em;margin:8px 0 6px}
 h2{font-size:20px;margin:0 0 12px;letter-spacing:-.005em}
 .meta{color:var(--muted);margin:0}
-section{margin-top:44px}
+section{margin-top:44px;scroll-margin-top:72px}
 .card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--paper)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:44px}
+.pair section{margin-top:0}
 .why p{font-size:22px;line-height:1.45;margin:0 0 10px}
 p{margin:0 0 10px}p:last-child{margin-bottom:0}
 ul{margin:0 0 10px;padding-left:20px}ul:last-child{margin-bottom:0}li{margin:4px 0}
 .empty{color:var(--muted);font-style:italic}
-.ladder{position:relative;margin-left:8px;padding-left:28px;border-left:2px solid var(--line)}
-.rung{position:relative;padding:0 0 22px}
-.rung:last-child{padding-bottom:4px}
-.rung::before{content:'';position:absolute;left:-36px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--accent)}
-.rung.now::before{background:var(--accent);box-shadow:0 0 0 6px var(--accent-soft)}
-.rung .eyebrow{margin-bottom:4px}
-.rung p{margin:0}
+.timeline{overflow-x:auto;padding:4px 2px 10px;margin:0 -2px}
+.track{list-style:none;margin:0;padding:0;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:0}
+.stop{position:relative;padding:0 12px 0 0;min-width:0}
+.stop .when{font-weight:700;font-size:14px;line-height:1.25;min-height:2.5em}
+.stop .rail{position:relative;height:22px;margin:6px 0 10px}
+.stop .rail::before{content:'';position:absolute;left:0;right:-12px;top:10px;height:2px;background:var(--line)}
+.stop:last-child .rail::before{right:50%}
+.stop .rail::after{content:'';position:absolute;left:0;top:4px;width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--accent)}
+.stop.near .rail::after{background:var(--accent-soft)}
+.stop.now .rail::after{background:var(--accent);box-shadow:0 0 0 6px var(--accent-soft)}
+.stop .what{font-size:13.5px;line-height:1.5;color:var(--ink)}
+.stop .what .empty{font-size:13px}
 dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:12px 0 0}
 dt{color:var(--muted)}dd{margin:0}
 .folders{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
@@ -445,8 +474,52 @@ dt{color:var(--muted)}dd{margin:0}
 .where{white-space:nowrap}
 footer{margin-top:60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:16px}
 code{font:13px/1.4 'JetBrains Mono',ui-monospace,monospace;background:var(--soft);padding:1px 5px;border-radius:5px}
+@media (max-width:860px){
+.app{grid-template-columns:minmax(0,1fr)}
+.side{display:none}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 16px}
+.topbar .brand{font-weight:700;font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.menu{position:relative}
+.menu summary{list-style:none;cursor:pointer;padding:7px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-weight:600}
+.menu summary::-webkit-details-marker{display:none}
+.menu .nav{position:absolute;right:0;top:calc(100% + 8px);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:6px;min-width:220px;box-shadow:0 12px 30px var(--soft)}
+.main{padding:22px 16px 64px}
+.track{grid-auto-flow:row;grid-auto-columns:auto}
+.stop{padding:0 0 18px 30px}
+.stop .when{min-height:0}
+.stop .rail{position:absolute;left:0;top:0;bottom:0;height:auto;width:16px;margin:0}
+.stop .rail::before{left:7px;right:auto;top:0;bottom:0;width:2px;height:auto}
+.stop:last-child .rail::before{right:auto;bottom:calc(100% - 10px)}
+.stop .rail::after{top:3px}
+}
 @media (max-width:520px){h1{font-size:28px}.why p{font-size:19px}.card{padding:16px}}
 """
+
+
+MENU_ICONS = {
+    "carbon": {"timeline": "time", "week": "calendar", "floor": "security", "why": "favorite",
+               "who": "user", "now": "enterprise", "parked": "flag", "shared": "dashboard",
+               "folders": "folder", "saves": "save"},
+    "lucide": {"timeline": "clock", "week": "calendar", "floor": "shield", "why": "heart",
+               "who": "user", "now": "briefcase", "parked": "flag", "shared": "users",
+               "folders": "folder", "saves": "save"},
+}
+
+
+def menu_icon(key: str, look: dict) -> str:
+    if library is None:
+        return ""
+    try:
+        icon_set = library.set_of(look)
+        name = MENU_ICONS.get(icon_set, MENU_ICONS["carbon"]).get(key)
+        return library.icon(name, size=18, icon_set=icon_set) if name else ""
+    except (KeyError, OSError, ValueError):
+        return ""
+
+
+def menu(items: list[tuple[str, str]], look: dict) -> str:
+    return '<nav class="nav">' + "".join(
+        f'<a href="#{k}">{menu_icon(k, look)}<span>{esc(label)}</span></a>' for k, label in items) + "</nav>"
 
 
 def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today: str,
@@ -477,10 +550,6 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
         parts.append('<section class="card"><h2>Nothing written yet</h2>'
                      "<p>Type <code>/sac</code> and answer the questions. It writes your plan, and this page draws it.</p></section>")
 
-    # Why
-    parts.append('<section class="why"><div class="eyebrow">Why</div><h2>Why I exist</h2><div class="card">'
-                 + (prose(s["readme"]) if s.get("readme") else empty()) + "</div></section>")
-
     # The ladder
     rungs = plan["rungs"]
     horizon = rungs[0][0] if rungs else 20
@@ -492,7 +561,7 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
         text = by_years.get(y)
         if text is None and y == horizon and plan["picture"]:
             text = plan["picture"][0]
-        ladder.append((f"In {y} years", text, False))
+        ladder.append((f"In {y} year{'s' if y != 1 else ''}", text, False))
     ladder.append(("In six months", first_line(s.get("rewrite")), False))
     review_text = first_line(s.get("review"))
     nr = f.get("next_raise")
@@ -505,34 +574,41 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
     ladder.append(("Tomorrow", plan["tomorrow"], False))
     steps = plan["steps"]
     ladder.append(("Every day", (f"{len(steps)} step{'s' if len(steps) != 1 else ''}, below" if steps else None), True))
-    parts.append('<section><div class="eyebrow">The bridge back</div><h2>From the future you to today</h2><div class="ladder">'
-                 + "".join(f'<div class="rung{" now" if now else ""}"><div class="eyebrow">{esc(label)}</div>'
-                           + (f"<p>{inline(text)}</p>" if text else empty())
-                           + "</div>" for label, text, now in ladder)
-                 + "</div></section>")
+    near = {"This week", "Tomorrow"}
+    parts.append('<section id="timeline"><div class="eyebrow">The bridge back</div><h2>From the future you to today</h2>'
+                 '<div class="timeline"><ol class="track">'
+                 + "".join(f'<li class="stop{" now" if now else (" near" if label in near else "")}">'
+                           f'<div class="when">{esc(label)}</div><div class="rail"></div>'
+                           + (f'<div class="what">{inline(text)}</div>' if text else f'<div class="what">{empty()}</div>')
+                           + "</li>" for label, text, now in ladder)
+                 + "</ol></div></section>")
 
-    # Who
-    parts.append('<section><div class="eyebrow">Who</div><h2>Who I\'m becoming</h2><div class="card">'
-                 + (prose(plan["picture"]) if plan["picture"] else empty()) + "</div></section>")
-
-    # How: the leap, the floor, the cut
-    parts.append('<section><div class="eyebrow">How</div><h2>The leap, the floor and the cut</h2><div class="grid">'
-                 + card("My one big leap", "In the next six months", s.get("rewrite"))
-                 + floor_card(plan["values"], s.get("floor"))
-                 + card("My cut", "What I hand over, stop or say no to", s.get("cut"))
-                 + "</div></section>")
-
-    # Every day
-    daily = ""
-    if steps:
-        daily = prose(steps)
+    # This week, and the floor, side by side under the timeline
+    daily = prose(steps) if steps else ""
     extra = []
-    if plan["tomorrow"]:
-        extra.append(f"<dt>Tomorrow</dt><dd>{inline(plan['tomorrow'])}</dd>")
     if plan["this_week"]:
         extra.append(f"<dt>This week</dt><dd>{inline(plan['this_week'])}</dd>")
-    parts.append('<section><div class="eyebrow">Every day</div><h2>What I do every day, no matter what</h2><div class="card">'
-                 + (daily or empty()) + (f"<dl>{''.join(extra)}</dl>" if extra else "") + "</div></section>")
+    if plan["tomorrow"]:
+        extra.append(f"<dt>Tomorrow</dt><dd>{inline(plan['tomorrow'])}</dd>")
+    parts.append('<div class="pair">'
+                 '<section id="week"><div class="eyebrow">This week</div><h2>What I do every day, no matter what</h2><div class="card">'
+                 + (daily or empty()) + (f"<dl>{''.join(extra)}</dl>" if extra else "") + "</div></section>"
+                 '<section id="floor"><div class="eyebrow">My floor</div><h2>The line I won\'t drop below</h2>'
+                 + floor_card(plan["values"], s.get("floor")) + "</section></div>")
+
+    # Why
+    parts.append('<section class="why" id="why"><div class="eyebrow">Why</div><h2>Why I exist</h2><div class="card">'
+                 + (prose(s["readme"]) if s.get("readme") else empty()) + "</div></section>")
+
+    # Who
+    parts.append('<section id="who"><div class="eyebrow">Who</div><h2>Who I\'m becoming</h2><div class="card">'
+                 + (prose(plan["picture"]) if plan["picture"] else empty()) + "</div></section>")
+
+    # How: the leap and the cut (the floor sits beside this week, above)
+    parts.append('<section><div class="eyebrow">How</div><h2>The leap and the cut</h2><div class="grid">'
+                 + card("My one big leap", "In the next six months", s.get("rewrite"))
+                 + card("My cut", "What I hand over, stop or say no to", s.get("cut"))
+                 + "</div></section>")
 
     # Now: where I am, each thing I hold (a business, a job, a family, a project)
     now_html = prose(plan["about"]) if plan["about"] else ""
@@ -546,7 +622,7 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
                      + (f"<dl>{rows}</dl>" if rows else "")
                      + ("" if b["words"] or rows else empty())
                      + "</div>")
-    parts.append('<section><div class="eyebrow">Now</div><h2>Where I am now</h2>'
+    parts.append('<section id="now"><div class="eyebrow">Now</div><h2>Where I am now</h2>'
                  + (f'<div class="card">{now_html}</div>' if now_html else "")
                  + (f'<div class="grid" style="margin-top:16px">{biz_html}</div>' if biz_html else "")
                  + ("" if now_html or biz_html else f'<div class="card">{empty()}</div>')
@@ -554,7 +630,7 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
 
     # Parked
     if plan["parked"]:
-        parts.append('<section><div class="eyebrow">Parked</div><h2>Not sure yet, with a date to come back</h2><div class="card"><dl>'
+        parts.append('<section id="parked"><div class="eyebrow">Parked</div><h2>Not sure yet, with a date to come back</h2><div class="card"><dl>'
                      + "".join(f'<dt class="where">{esc(w)}</dt><dd>{inline(t)}</dd>' for w, t in plan["parked"])
                      + "</dl></div></section>")
 
@@ -566,7 +642,7 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
             pills.append(f'<span class="pill">{n} to {esc(dest)}</span>')
         if sp["parked"]:
             pills.append(f'<span class="pill">{sp["parked"]} parked for later</span>')
-        parts.append('<section><div class="eyebrow">Shared</div><h2>What I share with each business</h2><div class="card">'
+        parts.append('<section id="shared"><div class="eyebrow">Shared</div><h2>What I share with each business</h2><div class="card">'
                      + "".join(pills) + "<p class=\"meta\" style=\"margin-top:10px\">Only what I said yes to, line by line. Only the decision, never the reason.</p></div></section>")
 
     # Folders
@@ -578,21 +654,36 @@ def render(plan: dict, folders: list[dict], saves: list[tuple[str, str]], today:
                   + f'<div class="meaning">{esc(fo["meaning"]) if n is not None else "Not made yet"}</div>'
                   + ("<ul>" + "".join(f"<li>{esc(r)}</li>" for r in fo["recent"]) + "</ul>" if fo["recent"] else "")
                   + "</div>")
-    parts.append(f'<section><div class="eyebrow">My folders</div><h2>What is in my private space</h2><div class="folders">{tiles}</div></section>')
+    parts.append(f'<section id="folders"><div class="eyebrow">My folders</div><h2>What is in my private space</h2><div class="folders">{tiles}</div></section>')
 
     # Saves
     if saves:
-        parts.append('<section><div class="eyebrow">Saved</div><h2>My last saves</h2><div class="card saves"><ul>'
+        parts.append('<section id="saves"><div class="eyebrow">Saved</div><h2>My last saves</h2><div class="card saves"><ul>'
                      + "".join(f"<li><time>{esc(d)}</time><span>{esc(m)}</span></li>" for d, m in saves)
                      + "</ul></div></section>")
 
     parts.append(f"<footer>Drawn on this laptop by <code>/sac dashboard</code> on {esc(today)}. Nothing left it. Run it again any time.</footer>")
 
+    items = [("timeline", "Timeline"), ("week", "This week"), ("floor", "My floor"), ("why", "Why"),
+             ("who", "Who I'm becoming"), ("now", "Where I am now")]
+    if plan["parked"]:
+        items.append(("parked", "Parked"))
+    if plan["split"] is not None:
+        items.append(("shared", "Shared"))
+    items.append(("folders", "My folders"))
+    if saves:
+        items.append(("saves", "Saves"))
+    nav = menu(items, look)
+    shell = ('<div class="app"><aside class="side"><div class="brand">' + esc(name) + "</div>"
+             '<div class="brand-sub">Self as Code</div>' + nav + "</aside>"
+             '<div><div class="topbar"><div class="brand">' + esc(name) + "</div>"
+             '<details class="menu"><summary>Menu</summary>' + nav + "</details></div>"
+             '<main class="main">' + "".join(parts) + "</main></div></div>")
     return ("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
             "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
             f"<title>{esc(name)}: Self as Code</title>"
-            f"<style>{root_css(look)}{font_css()}{CSS}</style></head><body><div class=\"wrap\">"
-            + "".join(parts) + "</div></body></html>\n")
+            f"<style>{root_css(look)}{font_css()}{CSS}</style></head><body>"
+            + shell + "</body></html>\n")
 
 
 def floor_card(values: list[tuple[str, str]], text: str | None) -> str:
@@ -600,7 +691,7 @@ def floor_card(values: list[tuple[str, str]], text: str | None) -> str:
     rows = "".join(f"<dt>{esc(n)}</dt><dd>{inline(w) if w else empty('What this looks like on my worst day: not written yet.')}</dd>"
                    for n, w in values)
     body = (f'<p><strong>What I stand for</strong></p><dl>{rows}</dl>' if rows else "") + (prose(text) if text else "")
-    return f'<div class="card"><div class="eyebrow">What I never drop below</div><h2>My floor</h2>{body or empty()}</div>'
+    return f'<div class="card">{body or empty()}</div>'
 
 
 def card(title: str, meaning: str, text: str | None) -> str:
